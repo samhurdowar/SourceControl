@@ -1,0 +1,141 @@
+﻿
+<div id="tabViewLayout" style="width:100%;">
+    <ul>
+        <li class="k-state-active">Layout</li>
+        <li>Custom Options</li>
+    </ul>
+    <div>
+        <form id="FormViewLayout" name="FormViewLayout">
+
+            <div class="command-bar">
+                <span id="cmdSaveViewLayout" formname="FormViewLayout" class="command-disabled-span"><span class="command-icon fas fa-save">&nbsp;</span> Save</span>
+                <span class="app-command-item">
+                    Num of Columns &nbsp;
+                    <select id="numOfViewCol" name="numOfViewCol" style="width:100px;">
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                    </select>
+
+                    <span class="command-active-span" onclick="LoadViewLayout()"><span class="command-icon fas fa-tasks">&nbsp;</span> Load Layout</span>
+                    
+                </span>
+            </div>
+
+            <div>
+                <div id="progressFormViewLayout">
+                    <textarea id="ViewLayout" name="ViewLayout" cols="80" rows="200" class="expandEditor"></textarea>
+                </div>
+
+            </div>
+        </form>
+
+    </div>
+    <div>
+        <div class="command-bar">
+            <span id="cmdSaveViewLayoutOption" formname="FormViewLayoutOption" class="command-disabled-span"><span class="command-icon fas fa-save">&nbsp;</span> Save</span>
+        </div>
+
+        <form id="FormViewLayoutOption" name="FormViewLayoutOption">
+            <table style="width:100%;" class="form-layout-sm">
+                <tr>
+                    <td>Style</td>
+                    <td>
+                        <textarea id="ViewFormStyle" name="ViewFormStyle" style="width:100%;height:150px;" />
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>Command</td>
+                    <td>
+                        <textarea id="ViewFormCommand" name="ViewFormCommand" style="width:100%;height:150px;" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>Body</td>
+                    <td>
+                        <textarea id="ViewFormBody" name="ViewFormBody" style="width:100%;height:150px;" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>Script</td>
+                    <td>
+                        <textarea id="ViewFormScript" name="ViewFormScript" style="width:100%;height:400px;" />
+                    </td>
+                </tr>
+            </table>
+        </form>
+
+    </div>
+
+</div>
+
+<script>
+
+    $(document).ready(function () {
+
+        setTimeout(function () {
+            BindButtonToForm("cmdSaveViewLayout");
+            BindButtonToForm("cmdSaveViewLayoutOption");
+        }, 1000);
+
+        $("#tabViewLayout").kendoTabStrip();
+	});
+
+
+    function SaveViewLayoutOption() {
+        var json = ToJsonString("FormViewLayoutOption");
+        json = InjectPrimaryKey(json, "PageTemplateId", $("#PageTemplateId").val());
+
+        $.ajax({
+            url: "/PageTemplate/SavePageTemplate",
+            type: "POST",
+            data: { pageTemplateId: $("#PageTemplateId").val(), json: json },
+            dataType: "text",
+            success: function (response) {
+                if (response.indexOf("Unable to process") > -1) {
+                    MessageBox("Information", response, false);
+                } else {
+                    DisableButton("cmdSaveViewLayoutOption");
+                }
+            }
+        });
+    }
+
+    function SaveViewLayout() {
+        $.ajax({
+            url: "/PageTemplate/SaveLayout",
+            type: "POST",
+            data: { pageTemplateId: PageTemplateId, layout: $("#ViewLayout").data("kendoEditor").value(), columnName: "ViewLayout" },
+            dataType: "text",
+            success: function (response) {
+                if (response.indexOf("Unable to process") > -1) {
+                    MessageBox("Information", response, false);
+                } else {
+                    DisableButton("cmdSaveViewLayout");
+                }
+            }
+        });
+    }
+
+    function LoadViewLayout() {
+        $.ajax({
+            url: "/PageTemplate/GetLayoutFromColumnDef",
+            data: { pageTemplateId: PageTemplateId, numOfCol: $("#numOfViewCol").val() },
+            dataType: "text",
+            type: "POST",
+            success: function (response) {
+                $("#ViewLayout").data("kendoEditor").value(response);
+            }
+        });
+    }
+
+    //C:\App\AppWeb\AppDev\Scripts\kendo\2015.3.930\kendo.all.min.js
+    // search for for first View HTML  <input type='button' id='saveViewHTML' value='Save' onclick='SaveViewHTML()'>
+
+    function SaveViewHTML() {
+        var saveViewHTML = $("textarea.k-editor-textarea").val();
+        $("#EditLayout").data("kendoEditor").value(saveViewHTML);
+    }
+</script>

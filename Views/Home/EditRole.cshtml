@@ -1,0 +1,205 @@
+﻿@using SourceControl.Services;
+
+@{
+	var recordId = ViewData["RecordId"].ToString();
+	var pageTemplate = (SourceControl.Models.Db.PageTemplate)ViewData["PageTemplate"];
+}
+
+<style>
+
+	#gridUser1, #gridUser2 {
+		position: relative;
+		width: 200px;
+		height: 500px;
+		cursor: pointer;
+	}
+
+	.table-header {
+		font-weight: bold;
+	}
+
+	.table-parent-record td {
+		border-bottom: 1px solid #ccc;
+	}
+
+	.table-record td {
+		border-bottom: 1px solid #ccc;
+	}
+
+
+	.table-parent-record:hover  {
+		background-color: #cce9f6;
+	}
+
+	.table-record:hover {
+		background-color: #cce9f6;
+	}
+</style>
+
+
+<div class="app-command-bar">
+	<a href="javascript:@Html.Raw(pageTemplate.PageTemplateId)Save('default')"><img src="/Images/ToolBar/save.png"> <span>Save</span></a>
+	<a href="javascript:@Html.Raw(pageTemplate.PageTemplateId)Cancel()"><img src="/Images/ToolBar/cancel.png"> <span>Cancel</span></a>
+</div>
+
+<br>
+
+<form id="FormEdit_@Html.Raw(pageTemplate.PageTemplateId)">
+	<input type="hidden" id="@Html.Raw(pageTemplate.TableName)_RoleId" value="@recordId">
+	<input type="hidden" id="InternalId_@Html.Raw(pageTemplate.PageTemplateId)" value="@recordId">
+
+	<table>
+
+		<tr style="height:20px;">
+			<td nowrap="nowrap">Role Name</td>
+			<td colspan="3">
+				<input type="text" id="@Html.Raw(pageTemplate.TableName)_RoleName" name="@Html.Raw(pageTemplate.TableName)_RoleName" style="width:300px;" maxlength="250" required="" validationmessage="Required">
+			</td>
+		</tr>
+
+		<tr style="height:20px;">
+			<td nowrap="nowrap"></td>
+			<td colspan="3">&nbsp;</td>
+		</tr>
+
+		<tr valign="top">
+			<td></td>
+			<td>
+				<table>
+					<tr><td align="center" style="font-size:1em;font-weight:bold;" colspan="3">Users Assigned to Role</td></tr>
+					<tr valign="top">
+
+						<td><div id="gridUser1"></div></td>
+						<td valign="middle">
+
+							<button class="k-button fas fa-caret-right" style="color:#808080;font-size:17px;width:30px;padding-left:4px;margin-bottom:5px;" onclick="AddRemoveGrid('gridUser1', 'gridUser2', 'add')"> </button>
+							<br />
+							<button class="k-button fas fa-caret-left" style="color:#808080;font-size:17px;width:30px;padding-right:4px;" onclick="AddRemoveGrid('gridUser1', 'gridUser2', 'remove')"> </button>
+
+						</td>
+						<td><div id="gridUser2"></div></td>
+					</tr>
+				</table>
+			</td>
+			<td>&nbsp;&nbsp;</td>
+			<td>
+				@Html.Raw(MenuService.GetAccessMenus())
+			</td>
+		</tr>
+	</table>
+
+</form>
+
+
+<script>
+
+	$(document).ready(function () {
+
+		var gridUser1 = $("#gridUser1").kendoGrid({
+			dataSource: {
+				transport: {
+					read: {
+						url: "/Access/GetAvailRoleUsers/@recordId",
+						dataType: "json"
+					}
+				}
+			},
+			editable: "popup",
+			selectable: "multiple",
+			filterable: false,
+			pageable: false,
+			columns: [
+				{ field: "FullName", title: "Available Users" }
+			]
+		}).data("kendoGrid");
+
+		var gridUser2 = $("#gridUser2").kendoGrid({
+			dataSource: {
+				transport: {
+					read: {
+						url: "/Access/GetAssignedRoleUsers/@recordId",
+						dataType: "json"
+					}
+				}
+			},
+			editable: "popup",
+			selectable: "multiple",
+			filterable: false,
+			pageable: false,
+			columns: [
+				{ field: "FullName",  title: "Users With Role" }
+			]
+		}).data("kendoGrid");
+
+
+
+		BindFormData(@Html.Raw(pageTemplate.PageTemplateId), "@recordId", "Edit");
+
+
+		$(".menu-expand").click(function () {
+			var id = $(this).attr("value");
+
+			$(".childOf" + id).prop('checked', $(this).is(":checked"));
+
+		});
+
+   });
+
+
+	function @Html.Raw(pageTemplate.PageTemplateId)Cancel() {
+		GoToListTab(@Html.Raw(pageTemplate.PageTemplateId));
+	}
+
+	function @Html.Raw(pageTemplate.PageTemplateId)Save(nextStep) {
+		// validation
+		var validCustomRule = true;
+		var validator = $("#FormEdit_@Html.Raw(pageTemplate.PageTemplateId)").kendoValidator().data("kendoValidator");
+
+		if (!validator.validate() || !validCustomRule) {
+			return;
+		}
+
+		var json = ToJsonString("FormEdit_@Html.Raw(pageTemplate.PageTemplateId)");
+
+		// get access
+		var ids = GetGridIds("gridUser2", "UserId");
+
+		var uid = "";
+		$.ajax({
+			url: "/Page/SaveFormData",
+			type: "POST",
+			data: { pageTemplate.PageTemplateId: @Html.Raw(pageTemplate.PageTemplateId), json: json, oldJson: "" },
+			async: false,
+			dataType: "text",
+			success: function (currentRowId) {
+				$.ajax({
+					url: "/Access/UpdateRoleAccess",
+					type: "POST",
+					data: { roleId: @recordId, ids: ids},
+					async: false,
+					dataType: "text",
+					success: function (data) {
+						if (data != "SUCCESS") {
+							MessageBox("Warning","Error updating role.",false)
+						}
+
+					}
+				});
+
+			}
+		}).done(function () {
+
+			$("#grid_@Html.Raw(pageTemplate.PageTemplateId)").data("kendoGrid").dataSource.read();
+			$("#grid_@Html.Raw(pageTemplate.PageTemplateId)").data("kendoGrid").refresh(); 
+			if (nextStep == "close") {
+				CloseSpecificTab("PageTemplate@Html.Raw(pageTemplate.PageTemplateId)");
+			} else {
+				GoToListTab(@Html.Raw(pageTemplate.PageTemplateId));
+			}
+		});
+
+	}
+
+
+</script>
+

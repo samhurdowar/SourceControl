@@ -1,0 +1,59 @@
+﻿
+<div id="AngularTemplatePlaceHolder666"></div>
+
+<div id="AngularTemplateBody">
+
+
+	<div class="container" style="width:97%" ng-app="MainApp">
+		<div class="bs-docs" ng-controller="MainCtrl" ng-cloak>
+			<div class="col-lg-6">
+				<div class="row">
+					<table class="tableData" border="1" cellspacing="0" cellpadding="1">
+						<thead>
+							<tr>
+								<th></th>
+								<th colspan="2" style="background-color:cornflowerblue;text-align:center">CMS</th>
+
+								<th colspan="2" style="background-color:#e15fa5;text-align:center">Internet</th>
+
+							</tr>
+							<tr>
+								<th>Network</th>
+								<th style="background-color:cornflowerblue;text-align:center">Border Firewall IP</th>
+								<th style="background-color:cornflowerblue;text-align:center">Border Firewall</th>
+								<th style="background-color:#e15fa5;text-align:center">Border Firewall IP</th>
+								<th style="background-color:#e15fa5;text-align:center">Border Firewall</th>
+							</tr>
+						</thead>
+						<tbody ng-repeat="I in fwList">
+							<tr><td style="background-color:#808080;text-align:center" colspan="5">{{I.Environment}}</td></tr>
+							<tr ng-repeat="Network in I.networks">
+								<td style="background-color:#808080;text-align:center">{{Network.Network}}</td>
+								<td style="background-color:cornflowerblue;text-align:center">{{Network.CMSFirewallIP}}</td>
+								<td style="background-color:cornflowerblue;text-align:center">{{Network.CMSFirewall}}</td>
+								<td style="background-color:#e15fa5;text-align:center">{{Network.InternetFirewallIP}}</td>
+								<td style="background-color:#e15fa5;text-align:center">{{Network.InternetFirewall}}</td>
+							</tr>
+						</tbody>
+					</table>
+				</div>
+			</div>
+			<div class="col-lg-6" ng-show="upload">
+
+			</div>
+		</div>
+	</div>
+
+
+
+</div>
+
+
+
+<script>
+	
+
+	var AngularTemplateBody = $("#AngularTemplateBody").html();
+	$("#AngularTemplateBody").remove();
+	$("#btnTriggerAngular").click();
+</script>

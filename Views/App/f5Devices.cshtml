@@ -1,0 +1,141 @@
+﻿
+
+<script>
+	AppSpinner(true);
+</script>
+
+<form id="Form_F5" name="Form_F5">
+	<div class="container" style="width:97%" >
+		<div class="bs-docs" >
+			<div class="row">
+				<div class="jumbotron">
+					<h1>CMS f5 Devices</h1>
+					<p>This portal is designed to provide load balancing infomation from the HP CMS data center networks. </p>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-lg-3">
+
+					<div class="panel panel-info">
+						<div class="panel-heading">
+							<h3 class="panel-title">VIPs</h3>
+						</div>
+						<div class="panel-body">
+							<p>
+								Total VIP Count : <input type="text" id="totalVIPCount" class="app-input-noborder" /> <br />
+								Available VIPs : <input type="text" id="availableVipCount" class="app-input-noborder" /> <br />
+								Offline VIPs : <input type="text" id="offlineVipCount" class="app-input-noborder" /> <br />
+								Unknown Vips: <input type="text" id="unknownVipCount" class="app-input-noborder" /><br /><br />
+							</p>
+							<p>
+								<span class="btn btn-primary btn-lg" onclick="AddTab('Browse Virtual',0,'~/Views/App/Virtual.cshtml')">VIPs By Device</span> &nbsp; &nbsp;
+								<span class="btn btn-primary btn-lg" onclick="AddTab('Browse Virtual',0,'~/Views/App/f5Search.cshtml')">Search VIPs</span>
+							</p>
+						</div>
+					</div>
+				</div>
+				<div class="col-lg-3">
+					<div class="panel panel-info">
+						<div class="panel-heading">
+							<h3 class="panel-title">Pools</h3>
+						</div>
+						<div class="panel-body">
+							Pool Count : <input type="text" id="poolcount" class="app-input-noborder" />
+						</div>
+					</div>
+
+
+					<div class="panel panel-info">
+						<div class="panel-heading">
+							<h3 class="panel-title">Pool Members(Nodes)</h3>
+						</div>
+						<div class="panel-body">
+							Total Pool Members : <input type="text" id="totalPoolMembers" class="app-input-noborder" /> <br />
+							Active Pool Members : <input type="text" id="activePoolMembers" class="app-input-noborder" />
+						</div>
+					</div>
+
+				</div>
+				<div class="col-lg-3">
+					<div class="panel panel-info">
+						<div class="panel-heading">
+							<h3 class="panel-title">Certs</h3>
+						</div>
+						<div class="panel-body">
+							<p>
+								Total SSL Certs Hosted: <input type="text" id="TotalCertCount" class="app-input-noborder" /> <br />
+								Expired Certs : <input type="text" id="expiredCertCount" class="app-input-noborder" /><br />
+								Expiring in the 30 days : <input type="text" id="expiringOneMonthCount" class="app-input-noborder" /><br />
+								Expiring in the 90 days : <input type="text" id="expiringThreeMonthCount" class="app-input-noborder" /><br />
+								Expiring in the 180 days : <input type="text" id="expiringSixMonthCount" class="app-input-noborder" /><br />
+							</p>
+							<p>
+								<span class="btn btn-primary btn-lg" onclick="AddTab('Review Cert List',0,'~/Views/App/SSLCerts.cshtml')" style="width:150px;">Review Cert List</span>
+							</p>
+
+
+							<p><span class="btn btn-primary btn-lg" onclick="EmailCertData()" style="width:150px;">Email Cert List</span></p>
+
+						</div>
+					</div>
+				</div>
+				<div class="col-lg-3">
+					<div class="panel panel-info">
+						<div class="panel-heading">
+							<h3 class="panel-title">Devices</h3>
+						</div>
+						<div class="panel-body">
+							Current Device Count : <input type="text" id="devicecount" class="app-input-noborder" />
+						</div>
+					</div>
+					<div class="panel panel-info">
+						<div class="panel-heading">
+							<h3 class="panel-title">Rules</h3>
+						</div>
+						<div class="panel-body">
+							Rules Count : <input type="text" id="rulecount" class="app-input-noborder" /> 
+						</div>
+					</div>
+
+				</div>
+			</div>
+
+		</div>
+
+	</div>
+
+</form>
+
+<script>
+
+setTimeout(function () {
+
+	$.ajax({
+		async: false,
+		url: "App/GetF5SummaryData",
+		dataType: "json",
+		success: function (data) {
+			//DebugLog(JSON.stringify(data));
+
+			BindForm("Form_F5", data);
+			AppSpinner(false);
+		},
+		error: function (x, y, z) {
+			alert("f5Devices.cshtml" + x + '\n' + y + '\n' + z);
+			AppSpinner(false);
+		}
+	});
+
+}, 1000);
+
+
+function EmailCertData() {
+		$.ajax({
+			url: "App/EmailCertData",
+			dataType: "text",
+			success: function (response) {
+				MessageBox("Send Email", response, true);
+			}
+		});
+	}
+</script>

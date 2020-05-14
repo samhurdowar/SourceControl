@@ -1,0 +1,2229 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="f5dataModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="Apps">
+          <Key>
+            <PropertyRef Name="guid" />
+          </Key>
+          <Property Name="guid" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="HostName" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Application" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Cert">
+          <Key>
+            <PropertyRef Name="guid" />
+          </Key>
+          <Property Name="guid" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="jobguid" Type="uniqueidentifier" />
+          <Property Name="f5HostName" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="kind" Type="nvarchar" MaxLength="500" />
+          <Property Name="name" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="partition" Type="nvarchar" MaxLength="500" />
+          <Property Name="fullPath" Type="nvarchar" MaxLength="500" />
+          <Property Name="generation" Type="bigint" />
+          <Property Name="selfLink" Type="nvarchar" MaxLength="500" />
+          <Property Name="certificateKeySize" Type="bigint" />
+          <Property Name="checksum" Type="nvarchar" MaxLength="500" />
+          <Property Name="createTime" Type="nvarchar" MaxLength="500" />
+          <Property Name="createdBy" Type="nvarchar" MaxLength="500" />
+          <Property Name="expirationDate" Type="bigint" />
+          <Property Name="expirationString" Type="nvarchar" MaxLength="500" />
+          <Property Name="isBundle" Type="nvarchar" MaxLength="500" />
+          <Property Name="issuer" Type="nvarchar" MaxLength="500" />
+          <Property Name="keyType" Type="nvarchar" MaxLength="500" />
+          <Property Name="lastUpdateTime" Type="nvarchar" MaxLength="500" />
+          <Property Name="mode" Type="bigint" />
+          <Property Name="revision" Type="bigint" />
+          <Property Name="serialNumber" Type="nvarchar" MaxLength="500" />
+          <Property Name="size" Type="bigint" />
+          <Property Name="subject" Type="nvarchar" MaxLength="500" />
+          <Property Name="updatedBy" Type="nvarchar" MaxLength="500" />
+          <Property Name="version" Type="bigint" />
+        </EntityType>
+        <EntityType Name="CertFile">
+          <Key>
+            <PropertyRef Name="guid" />
+          </Key>
+          <Property Name="guid" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="jobguid" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="f5HostName" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="kind" Type="nvarchar" MaxLength="500" />
+          <Property Name="name" Type="nvarchar" MaxLength="500" />
+          <Property Name="partition" Type="nvarchar" MaxLength="500" />
+          <Property Name="fullPath" Type="nvarchar" MaxLength="500" />
+          <Property Name="generation" Type="bigint" />
+          <Property Name="selfLink" Type="nvarchar" MaxLength="500" />
+          <Property Name="certificateKeyCurveName" Type="nvarchar" MaxLength="500" />
+          <Property Name="certificateKeySize" Type="bigint" />
+          <Property Name="checksum" Type="nvarchar" MaxLength="500" />
+          <Property Name="createTime" Type="nvarchar" MaxLength="500" />
+          <Property Name="createdBy" Type="nvarchar" MaxLength="500" />
+          <Property Name="expirationDate" Type="bigint" />
+          <Property Name="expiration" Type="nvarchar" MaxLength="500" />
+          <Property Name="isBundle" Type="nvarchar" MaxLength="500" />
+          <Property Name="issuer" Type="nvarchar" MaxLength="500" />
+          <Property Name="keyType" Type="nvarchar" MaxLength="500" />
+          <Property Name="lastUpdateTime" Type="nvarchar" MaxLength="500" />
+          <Property Name="mode" Type="bigint" />
+          <Property Name="revision" Type="bigint" />
+          <Property Name="serialNumber" Type="nvarchar" MaxLength="500" />
+          <Property Name="size" Type="bigint" />
+          <Property Name="subject" Type="nvarchar" MaxLength="500" />
+          <Property Name="subjectAlternativeName" Type="nvarchar" MaxLength="500" />
+          <Property Name="updatedBy" Type="nvarchar" MaxLength="500" />
+          <Property Name="version" Type="bigint" />
+          <Property Name="systemPath" Type="nvarchar" MaxLength="500" />
+          <Property Name="email" Type="nvarchar" MaxLength="500" />
+          <Property Name="BundleCertificatesReferencelink" Type="nvarchar" MaxLength="500" />
+          <Property Name="BundleCertificatesReferenceisSubcollection" Type="bit" />
+        </EntityType>
+        <EntityType Name="Client">
+          <Key>
+            <PropertyRef Name="ClientId" />
+          </Key>
+          <Property Name="ClientId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ClientName" Type="varchar" MaxLength="300" Nullable="false" />
+          <Property Name="ChangeBy" Type="int" Nullable="false" />
+          <Property Name="ChangeDate" Type="datetime" Nullable="false" />
+          <Property Name="AddBy" Type="int" Nullable="false" />
+          <Property Name="AddDate" Type="datetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ClientSSL">
+          <Key>
+            <PropertyRef Name="guid" />
+          </Key>
+          <Property Name="guid" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="jobguid" Type="uniqueidentifier" />
+          <Property Name="kind" Type="nvarchar" MaxLength="500" />
+          <Property Name="f5HostName" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="name" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="partition" Type="nvarchar" MaxLength="500" />
+          <Property Name="fullPath" Type="nvarchar" MaxLength="500" />
+          <Property Name="generation" Type="bigint" />
+          <Property Name="selfLink" Type="nvarchar" MaxLength="500" />
+          <Property Name="alertTimeout" Type="nvarchar" MaxLength="500" />
+          <Property Name="allowNonSsl" Type="nvarchar" MaxLength="500" />
+          <Property Name="authenticate" Type="nvarchar" MaxLength="500" />
+          <Property Name="authenticateDepth" Type="bigint" />
+          <Property Name="cacheSize" Type="bigint" />
+          <Property Name="cacheTimeout" Type="bigint" />
+          <Property Name="cert" Type="nvarchar" MaxLength="500" />
+          <Property Name="certExtensionIncludes" Type="nvarchar" MaxLength="500" />
+          <Property Name="certLifespan" Type="bigint" />
+          <Property Name="certLookupByIpaddrPort" Type="nvarchar" MaxLength="500" />
+          <Property Name="chain" Type="nvarchar" MaxLength="500" />
+          <Property Name="ciphers" Type="nvarchar" MaxLength="500" />
+          <Property Name="defaultsFrom" Type="nvarchar" MaxLength="500" />
+          <Property Name="forwardProxyBypassDefaultAction" Type="nvarchar" MaxLength="500" />
+          <Property Name="genericAlert" Type="nvarchar" MaxLength="500" />
+          <Property Name="handshakeTimeout" Type="nvarchar" MaxLength="500" />
+          <Property Name="inheritCertkeychain" Type="nvarchar" MaxLength="500" />
+          <Property Name="key" Type="nvarchar" MaxLength="500" />
+          <Property Name="maxRenegotiationsPerMinute" Type="bigint" />
+          <Property Name="modSslMethods" Type="nvarchar" MaxLength="500" />
+          <Property Name="mode" Type="nvarchar" MaxLength="500" />
+          <Property Name="tmOptions" Type="nvarchar" MaxLength="500" />
+          <Property Name="peerCertMode" Type="nvarchar" MaxLength="500" />
+          <Property Name="peerNoRenegotiateTimeout" Type="nvarchar" MaxLength="500" />
+          <Property Name="proxySsl" Type="nvarchar" MaxLength="500" />
+          <Property Name="proxySslPassthrough" Type="nvarchar" MaxLength="500" />
+          <Property Name="renegotiateMaxRecordDelay" Type="nvarchar" MaxLength="500" />
+          <Property Name="renegotiatePeriod" Type="nvarchar" MaxLength="500" />
+          <Property Name="renegotiateSize" Type="nvarchar" MaxLength="500" />
+          <Property Name="renegotiation" Type="nvarchar" MaxLength="500" />
+          <Property Name="retainCertificate" Type="nvarchar" MaxLength="500" />
+          <Property Name="secureRenegotiation" Type="nvarchar" MaxLength="500" />
+          <Property Name="sessionMirroring" Type="nvarchar" MaxLength="500" />
+          <Property Name="sessionTicket" Type="nvarchar" MaxLength="500" />
+          <Property Name="sniDefault" Type="nvarchar" MaxLength="500" />
+          <Property Name="sniRequire" Type="nvarchar" MaxLength="500" />
+          <Property Name="sslForwardProxy" Type="nvarchar" MaxLength="500" />
+          <Property Name="sslForwardProxyBypass" Type="nvarchar" MaxLength="500" />
+          <Property Name="sslSignHash" Type="nvarchar" MaxLength="500" />
+          <Property Name="strictResume" Type="nvarchar" MaxLength="500" />
+          <Property Name="uncleanShutdown" Type="nvarchar" MaxLength="500" />
+          <Property Name="certKeyChainGuid" Type="uniqueidentifier" />
+        </EntityType>
+        <EntityType Name="ClientSSLCertKeyChain">
+          <Key>
+            <PropertyRef Name="guid" />
+          </Key>
+          <Property Name="guid" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="jobguid" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="f5hostname" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="CertGuid" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="name" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="cert" Type="nvarchar" MaxLength="500" />
+          <Property Name="chain" Type="nvarchar" MaxLength="500" />
+          <Property Name="key" Type="nvarchar" MaxLength="500" />
+        </EntityType>
+        <EntityType Name="CustomOption">
+          <Key>
+            <PropertyRef Name="CustomOptionId" />
+          </Key>
+          <Property Name="CustomOptionId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ColumnDefId" Type="int" Nullable="false" />
+          <Property Name="OptionText" Type="varchar" MaxLength="500" />
+          <Property Name="OptionValue" Type="varchar" MaxLength="500" />
+        </EntityType>
+        <EntityType Name="DeviceData">
+          <Key>
+            <PropertyRef Name="guid" />
+          </Key>
+          <Property Name="guid" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="jobguid" Type="uniqueidentifier" />
+          <Property Name="kind" Type="nvarchar" MaxLength="500" />
+          <Property Name="name" Type="nvarchar" MaxLength="500" />
+          <Property Name="partition" Type="nvarchar" MaxLength="500" />
+          <Property Name="fullPath" Type="nvarchar" MaxLength="500" />
+          <Property Name="generation" Type="bigint" />
+          <Property Name="selfLink" Type="nvarchar" MaxLength="500" />
+          <Property Name="activeModules" Type="nvarchar(max)" />
+          <Property Name="baseMac" Type="nvarchar" MaxLength="500" />
+          <Property Name="build" Type="nvarchar" MaxLength="500" />
+          <Property Name="cert" Type="nvarchar" MaxLength="500" />
+          <Property Name="chassisId" Type="nvarchar" MaxLength="500" />
+          <Property Name="chassisType" Type="nvarchar" MaxLength="500" />
+          <Property Name="configsyncIp" Type="nvarchar" MaxLength="500" />
+          <Property Name="edition" Type="nvarchar" MaxLength="500" />
+          <Property Name="failoverState" Type="nvarchar" MaxLength="500" />
+          <Property Name="haCapacity" Type="bigint" />
+          <Property Name="hostname" Type="nvarchar" MaxLength="500" />
+          <Property Name="devicekey" Type="nvarchar" MaxLength="500" />
+          <Property Name="managementIp" Type="nvarchar" MaxLength="500" />
+          <Property Name="marketingName" Type="nvarchar" MaxLength="500" />
+          <Property Name="mirrorIp" Type="nvarchar" MaxLength="500" />
+          <Property Name="mirrorSecondaryIp" Type="nvarchar" MaxLength="500" />
+          <Property Name="multicastIp" Type="nvarchar" MaxLength="500" />
+          <Property Name="multicastPort" Type="bigint" />
+          <Property Name="optionalModules" Type="nvarchar" MaxLength="500" />
+          <Property Name="platformId" Type="nvarchar" MaxLength="500" />
+          <Property Name="product" Type="nvarchar" MaxLength="500" />
+          <Property Name="selfDevice" Type="nvarchar" MaxLength="500" />
+          <Property Name="timeZone" Type="nvarchar" MaxLength="500" />
+          <Property Name="version" Type="nvarchar" MaxLength="500" />
+          <Property Name="unicastAddress" Type="nvarchar" MaxLength="500" />
+        </EntityType>
+        <EntityType Name="Irule">
+          <Key>
+            <PropertyRef Name="guid" />
+          </Key>
+          <Property Name="guid" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="jobguid" Type="uniqueidentifier" />
+          <Property Name="f5HostName" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="kind" Type="nvarchar" MaxLength="500" />
+          <Property Name="name" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="partition" Type="nvarchar" MaxLength="500" />
+          <Property Name="fullpath" Type="nvarchar" MaxLength="500" />
+          <Property Name="generation" Type="bigint" />
+          <Property Name="selfLink" Type="nvarchar" MaxLength="500" />
+          <Property Name="apiAnonymous" Type="nvarchar(max)" />
+          <Property Name="apiRawValuesGuid" Type="uniqueidentifier" />
+        </EntityType>
+        <EntityType Name="IruleApiRawValues2">
+          <Key>
+            <PropertyRef Name="guid" />
+          </Key>
+          <Property Name="guid" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="jobguid" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="iruleGuid" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="verificationStatus" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="JobLog">
+          <Key>
+            <PropertyRef Name="guid" />
+          </Key>
+          <Property Name="guid" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="jobname" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="startTime" Type="smalldatetime" Nullable="false" />
+          <Property Name="endTime" Type="smalldatetime" Nullable="false" />
+          <Property Name="Successful" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="JobLogTask">
+          <Key>
+            <PropertyRef Name="guid" />
+          </Key>
+          <Property Name="guid" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="JobTaskName" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="Device" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="DeviceTask" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="StartTime" Type="smalldatetime" />
+          <Property Name="EndTime" Type="smalldatetime" />
+          <Property Name="Successful" Type="bit" Nullable="false" />
+          <Property Name="ParentJobGuid" Type="uniqueidentifier" Nullable="false" />
+        </EntityType>
+        <EntityType Name="MasterDeviceList">
+          <Key>
+            <PropertyRef Name="guid" />
+          </Key>
+          <Property Name="guid" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="DeviceName" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="mgmtIP" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="active" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="MonitorHttp">
+          <Key>
+            <PropertyRef Name="guid" />
+          </Key>
+          <Property Name="guid" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="jobguid" Type="uniqueidentifier" />
+          <Property Name="f5HostName" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="kind" Type="nvarchar" MaxLength="500" />
+          <Property Name="name" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="partition" Type="nvarchar" MaxLength="500" />
+          <Property Name="fullpath" Type="nvarchar" MaxLength="500" />
+          <Property Name="generation" Type="bigint" />
+          <Property Name="selfLink" Type="nvarchar" MaxLength="500" />
+          <Property Name="adaptive" Type="nvarchar" MaxLength="500" />
+          <Property Name="adaptiveDivergenceType" Type="nvarchar" MaxLength="500" />
+          <Property Name="adaptiveDivergenceValue" Type="bigint" />
+          <Property Name="adaptiveLimit" Type="bigint" />
+          <Property Name="adaptiveSamplingTimespan" Type="bigint" />
+          <Property Name="defaultsFrom" Type="nvarchar" MaxLength="500" />
+          <Property Name="destination" Type="nvarchar" MaxLength="500" />
+          <Property Name="interval" Type="bigint" />
+          <Property Name="ipDscp" Type="bigint" />
+          <Property Name="manualResume" Type="nvarchar" MaxLength="500" />
+          <Property Name="recv" Type="nvarchar" MaxLength="500" />
+          <Property Name="reverse" Type="nvarchar" MaxLength="500" />
+          <Property Name="send" Type="nvarchar" MaxLength="500" />
+          <Property Name="timeUntilUp" Type="bigint" />
+          <Property Name="timeout" Type="bigint" />
+          <Property Name="transparent" Type="nvarchar" MaxLength="500" />
+          <Property Name="upInterval" Type="bigint" />
+        </EntityType>
+        <EntityType Name="NatTranslation">
+          <Key>
+            <PropertyRef Name="NatTranslationId" />
+          </Key>
+          <Property Name="NatTranslationId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="FirewallName" Type="varchar" MaxLength="500" Nullable="false" />
+          <Property Name="RuleName" Type="varchar" MaxLength="250" Nullable="false" />
+          <Property Name="RuleSetName" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="RuleId" Type="int" />
+          <Property Name="RuleMatchingPosition" Type="int" />
+          <Property Name="RuleFromContext" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="RuleFromContextName" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="RuleDestinationAddressPrefix" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="RuleDestinationPortLow" Type="int" />
+          <Property Name="RuleDestinationPortHigh" Type="int" />
+          <Property Name="RuleHostAddressPrefix" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="RuleHostPortLow" Type="int" />
+          <Property Name="RuleHostPortHigh" Type="int" />
+          <Property Name="RuleAddressNetmask" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="RuleHostRoutingInstance" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="RuleTranslationHits" Type="int" />
+          <Property Name="SuccHits" Type="int" />
+          <Property Name="FailedHits" Type="int" />
+          <Property Name="ConcurrentHits" Type="int" />
+          <Property Name="UploadFile" Type="varchar" MaxLength="500" Nullable="false" />
+          <Property Name="FileDate" Type="date" />
+        </EntityType>
+        <EntityType Name="Node">
+          <Key>
+            <PropertyRef Name="guid" />
+          </Key>
+          <Property Name="guid" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="jobguid" Type="uniqueidentifier" />
+          <Property Name="f5HostName" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="kind" Type="nvarchar" MaxLength="100" />
+          <Property Name="Name" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="partition" Type="nvarchar" MaxLength="500" />
+          <Property Name="fullpath" Type="nvarchar" MaxLength="100" />
+          <Property Name="generation" Type="bigint" />
+          <Property Name="selfLink" Type="nvarchar" MaxLength="500" />
+          <Property Name="address" Type="nvarchar" MaxLength="500" />
+          <Property Name="connectionLimit" Type="bigint" />
+          <Property Name="dynamicRatio" Type="bigint" />
+          <Property Name="ephemeral" Type="nvarchar" MaxLength="500" />
+          <Property Name="fqdnGuid" Type="uniqueidentifier" />
+          <Property Name="logging" Type="nvarchar" MaxLength="500" />
+          <Property Name="monitor" Type="nvarchar" MaxLength="500" />
+          <Property Name="rateLimit" Type="nvarchar" MaxLength="500" />
+          <Property Name="ratio" Type="bigint" />
+          <Property Name="session" Type="nvarchar" MaxLength="500" />
+          <Property Name="state" Type="nvarchar" MaxLength="500" />
+        </EntityType>
+        <EntityType Name="NodeFqdn">
+          <Key>
+            <PropertyRef Name="guid" />
+          </Key>
+          <Property Name="guid" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="jobguid" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="nodeguid" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="nodename" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="f5hostname" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="addressFamily" Type="nvarchar" MaxLength="500" />
+          <Property Name="autopopulate" Type="nvarchar" MaxLength="500" />
+          <Property Name="downInterval" Type="bigint" />
+          <Property Name="interval" Type="bigint" />
+        </EntityType>
+        <EntityType Name="Pool">
+          <Key>
+            <PropertyRef Name="guid" />
+          </Key>
+          <Property Name="guid" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="jobguid" Type="uniqueidentifier" />
+          <Property Name="f5HostName" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="kind" Type="nvarchar" MaxLength="500" />
+          <Property Name="name" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="partition" Type="nvarchar" MaxLength="500" />
+          <Property Name="fullpath" Type="nvarchar" MaxLength="500" />
+          <Property Name="generation" Type="bigint" />
+          <Property Name="selfLink" Type="nvarchar" MaxLength="500" />
+          <Property Name="AllowNat" Type="nvarchar" MaxLength="500" />
+          <Property Name="AllowSnat" Type="nvarchar" MaxLength="500" />
+          <Property Name="ignorePersistedWeight" Type="nvarchar" MaxLength="500" />
+          <Property Name="ipTosToClient" Type="nvarchar" MaxLength="500" />
+          <Property Name="ipTosToServer" Type="nvarchar" MaxLength="500" />
+          <Property Name="linkQosToClient" Type="nvarchar" MaxLength="500" />
+          <Property Name="linkQosToServer" Type="nvarchar" MaxLength="500" />
+          <Property Name="loadBalancingMode" Type="nvarchar" MaxLength="500" />
+          <Property Name="minActiveMembers" Type="bigint" />
+          <Property Name="minUpMembers" Type="bigint" />
+          <Property Name="minUpMembersAction" Type="nvarchar" MaxLength="500" />
+          <Property Name="minUpMembersChecking" Type="nvarchar" MaxLength="500" />
+          <Property Name="monitor" Type="nvarchar" MaxLength="500" />
+          <Property Name="queueDepthLimit" Type="bigint" />
+          <Property Name="queueOnConnectionLimit" Type="nvarchar" MaxLength="500" />
+          <Property Name="queueTimeLimit" Type="bigint" />
+          <Property Name="reselectTries" Type="bigint" />
+          <Property Name="serviceDownAction" Type="nvarchar" MaxLength="500" />
+          <Property Name="slowRampTime" Type="bigint" />
+          <Property Name="membersReferenceGuid" Type="uniqueidentifier" />
+        </EntityType>
+        <EntityType Name="PoolMember">
+          <Key>
+            <PropertyRef Name="guid" />
+          </Key>
+          <Property Name="guid" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="jobguid" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="f5HostName" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="PoolGuid" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="kind" Type="nvarchar" MaxLength="500" />
+          <Property Name="Name" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="partition" Type="nvarchar" MaxLength="500" />
+          <Property Name="fullpath" Type="nvarchar" MaxLength="500" />
+          <Property Name="generation" Type="bigint" />
+          <Property Name="selfLink" Type="nvarchar" MaxLength="500" />
+          <Property Name="address" Type="nvarchar" MaxLength="500" />
+          <Property Name="connectionLimit" Type="bigint" />
+          <Property Name="dynamicRatio" Type="bigint" />
+          <Property Name="ephemeral" Type="nvarchar" MaxLength="500" />
+          <Property Name="fqdnGuid" Type="uniqueidentifier" />
+          <Property Name="logging" Type="nvarchar" MaxLength="500" />
+          <Property Name="monitor" Type="nvarchar" MaxLength="500" />
+          <Property Name="rateLimit" Type="nvarchar" MaxLength="500" />
+          <Property Name="ratio" Type="bigint" />
+          <Property Name="session" Type="nvarchar" MaxLength="500" />
+          <Property Name="state" Type="nvarchar" MaxLength="500" />
+        </EntityType>
+        <EntityType Name="PoolMembersReference">
+          <Key>
+            <PropertyRef Name="guid" />
+          </Key>
+          <Property Name="guid" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="jobguid" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="f5HostName" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="PoolGuid" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="poolName" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="link" Type="nvarchar" MaxLength="500" />
+          <Property Name="isSubcollection" Type="bit" />
+        </EntityType>
+        <EntityType Name="Routes">
+          <Key>
+            <PropertyRef Name="guid" />
+          </Key>
+          <Property Name="guid" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="jobguid" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="f5Hostname" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="name" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="fullpath" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="gw" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="mtu" Type="int" Nullable="false" />
+          <Property Name="network" Type="varchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="SelfIP">
+          <Key>
+            <PropertyRef Name="guid" />
+          </Key>
+          <Property Name="guid" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="jobguid" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="f5HostName" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="kind" Type="nvarchar" MaxLength="500" />
+          <Property Name="name" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="partition" Type="nvarchar" MaxLength="500" />
+          <Property Name="fullPath" Type="nvarchar" MaxLength="500" />
+          <Property Name="generation" Type="bigint" />
+          <Property Name="selfLink" Type="nvarchar" MaxLength="500" />
+          <Property Name="address" Type="nvarchar" MaxLength="500" />
+          <Property Name="floating" Type="nvarchar" MaxLength="500" />
+          <Property Name="inheritedTrafficGroup" Type="nvarchar" MaxLength="500" />
+          <Property Name="trafficGroup" Type="nvarchar" MaxLength="500" />
+          <Property Name="unit" Type="bigint" />
+          <Property Name="vlan" Type="nvarchar" MaxLength="500" />
+          <Property Name="allowService" Type="nvarchar" MaxLength="500" />
+        </EntityType>
+        <EntityType Name="SNATPool">
+          <Key>
+            <PropertyRef Name="guid" />
+          </Key>
+          <Property Name="guid" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="jobguid" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="f5HostName" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="kind" Type="nvarchar" MaxLength="500" />
+          <Property Name="name" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="partition" Type="nvarchar" MaxLength="500" />
+          <Property Name="fullpath" Type="nvarchar" MaxLength="500" />
+          <Property Name="generation" Type="bigint" />
+          <Property Name="selfLink" Type="nvarchar" MaxLength="500" />
+          <Property Name="members" Type="nvarchar" MaxLength="500" />
+        </EntityType>
+        <EntityType Name="VIP">
+          <Key>
+            <PropertyRef Name="guid" />
+          </Key>
+          <Property Name="guid" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="jobguid" Type="uniqueidentifier" />
+          <Property Name="f5HostName" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="kind" Type="nvarchar" MaxLength="500" />
+          <Property Name="name" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="partition" Type="nvarchar" MaxLength="500" />
+          <Property Name="fullPath" Type="nvarchar" MaxLength="500" />
+          <Property Name="generation" Type="bigint" />
+          <Property Name="selfLink" Type="nvarchar" MaxLength="500" />
+          <Property Name="addressStatus" Type="nvarchar" MaxLength="500" />
+          <Property Name="autoLasthop" Type="nvarchar" MaxLength="500" />
+          <Property Name="cmpEnabled" Type="nvarchar" MaxLength="500" />
+          <Property Name="connectionLimit" Type="bigint" />
+          <Property Name="destination" Type="nvarchar" MaxLength="500" />
+          <Property Name="enabled" Type="bit" />
+          <Property Name="gtmScore" Type="bigint" />
+          <Property Name="ipProtocol" Type="nvarchar" MaxLength="500" />
+          <Property Name="mask" Type="nvarchar" MaxLength="500" />
+          <Property Name="mirror" Type="nvarchar" MaxLength="500" />
+          <Property Name="mobileAppTunnel" Type="nvarchar" MaxLength="500" />
+          <Property Name="nat64" Type="nvarchar" MaxLength="500" />
+          <Property Name="pool" Type="nvarchar" MaxLength="500" />
+          <Property Name="rateLimit" Type="nvarchar" MaxLength="500" />
+          <Property Name="rateLimitDstMask" Type="bigint" />
+          <Property Name="rateLimitMode" Type="nvarchar" MaxLength="500" />
+          <Property Name="rateLimitSrcMask" Type="bigint" />
+          <Property Name="source" Type="nvarchar" MaxLength="500" />
+          <Property Name="sourceAddressTranslationType" Type="varchar" MaxLength="50" />
+          <Property Name="sourceAddressTranslationPool" Type="varchar" MaxLength="50" />
+          <Property Name="sourcePort" Type="nvarchar" MaxLength="500" />
+          <Property Name="synCookieStatusnv" Type="nvarchar" MaxLength="500" />
+          <Property Name="translateAddress" Type="nvarchar" MaxLength="500" />
+          <Property Name="translatePort" Type="nvarchar" MaxLength="500" />
+          <Property Name="vlansDisabled" Type="bit" />
+          <Property Name="vsIndex" Type="bigint" />
+          <Property Name="policiesReferenceGuid" Type="uniqueidentifier" />
+          <Property Name="profilesReferenceGuid" Type="uniqueidentifier" />
+          <Property Name="persistGuid" Type="uniqueidentifier" />
+          <Property Name="rules" Type="nvarchar" MaxLength="500" />
+          <Property Name="description" Type="nvarchar" MaxLength="500" />
+          <Property Name="vlansEnabled" Type="bit" />
+          <Property Name="vlans" Type="nvarchar" MaxLength="500" />
+          <Property Name="disabled" Type="bit" />
+          <Property Name="PoolName" Type="varchar" MaxLength="250" StoreGeneratedPattern="Computed" />
+          <Property Name="PoolMonitor" Type="varchar" MaxLength="250" StoreGeneratedPattern="Computed" />
+          <Property Name="PoolLoadBalancingMode" Type="varchar" MaxLength="250" StoreGeneratedPattern="Computed" />
+          <Property Name="StatusAvailabilityState" Type="varchar" MaxLength="250" StoreGeneratedPattern="Computed" />
+          <Property Name="PersistName" Type="varchar" MaxLength="250" StoreGeneratedPattern="Computed" />
+          <Property Name="PersistType" Type="varchar" MaxLength="250" StoreGeneratedPattern="Computed" />
+          <Property Name="PersistTimeOut" Type="varchar" MaxLength="250" StoreGeneratedPattern="Computed" />
+          <Property Name="CertName" Type="varchar" MaxLength="250" StoreGeneratedPattern="Computed" />
+          <Property Name="CertChain" Type="varchar" MaxLength="250" StoreGeneratedPattern="Computed" />
+          <Property Name="CertKey" Type="varchar" MaxLength="250" StoreGeneratedPattern="Computed" />
+          <Property Name="PoolGuid" Type="varchar" MaxLength="250" StoreGeneratedPattern="Computed" />
+        </EntityType>
+        <EntityType Name="VipPersist">
+          <Key>
+            <PropertyRef Name="guid" />
+          </Key>
+          <Property Name="guid" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="jobguid" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="VIPguid" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="f5HostName" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="vipName" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="name" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="partition" Type="nvarchar" MaxLength="500" />
+          <Property Name="tmDefault" Type="nvarchar" MaxLength="500" />
+        </EntityType>
+        <EntityType Name="VIPPersistDetails">
+          <Key>
+            <PropertyRef Name="guid" />
+          </Key>
+          <Property Name="guid" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="jobguid" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="f5hostname" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="persistType" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="kind" Type="nvarchar" MaxLength="500" />
+          <Property Name="name" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="partition" Type="nvarchar" MaxLength="500" />
+          <Property Name="fullPath" Type="nvarchar" MaxLength="500" />
+          <Property Name="generation" Type="bigint" />
+          <Property Name="selfLink" Type="nvarchar" MaxLength="500" />
+          <Property Name="defaultsFrom" Type="nvarchar" MaxLength="500" />
+          <Property Name="hashAlgorithm" Type="nvarchar" MaxLength="500" />
+          <Property Name="mapProxies" Type="nvarchar" MaxLength="500" />
+          <Property Name="mapProxyAddress" Type="nvarchar" MaxLength="500" />
+          <Property Name="mask" Type="nvarchar" MaxLength="500" />
+          <Property Name="matchAcrossPools" Type="nvarchar" MaxLength="500" />
+          <Property Name="matchAcrossServices" Type="nvarchar" MaxLength="500" />
+          <Property Name="matchAcrossVirtuals" Type="nvarchar" MaxLength="500" />
+          <Property Name="mirror" Type="nvarchar" MaxLength="500" />
+          <Property Name="overrideConnectionLimit" Type="nvarchar" MaxLength="500" />
+          <Property Name="timeout" Type="nvarchar" MaxLength="500" />
+          <Property Name="alwaysSend" Type="nvarchar" MaxLength="500" />
+          <Property Name="cookieEncryption" Type="nvarchar" MaxLength="500" />
+          <Property Name="cookieName" Type="nvarchar" MaxLength="500" />
+          <Property Name="expiration" Type="nvarchar" MaxLength="500" />
+          <Property Name="hashLength" Type="bigint" />
+          <Property Name="hashOffset" Type="bigint" />
+          <Property Name="method" Type="nvarchar" MaxLength="500" />
+          <Property Name="iRule" Type="nvarchar" MaxLength="500" />
+        </EntityType>
+        <EntityType Name="VIPPoliciesReference">
+          <Key>
+            <PropertyRef Name="guid" />
+          </Key>
+          <Property Name="guid" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="VIPGuid" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="vipName" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="f5HostName" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="link" Type="nvarchar" MaxLength="500" />
+          <Property Name="isSubcollection" Type="bit" />
+        </EntityType>
+        <EntityType Name="VipProfilesDetails">
+          <Key>
+            <PropertyRef Name="guid" />
+          </Key>
+          <Property Name="guid" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="jobguid" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="f5HostName" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="vipguid" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="kind" Type="nvarchar" MaxLength="500" />
+          <Property Name="name" Type="nvarchar" MaxLength="500" />
+          <Property Name="partition" Type="nvarchar" MaxLength="500" />
+          <Property Name="fullpath" Type="nvarchar" MaxLength="500" />
+          <Property Name="generation" Type="bigint" />
+          <Property Name="selfLink" Type="nvarchar" MaxLength="500" />
+          <Property Name="context" Type="nvarchar" MaxLength="500" />
+        </EntityType>
+        <EntityType Name="VIPProfilesReference">
+          <Key>
+            <PropertyRef Name="guid" />
+          </Key>
+          <Property Name="guid" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="jobguid" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="vipguid" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="vipName" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="f5HostName" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="link" Type="nvarchar" MaxLength="500" />
+          <Property Name="isSubcollection" Type="bit" />
+        </EntityType>
+        <EntityType Name="VIPStats">
+          <Key>
+            <PropertyRef Name="guid" />
+          </Key>
+          <Property Name="guid" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="jobguid" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="VIPGuid" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="f5HostName" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="VIPName" Type="nvarchar" MaxLength="100" />
+          <Property Name="ActualPvaAccel" Type="nvarchar" MaxLength="500" />
+          <Property Name="ClientsideBitsIn" Type="varchar" MaxLength="50" />
+          <Property Name="ClientsideBitsOut" Type="varchar" MaxLength="50" />
+          <Property Name="ClientsideCurConns" Type="varchar" MaxLength="50" />
+          <Property Name="ClientsideEvictedConns" Type="varchar" MaxLength="50" />
+          <Property Name="ClientsideMaxConns" Type="varchar" MaxLength="50" />
+          <Property Name="ClientsidePktsIn" Type="varchar" MaxLength="50" />
+          <Property Name="ClientsidePktsOut" Type="varchar" MaxLength="50" />
+          <Property Name="ClientsideSlowKilled" Type="varchar" MaxLength="50" />
+          <Property Name="ClientsideTotConns" Type="varchar" MaxLength="50" />
+          <Property Name="CmpEnableMode" Type="varchar" MaxLength="50" />
+          <Property Name="CmpEnabled" Type="nvarchar" MaxLength="500" />
+          <Property Name="CsMaxConnDur" Type="varchar" MaxLength="50" />
+          <Property Name="CsMeanConnDur" Type="varchar" MaxLength="50" />
+          <Property Name="CsMinConnDur" Type="varchar" MaxLength="50" />
+          <Property Name="Destination" Type="nvarchar" MaxLength="500" />
+          <Property Name="EphemeralBitsIn" Type="varchar" MaxLength="50" />
+          <Property Name="EphemeralBitsOut" Type="varchar" MaxLength="50" />
+          <Property Name="EphemeralCurConns" Type="varchar" MaxLength="50" />
+          <Property Name="EphemeralEvictedConns" Type="varchar" MaxLength="50" />
+          <Property Name="EphemeralMaxConns" Type="varchar" MaxLength="50" />
+          <Property Name="EphemeralPktsIn" Type="varchar" MaxLength="50" />
+          <Property Name="EphemeralPktsOut" Type="varchar" MaxLength="50" />
+          <Property Name="EphemeralSlowKilled" Type="varchar" MaxLength="50" />
+          <Property Name="EphemeralTotConns" Type="varchar" MaxLength="50" />
+          <Property Name="FiveMinAvgUsageRatio" Type="varchar" MaxLength="50" />
+          <Property Name="FiveSecAvgUsageRatio" Type="varchar" MaxLength="50" />
+          <Property Name="TmName" Type="nvarchar" MaxLength="500" />
+          <Property Name="OneMinAvgUsageRatio" Type="varchar" MaxLength="50" />
+          <Property Name="StatusAvailabilityState" Type="nvarchar" MaxLength="500" />
+          <Property Name="StatusEnabledState" Type="nvarchar" MaxLength="500" />
+          <Property Name="StatusStatusReason" Type="nvarchar" MaxLength="500" />
+          <Property Name="SyncookieStatus" Type="nvarchar" MaxLength="500" />
+          <Property Name="SyncookieAccepts" Type="varchar" MaxLength="50" />
+          <Property Name="SyncookieHwAccepts" Type="varchar" MaxLength="50" />
+          <Property Name="SyncookieHwSyncookies" Type="varchar" MaxLength="50" />
+          <Property Name="SyncookieHwsyncookieInstance" Type="varchar" MaxLength="50" />
+          <Property Name="SyncookieRejects" Type="varchar" MaxLength="50" />
+          <Property Name="SyncookieSwsyncookieInstance" Type="varchar" MaxLength="50" />
+          <Property Name="SyncookieSyncacheCurr" Type="varchar" MaxLength="50" />
+          <Property Name="SyncookieSyncacheOver" Type="varchar" MaxLength="50" />
+          <Property Name="SyncookieSyncookies" Type="varchar" MaxLength="50" />
+          <Property Name="TotRequests" Type="varchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="VLAN">
+          <Key>
+            <PropertyRef Name="guid" />
+          </Key>
+          <Property Name="guid" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="jobguid" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="f5Hostname" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="name" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="fullpath" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="autoLasthop" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="cmpHash" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="dagRoundRobin" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="dagTunnel" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="failsafe" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="failsafeAction" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="failsafeTimeout" Type="int" Nullable="false" />
+          <Property Name="ifIndex" Type="int" Nullable="false" />
+          <Property Name="learning" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="mtu" Type="int" Nullable="false" />
+          <Property Name="tag" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityContainer Name="f5dataModelStoreContainer">
+          <EntitySet Name="Apps" EntityType="Self.Apps" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Cert" EntityType="Self.Cert" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CertFile" EntityType="Self.CertFile" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Client" EntityType="Self.Client" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ClientSSL" EntityType="Self.ClientSSL" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ClientSSLCertKeyChain" EntityType="Self.ClientSSLCertKeyChain" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CustomOption" EntityType="Self.CustomOption" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="DeviceData" EntityType="Self.DeviceData" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Irule" EntityType="Self.Irule" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="IruleApiRawValues2" EntityType="Self.IruleApiRawValues2" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="JobLog" EntityType="Self.JobLog" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="JobLogTask" EntityType="Self.JobLogTask" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="MasterDeviceList" EntityType="Self.MasterDeviceList" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="MonitorHttp" EntityType="Self.MonitorHttp" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="NatTranslation" EntityType="Self.NatTranslation" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Node" EntityType="Self.Node" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="NodeFqdn" EntityType="Self.NodeFqdn" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Pool" EntityType="Self.Pool" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PoolMember" EntityType="Self.PoolMember" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PoolMembersReference" EntityType="Self.PoolMembersReference" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Routes" EntityType="Self.Routes" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SelfIP" EntityType="Self.SelfIP" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SNATPool" EntityType="Self.SNATPool" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="VIP" EntityType="Self.VIP" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="VipPersist" EntityType="Self.VipPersist" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="VIPPersistDetails" EntityType="Self.VIPPersistDetails" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="VIPPoliciesReference" EntityType="Self.VIPPoliciesReference" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="VipProfilesDetails" EntityType="Self.VipProfilesDetails" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="VIPProfilesReference" EntityType="Self.VIPProfilesReference" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="VIPStats" EntityType="Self.VIPStats" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="VLAN" EntityType="Self.VLAN" Schema="dbo" store:Type="Tables" />
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="f5dataModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityContainer Name="AppF5DataEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="Apps" EntityType="f5dataModel.App" />
+          <EntitySet Name="Certs" EntityType="f5dataModel.Cert" />
+          <EntitySet Name="CertFiles" EntityType="f5dataModel.CertFile" />
+          <EntitySet Name="Clients" EntityType="f5dataModel.Client" />
+          <EntitySet Name="ClientSSLs" EntityType="f5dataModel.ClientSSL" />
+          <EntitySet Name="ClientSSLCertKeyChains" EntityType="f5dataModel.ClientSSLCertKeyChain" />
+          <EntitySet Name="CustomOptions" EntityType="f5dataModel.CustomOption" />
+          <EntitySet Name="DeviceDatas" EntityType="f5dataModel.DeviceData" />
+          <EntitySet Name="Irules" EntityType="f5dataModel.Irule" />
+          <EntitySet Name="IruleApiRawValues2" EntityType="f5dataModel.IruleApiRawValues2" />
+          <EntitySet Name="JobLogs" EntityType="f5dataModel.JobLog" />
+          <EntitySet Name="JobLogTasks" EntityType="f5dataModel.JobLogTask" />
+          <EntitySet Name="MasterDeviceLists" EntityType="f5dataModel.MasterDeviceList" />
+          <EntitySet Name="MonitorHttps" EntityType="f5dataModel.MonitorHttp" />
+          <EntitySet Name="NatTranslations" EntityType="f5dataModel.NatTranslation" />
+          <EntitySet Name="Nodes" EntityType="f5dataModel.Node" />
+          <EntitySet Name="NodeFqdns" EntityType="f5dataModel.NodeFqdn" />
+          <EntitySet Name="Pools" EntityType="f5dataModel.Pool" />
+          <EntitySet Name="PoolMembers" EntityType="f5dataModel.PoolMember" />
+          <EntitySet Name="PoolMembersReferences" EntityType="f5dataModel.PoolMembersReference" />
+          <EntitySet Name="Routes" EntityType="f5dataModel.Route" />
+          <EntitySet Name="SelfIPs" EntityType="f5dataModel.SelfIP" />
+          <EntitySet Name="SNATPools" EntityType="f5dataModel.SNATPool" />
+          <EntitySet Name="VipPersists" EntityType="f5dataModel.VipPersist" />
+          <EntitySet Name="VIPPersistDetails" EntityType="f5dataModel.VIPPersistDetail" />
+          <EntitySet Name="VIPPoliciesReferences" EntityType="f5dataModel.VIPPoliciesReference" />
+          <EntitySet Name="VipProfilesDetails" EntityType="f5dataModel.VipProfilesDetail" />
+          <EntitySet Name="VIPProfilesReferences" EntityType="f5dataModel.VIPProfilesReference" />
+          <EntitySet Name="VIPStats" EntityType="f5dataModel.VIPStat" />
+          <EntitySet Name="VLANs" EntityType="f5dataModel.VLAN" />
+          <EntitySet Name="VIPs" EntityType="f5dataModel.VIP" />
+        </EntityContainer>
+        <EntityType Name="App">
+          <Key>
+            <PropertyRef Name="guid" />
+          </Key>
+          <Property Name="guid" Type="Guid" Nullable="false" />
+          <Property Name="HostName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Application" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="Cert">
+          <Key>
+            <PropertyRef Name="guid" />
+          </Key>
+          <Property Name="guid" Type="Guid" Nullable="false" />
+          <Property Name="jobguid" Type="Guid" />
+          <Property Name="f5HostName" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="kind" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="name" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="partition" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="fullPath" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="generation" Type="Int64" />
+          <Property Name="selfLink" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="certificateKeySize" Type="Int64" />
+          <Property Name="checksum" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="createTime" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="createdBy" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="expirationDate" Type="Int64" />
+          <Property Name="expirationString" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="isBundle" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="issuer" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="keyType" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="lastUpdateTime" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="mode" Type="Int64" />
+          <Property Name="revision" Type="Int64" />
+          <Property Name="serialNumber" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="size" Type="Int64" />
+          <Property Name="subject" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="updatedBy" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="version" Type="Int64" />
+        </EntityType>
+        <EntityType Name="CertFile">
+          <Key>
+            <PropertyRef Name="guid" />
+          </Key>
+          <Property Name="guid" Type="Guid" Nullable="false" />
+          <Property Name="jobguid" Type="Guid" Nullable="false" />
+          <Property Name="f5HostName" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="kind" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="name" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="partition" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="fullPath" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="generation" Type="Int64" />
+          <Property Name="selfLink" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="certificateKeyCurveName" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="certificateKeySize" Type="Int64" />
+          <Property Name="checksum" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="createTime" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="createdBy" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="expirationDate" Type="Int64" />
+          <Property Name="expiration" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="isBundle" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="issuer" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="keyType" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="lastUpdateTime" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="mode" Type="Int64" />
+          <Property Name="revision" Type="Int64" />
+          <Property Name="serialNumber" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="size" Type="Int64" />
+          <Property Name="subject" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="subjectAlternativeName" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="updatedBy" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="version" Type="Int64" />
+          <Property Name="systemPath" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="email" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="BundleCertificatesReferencelink" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="BundleCertificatesReferenceisSubcollection" Type="Boolean" />
+        </EntityType>
+        <EntityType Name="Client">
+          <Key>
+            <PropertyRef Name="ClientId" />
+          </Key>
+          <Property Name="ClientId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ClientName" Type="String" Nullable="false" MaxLength="300" FixedLength="false" Unicode="false" />
+          <Property Name="ChangeBy" Type="Int32" Nullable="false" />
+          <Property Name="ChangeDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="AddBy" Type="Int32" Nullable="false" />
+          <Property Name="AddDate" Type="DateTime" Nullable="false" Precision="3" />
+        </EntityType>
+        <EntityType Name="ClientSSL">
+          <Key>
+            <PropertyRef Name="guid" />
+          </Key>
+          <Property Name="guid" Type="Guid" Nullable="false" />
+          <Property Name="jobguid" Type="Guid" />
+          <Property Name="kind" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="f5HostName" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="name" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="partition" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="fullPath" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="generation" Type="Int64" />
+          <Property Name="selfLink" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="alertTimeout" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="allowNonSsl" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="authenticate" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="authenticateDepth" Type="Int64" />
+          <Property Name="cacheSize" Type="Int64" />
+          <Property Name="cacheTimeout" Type="Int64" />
+          <Property Name="cert" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="certExtensionIncludes" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="certLifespan" Type="Int64" />
+          <Property Name="certLookupByIpaddrPort" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="chain" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="ciphers" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="defaultsFrom" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="forwardProxyBypassDefaultAction" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="genericAlert" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="handshakeTimeout" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="inheritCertkeychain" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="key" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="maxRenegotiationsPerMinute" Type="Int64" />
+          <Property Name="modSslMethods" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="mode" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="tmOptions" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="peerCertMode" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="peerNoRenegotiateTimeout" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="proxySsl" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="proxySslPassthrough" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="renegotiateMaxRecordDelay" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="renegotiatePeriod" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="renegotiateSize" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="renegotiation" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="retainCertificate" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="secureRenegotiation" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="sessionMirroring" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="sessionTicket" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="sniDefault" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="sniRequire" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="sslForwardProxy" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="sslForwardProxyBypass" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="sslSignHash" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="strictResume" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="uncleanShutdown" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="certKeyChainGuid" Type="Guid" />
+        </EntityType>
+        <EntityType Name="ClientSSLCertKeyChain">
+          <Key>
+            <PropertyRef Name="guid" />
+          </Key>
+          <Property Name="guid" Type="Guid" Nullable="false" />
+          <Property Name="jobguid" Type="Guid" Nullable="false" />
+          <Property Name="f5hostname" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="CertGuid" Type="Guid" Nullable="false" />
+          <Property Name="name" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="cert" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="chain" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="key" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="CustomOption">
+          <Key>
+            <PropertyRef Name="CustomOptionId" />
+          </Key>
+          <Property Name="CustomOptionId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ColumnDefId" Type="Int32" Nullable="false" />
+          <Property Name="OptionText" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="OptionValue" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="DeviceData">
+          <Key>
+            <PropertyRef Name="guid" />
+          </Key>
+          <Property Name="guid" Type="Guid" Nullable="false" />
+          <Property Name="jobguid" Type="Guid" />
+          <Property Name="kind" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="name" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="partition" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="fullPath" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="generation" Type="Int64" />
+          <Property Name="selfLink" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="activeModules" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="baseMac" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="build" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="cert" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="chassisId" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="chassisType" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="configsyncIp" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="edition" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="failoverState" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="haCapacity" Type="Int64" />
+          <Property Name="hostname" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="devicekey" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="managementIp" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="marketingName" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="mirrorIp" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="mirrorSecondaryIp" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="multicastIp" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="multicastPort" Type="Int64" />
+          <Property Name="optionalModules" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="platformId" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="product" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="selfDevice" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="timeZone" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="version" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="unicastAddress" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="Irule">
+          <Key>
+            <PropertyRef Name="guid" />
+          </Key>
+          <Property Name="guid" Type="Guid" Nullable="false" />
+          <Property Name="jobguid" Type="Guid" />
+          <Property Name="f5HostName" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="kind" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="name" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="partition" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="fullpath" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="generation" Type="Int64" />
+          <Property Name="selfLink" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="apiAnonymous" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="apiRawValuesGuid" Type="Guid" />
+        </EntityType>
+        <EntityType Name="IruleApiRawValues2">
+          <Key>
+            <PropertyRef Name="guid" />
+          </Key>
+          <Property Name="guid" Type="Guid" Nullable="false" />
+          <Property Name="jobguid" Type="Guid" Nullable="false" />
+          <Property Name="iruleGuid" Type="Guid" Nullable="false" />
+          <Property Name="verificationStatus" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="JobLog">
+          <Key>
+            <PropertyRef Name="guid" />
+          </Key>
+          <Property Name="guid" Type="Guid" Nullable="false" />
+          <Property Name="jobname" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="startTime" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="endTime" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="Successful" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="JobLogTask">
+          <Key>
+            <PropertyRef Name="guid" />
+          </Key>
+          <Property Name="guid" Type="Guid" Nullable="false" />
+          <Property Name="JobTaskName" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Device" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="DeviceTask" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="StartTime" Type="DateTime" Precision="0" />
+          <Property Name="EndTime" Type="DateTime" Precision="0" />
+          <Property Name="Successful" Type="Boolean" Nullable="false" />
+          <Property Name="ParentJobGuid" Type="Guid" Nullable="false" />
+        </EntityType>
+        <EntityType Name="MasterDeviceList">
+          <Key>
+            <PropertyRef Name="guid" />
+          </Key>
+          <Property Name="guid" Type="Guid" Nullable="false" />
+          <Property Name="DeviceName" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="mgmtIP" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="active" Type="Boolean" Nullable="false" />
+        </EntityType>
+        <EntityType Name="MonitorHttp">
+          <Key>
+            <PropertyRef Name="guid" />
+          </Key>
+          <Property Name="guid" Type="Guid" Nullable="false" />
+          <Property Name="jobguid" Type="Guid" />
+          <Property Name="f5HostName" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="kind" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="name" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="partition" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="fullpath" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="generation" Type="Int64" />
+          <Property Name="selfLink" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="adaptive" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="adaptiveDivergenceType" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="adaptiveDivergenceValue" Type="Int64" />
+          <Property Name="adaptiveLimit" Type="Int64" />
+          <Property Name="adaptiveSamplingTimespan" Type="Int64" />
+          <Property Name="defaultsFrom" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="destination" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="interval" Type="Int64" />
+          <Property Name="ipDscp" Type="Int64" />
+          <Property Name="manualResume" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="recv" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="reverse" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="send" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="timeUntilUp" Type="Int64" />
+          <Property Name="timeout" Type="Int64" />
+          <Property Name="transparent" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="upInterval" Type="Int64" />
+        </EntityType>
+        <EntityType Name="NatTranslation">
+          <Key>
+            <PropertyRef Name="NatTranslationId" />
+          </Key>
+          <Property Name="NatTranslationId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="FirewallName" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="RuleName" Type="String" Nullable="false" MaxLength="250" FixedLength="false" Unicode="false" />
+          <Property Name="RuleSetName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="RuleId" Type="Int32" />
+          <Property Name="RuleMatchingPosition" Type="Int32" />
+          <Property Name="RuleFromContext" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="RuleFromContextName" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="RuleDestinationAddressPrefix" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="RuleDestinationPortLow" Type="Int32" />
+          <Property Name="RuleDestinationPortHigh" Type="Int32" />
+          <Property Name="RuleHostAddressPrefix" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="RuleHostPortLow" Type="Int32" />
+          <Property Name="RuleHostPortHigh" Type="Int32" />
+          <Property Name="RuleAddressNetmask" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="RuleHostRoutingInstance" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="RuleTranslationHits" Type="Int32" />
+          <Property Name="SuccHits" Type="Int32" />
+          <Property Name="FailedHits" Type="Int32" />
+          <Property Name="ConcurrentHits" Type="Int32" />
+          <Property Name="UploadFile" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="FileDate" Type="DateTime" Precision="0" />
+        </EntityType>
+        <EntityType Name="Node">
+          <Key>
+            <PropertyRef Name="guid" />
+          </Key>
+          <Property Name="guid" Type="Guid" Nullable="false" />
+          <Property Name="jobguid" Type="Guid" />
+          <Property Name="f5HostName" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="kind" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="partition" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="fullpath" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="generation" Type="Int64" />
+          <Property Name="selfLink" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="address" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="connectionLimit" Type="Int64" />
+          <Property Name="dynamicRatio" Type="Int64" />
+          <Property Name="ephemeral" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="fqdnGuid" Type="Guid" />
+          <Property Name="logging" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="monitor" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="rateLimit" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="ratio" Type="Int64" />
+          <Property Name="session" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="state" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="NodeFqdn">
+          <Key>
+            <PropertyRef Name="guid" />
+          </Key>
+          <Property Name="guid" Type="Guid" Nullable="false" />
+          <Property Name="jobguid" Type="Guid" Nullable="false" />
+          <Property Name="nodeguid" Type="Guid" Nullable="false" />
+          <Property Name="nodename" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="f5hostname" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="addressFamily" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="autopopulate" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="downInterval" Type="Int64" />
+          <Property Name="interval" Type="Int64" />
+        </EntityType>
+        <EntityType Name="Pool">
+          <Key>
+            <PropertyRef Name="guid" />
+          </Key>
+          <Property Name="guid" Type="Guid" Nullable="false" />
+          <Property Name="jobguid" Type="Guid" />
+          <Property Name="f5HostName" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="kind" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="name" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="partition" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="fullpath" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="generation" Type="Int64" />
+          <Property Name="selfLink" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="AllowNat" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="AllowSnat" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="ignorePersistedWeight" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="ipTosToClient" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="ipTosToServer" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="linkQosToClient" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="linkQosToServer" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="loadBalancingMode" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="minActiveMembers" Type="Int64" />
+          <Property Name="minUpMembers" Type="Int64" />
+          <Property Name="minUpMembersAction" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="minUpMembersChecking" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="monitor" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="queueDepthLimit" Type="Int64" />
+          <Property Name="queueOnConnectionLimit" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="queueTimeLimit" Type="Int64" />
+          <Property Name="reselectTries" Type="Int64" />
+          <Property Name="serviceDownAction" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="slowRampTime" Type="Int64" />
+          <Property Name="membersReferenceGuid" Type="Guid" />
+        </EntityType>
+        <EntityType Name="PoolMember">
+          <Key>
+            <PropertyRef Name="guid" />
+          </Key>
+          <Property Name="guid" Type="Guid" Nullable="false" />
+          <Property Name="jobguid" Type="Guid" Nullable="false" />
+          <Property Name="f5HostName" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="PoolGuid" Type="Guid" Nullable="false" />
+          <Property Name="kind" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="partition" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="fullpath" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="generation" Type="Int64" />
+          <Property Name="selfLink" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="address" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="connectionLimit" Type="Int64" />
+          <Property Name="dynamicRatio" Type="Int64" />
+          <Property Name="ephemeral" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="fqdnGuid" Type="Guid" />
+          <Property Name="logging" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="monitor" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="rateLimit" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="ratio" Type="Int64" />
+          <Property Name="session" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="state" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="PoolMembersReference">
+          <Key>
+            <PropertyRef Name="guid" />
+          </Key>
+          <Property Name="guid" Type="Guid" Nullable="false" />
+          <Property Name="jobguid" Type="Guid" Nullable="false" />
+          <Property Name="f5HostName" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="PoolGuid" Type="Guid" Nullable="false" />
+          <Property Name="poolName" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="link" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="isSubcollection" Type="Boolean" />
+        </EntityType>
+        <EntityType Name="Route">
+          <Key>
+            <PropertyRef Name="guid" />
+          </Key>
+          <Property Name="guid" Type="Guid" Nullable="false" />
+          <Property Name="jobguid" Type="Guid" Nullable="false" />
+          <Property Name="f5Hostname" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="fullpath" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="gw" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="mtu" Type="Int32" Nullable="false" />
+          <Property Name="network" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="SelfIP">
+          <Key>
+            <PropertyRef Name="guid" />
+          </Key>
+          <Property Name="guid" Type="Guid" Nullable="false" />
+          <Property Name="jobguid" Type="Guid" Nullable="false" />
+          <Property Name="f5HostName" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="kind" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="name" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="partition" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="fullPath" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="generation" Type="Int64" />
+          <Property Name="selfLink" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="address" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="floating" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="inheritedTrafficGroup" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="trafficGroup" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="unit" Type="Int64" />
+          <Property Name="vlan" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="allowService" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="SNATPool">
+          <Key>
+            <PropertyRef Name="guid" />
+          </Key>
+          <Property Name="guid" Type="Guid" Nullable="false" />
+          <Property Name="jobguid" Type="Guid" Nullable="false" />
+          <Property Name="f5HostName" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="kind" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="name" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="partition" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="fullpath" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="generation" Type="Int64" />
+          <Property Name="selfLink" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="members" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="VipPersist">
+          <Key>
+            <PropertyRef Name="guid" />
+          </Key>
+          <Property Name="guid" Type="Guid" Nullable="false" />
+          <Property Name="jobguid" Type="Guid" Nullable="false" />
+          <Property Name="VIPguid" Type="Guid" Nullable="false" />
+          <Property Name="f5HostName" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="vipName" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="name" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="partition" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="tmDefault" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="VIPPersistDetail">
+          <Key>
+            <PropertyRef Name="guid" />
+          </Key>
+          <Property Name="guid" Type="Guid" Nullable="false" />
+          <Property Name="jobguid" Type="Guid" Nullable="false" />
+          <Property Name="f5hostname" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="persistType" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="kind" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="name" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="partition" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="fullPath" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="generation" Type="Int64" />
+          <Property Name="selfLink" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="defaultsFrom" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="hashAlgorithm" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="mapProxies" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="mapProxyAddress" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="mask" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="matchAcrossPools" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="matchAcrossServices" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="matchAcrossVirtuals" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="mirror" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="overrideConnectionLimit" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="timeout" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="alwaysSend" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="cookieEncryption" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="cookieName" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="expiration" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="hashLength" Type="Int64" />
+          <Property Name="hashOffset" Type="Int64" />
+          <Property Name="method" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="iRule" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="VIPPoliciesReference">
+          <Key>
+            <PropertyRef Name="guid" />
+          </Key>
+          <Property Name="guid" Type="Guid" Nullable="false" />
+          <Property Name="VIPGuid" Type="Guid" Nullable="false" />
+          <Property Name="vipName" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="f5HostName" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="link" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="isSubcollection" Type="Boolean" />
+        </EntityType>
+        <EntityType Name="VipProfilesDetail">
+          <Key>
+            <PropertyRef Name="guid" />
+          </Key>
+          <Property Name="guid" Type="Guid" Nullable="false" />
+          <Property Name="jobguid" Type="Guid" Nullable="false" />
+          <Property Name="f5HostName" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="vipguid" Type="Guid" Nullable="false" />
+          <Property Name="kind" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="name" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="partition" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="fullpath" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="generation" Type="Int64" />
+          <Property Name="selfLink" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="context" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="VIPProfilesReference">
+          <Key>
+            <PropertyRef Name="guid" />
+          </Key>
+          <Property Name="guid" Type="Guid" Nullable="false" />
+          <Property Name="jobguid" Type="Guid" Nullable="false" />
+          <Property Name="vipguid" Type="Guid" Nullable="false" />
+          <Property Name="vipName" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="f5HostName" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="link" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="isSubcollection" Type="Boolean" />
+        </EntityType>
+        <EntityType Name="VIPStat">
+          <Key>
+            <PropertyRef Name="guid" />
+          </Key>
+          <Property Name="guid" Type="Guid" Nullable="false" />
+          <Property Name="jobguid" Type="Guid" Nullable="false" />
+          <Property Name="VIPGuid" Type="Guid" Nullable="false" />
+          <Property Name="f5HostName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="VIPName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="ActualPvaAccel" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="ClientsideBitsIn" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="ClientsideBitsOut" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="ClientsideCurConns" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="ClientsideEvictedConns" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="ClientsideMaxConns" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="ClientsidePktsIn" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="ClientsidePktsOut" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="ClientsideSlowKilled" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="ClientsideTotConns" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="CmpEnableMode" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="CmpEnabled" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="CsMaxConnDur" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="CsMeanConnDur" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="CsMinConnDur" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Destination" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="EphemeralBitsIn" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="EphemeralBitsOut" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="EphemeralCurConns" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="EphemeralEvictedConns" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="EphemeralMaxConns" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="EphemeralPktsIn" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="EphemeralPktsOut" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="EphemeralSlowKilled" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="EphemeralTotConns" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="FiveMinAvgUsageRatio" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="FiveSecAvgUsageRatio" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="TmName" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="OneMinAvgUsageRatio" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="StatusAvailabilityState" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="StatusEnabledState" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="StatusStatusReason" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="SyncookieStatus" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="SyncookieAccepts" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="SyncookieHwAccepts" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="SyncookieHwSyncookies" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="SyncookieHwsyncookieInstance" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="SyncookieRejects" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="SyncookieSwsyncookieInstance" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="SyncookieSyncacheCurr" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="SyncookieSyncacheOver" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="SyncookieSyncookies" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="TotRequests" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="VLAN">
+          <Key>
+            <PropertyRef Name="guid" />
+          </Key>
+          <Property Name="guid" Type="Guid" Nullable="false" />
+          <Property Name="jobguid" Type="Guid" Nullable="false" />
+          <Property Name="f5Hostname" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="fullpath" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="autoLasthop" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="cmpHash" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="dagRoundRobin" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="dagTunnel" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="failsafe" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="failsafeAction" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="failsafeTimeout" Type="Int32" Nullable="false" />
+          <Property Name="ifIndex" Type="Int32" Nullable="false" />
+          <Property Name="learning" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="mtu" Type="Int32" Nullable="false" />
+          <Property Name="tag" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="VIP">
+          <Key>
+            <PropertyRef Name="guid" />
+          </Key>
+          <Property Name="guid" Type="Guid" Nullable="false" />
+          <Property Name="jobguid" Type="Guid" />
+          <Property Name="f5HostName" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="kind" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="name" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="partition" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="fullPath" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="generation" Type="Int64" />
+          <Property Name="selfLink" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="addressStatus" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="autoLasthop" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="cmpEnabled" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="connectionLimit" Type="Int64" />
+          <Property Name="destination" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="enabled" Type="Boolean" />
+          <Property Name="gtmScore" Type="Int64" />
+          <Property Name="ipProtocol" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="mask" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="mirror" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="mobileAppTunnel" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="nat64" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="pool" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="rateLimit" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="rateLimitDstMask" Type="Int64" />
+          <Property Name="rateLimitMode" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="rateLimitSrcMask" Type="Int64" />
+          <Property Name="source" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="sourceAddressTranslationType" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="sourceAddressTranslationPool" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="sourcePort" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="synCookieStatusnv" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="translateAddress" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="translatePort" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="vlansDisabled" Type="Boolean" />
+          <Property Name="vsIndex" Type="Int64" />
+          <Property Name="policiesReferenceGuid" Type="Guid" />
+          <Property Name="profilesReferenceGuid" Type="Guid" />
+          <Property Name="persistGuid" Type="Guid" />
+          <Property Name="rules" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="description" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="vlansEnabled" Type="Boolean" />
+          <Property Name="vlans" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="disabled" Type="Boolean" />
+          <Property Name="PoolName" Type="String" MaxLength="250" FixedLength="false" Unicode="false" annotation:StoreGeneratedPattern="Computed" />
+          <Property Name="PoolMonitor" Type="String" MaxLength="250" FixedLength="false" Unicode="false" annotation:StoreGeneratedPattern="Computed" />
+          <Property Name="PoolLoadBalancingMode" Type="String" MaxLength="250" FixedLength="false" Unicode="false" annotation:StoreGeneratedPattern="Computed" />
+          <Property Name="StatusAvailabilityState" Type="String" MaxLength="250" FixedLength="false" Unicode="false" annotation:StoreGeneratedPattern="Computed" />
+          <Property Name="PersistName" Type="String" MaxLength="250" FixedLength="false" Unicode="false" annotation:StoreGeneratedPattern="Computed" />
+          <Property Name="PersistType" Type="String" MaxLength="250" FixedLength="false" Unicode="false" annotation:StoreGeneratedPattern="Computed" />
+          <Property Name="PersistTimeOut" Type="String" MaxLength="250" FixedLength="false" Unicode="false" annotation:StoreGeneratedPattern="Computed" />
+          <Property Name="CertName" Type="String" MaxLength="250" FixedLength="false" Unicode="false" annotation:StoreGeneratedPattern="Computed" />
+          <Property Name="CertChain" Type="String" MaxLength="250" FixedLength="false" Unicode="false" annotation:StoreGeneratedPattern="Computed" />
+          <Property Name="CertKey" Type="String" MaxLength="250" FixedLength="false" Unicode="false" annotation:StoreGeneratedPattern="Computed" />
+          <Property Name="PoolGuid" Type="String" MaxLength="250" FixedLength="false" Unicode="false" annotation:StoreGeneratedPattern="Computed" />
+        </EntityType>
+        </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="f5dataModelStoreContainer" CdmEntityContainer="AppF5DataEntities">
+          <EntitySetMapping Name="Apps">
+            <EntityTypeMapping TypeName="f5dataModel.App">
+              <MappingFragment StoreEntitySet="Apps">
+                <ScalarProperty Name="Application" ColumnName="Application" />
+                <ScalarProperty Name="HostName" ColumnName="HostName" />
+                <ScalarProperty Name="guid" ColumnName="guid" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Certs">
+            <EntityTypeMapping TypeName="f5dataModel.Cert">
+              <MappingFragment StoreEntitySet="Cert">
+                <ScalarProperty Name="version" ColumnName="version" />
+                <ScalarProperty Name="updatedBy" ColumnName="updatedBy" />
+                <ScalarProperty Name="subject" ColumnName="subject" />
+                <ScalarProperty Name="size" ColumnName="size" />
+                <ScalarProperty Name="serialNumber" ColumnName="serialNumber" />
+                <ScalarProperty Name="revision" ColumnName="revision" />
+                <ScalarProperty Name="mode" ColumnName="mode" />
+                <ScalarProperty Name="lastUpdateTime" ColumnName="lastUpdateTime" />
+                <ScalarProperty Name="keyType" ColumnName="keyType" />
+                <ScalarProperty Name="issuer" ColumnName="issuer" />
+                <ScalarProperty Name="isBundle" ColumnName="isBundle" />
+                <ScalarProperty Name="expirationString" ColumnName="expirationString" />
+                <ScalarProperty Name="expirationDate" ColumnName="expirationDate" />
+                <ScalarProperty Name="createdBy" ColumnName="createdBy" />
+                <ScalarProperty Name="createTime" ColumnName="createTime" />
+                <ScalarProperty Name="checksum" ColumnName="checksum" />
+                <ScalarProperty Name="certificateKeySize" ColumnName="certificateKeySize" />
+                <ScalarProperty Name="selfLink" ColumnName="selfLink" />
+                <ScalarProperty Name="generation" ColumnName="generation" />
+                <ScalarProperty Name="fullPath" ColumnName="fullPath" />
+                <ScalarProperty Name="partition" ColumnName="partition" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="kind" ColumnName="kind" />
+                <ScalarProperty Name="f5HostName" ColumnName="f5HostName" />
+                <ScalarProperty Name="jobguid" ColumnName="jobguid" />
+                <ScalarProperty Name="guid" ColumnName="guid" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CertFiles">
+            <EntityTypeMapping TypeName="f5dataModel.CertFile">
+              <MappingFragment StoreEntitySet="CertFile">
+                <ScalarProperty Name="BundleCertificatesReferenceisSubcollection" ColumnName="BundleCertificatesReferenceisSubcollection" />
+                <ScalarProperty Name="BundleCertificatesReferencelink" ColumnName="BundleCertificatesReferencelink" />
+                <ScalarProperty Name="email" ColumnName="email" />
+                <ScalarProperty Name="systemPath" ColumnName="systemPath" />
+                <ScalarProperty Name="version" ColumnName="version" />
+                <ScalarProperty Name="updatedBy" ColumnName="updatedBy" />
+                <ScalarProperty Name="subjectAlternativeName" ColumnName="subjectAlternativeName" />
+                <ScalarProperty Name="subject" ColumnName="subject" />
+                <ScalarProperty Name="size" ColumnName="size" />
+                <ScalarProperty Name="serialNumber" ColumnName="serialNumber" />
+                <ScalarProperty Name="revision" ColumnName="revision" />
+                <ScalarProperty Name="mode" ColumnName="mode" />
+                <ScalarProperty Name="lastUpdateTime" ColumnName="lastUpdateTime" />
+                <ScalarProperty Name="keyType" ColumnName="keyType" />
+                <ScalarProperty Name="issuer" ColumnName="issuer" />
+                <ScalarProperty Name="isBundle" ColumnName="isBundle" />
+                <ScalarProperty Name="expiration" ColumnName="expiration" />
+                <ScalarProperty Name="expirationDate" ColumnName="expirationDate" />
+                <ScalarProperty Name="createdBy" ColumnName="createdBy" />
+                <ScalarProperty Name="createTime" ColumnName="createTime" />
+                <ScalarProperty Name="checksum" ColumnName="checksum" />
+                <ScalarProperty Name="certificateKeySize" ColumnName="certificateKeySize" />
+                <ScalarProperty Name="certificateKeyCurveName" ColumnName="certificateKeyCurveName" />
+                <ScalarProperty Name="selfLink" ColumnName="selfLink" />
+                <ScalarProperty Name="generation" ColumnName="generation" />
+                <ScalarProperty Name="fullPath" ColumnName="fullPath" />
+                <ScalarProperty Name="partition" ColumnName="partition" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="kind" ColumnName="kind" />
+                <ScalarProperty Name="f5HostName" ColumnName="f5HostName" />
+                <ScalarProperty Name="jobguid" ColumnName="jobguid" />
+                <ScalarProperty Name="guid" ColumnName="guid" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Clients">
+            <EntityTypeMapping TypeName="f5dataModel.Client">
+              <MappingFragment StoreEntitySet="Client">
+                <ScalarProperty Name="AddDate" ColumnName="AddDate" />
+                <ScalarProperty Name="AddBy" ColumnName="AddBy" />
+                <ScalarProperty Name="ChangeDate" ColumnName="ChangeDate" />
+                <ScalarProperty Name="ChangeBy" ColumnName="ChangeBy" />
+                <ScalarProperty Name="ClientName" ColumnName="ClientName" />
+                <ScalarProperty Name="ClientId" ColumnName="ClientId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ClientSSLs">
+            <EntityTypeMapping TypeName="f5dataModel.ClientSSL">
+              <MappingFragment StoreEntitySet="ClientSSL">
+                <ScalarProperty Name="certKeyChainGuid" ColumnName="certKeyChainGuid" />
+                <ScalarProperty Name="uncleanShutdown" ColumnName="uncleanShutdown" />
+                <ScalarProperty Name="strictResume" ColumnName="strictResume" />
+                <ScalarProperty Name="sslSignHash" ColumnName="sslSignHash" />
+                <ScalarProperty Name="sslForwardProxyBypass" ColumnName="sslForwardProxyBypass" />
+                <ScalarProperty Name="sslForwardProxy" ColumnName="sslForwardProxy" />
+                <ScalarProperty Name="sniRequire" ColumnName="sniRequire" />
+                <ScalarProperty Name="sniDefault" ColumnName="sniDefault" />
+                <ScalarProperty Name="sessionTicket" ColumnName="sessionTicket" />
+                <ScalarProperty Name="sessionMirroring" ColumnName="sessionMirroring" />
+                <ScalarProperty Name="secureRenegotiation" ColumnName="secureRenegotiation" />
+                <ScalarProperty Name="retainCertificate" ColumnName="retainCertificate" />
+                <ScalarProperty Name="renegotiation" ColumnName="renegotiation" />
+                <ScalarProperty Name="renegotiateSize" ColumnName="renegotiateSize" />
+                <ScalarProperty Name="renegotiatePeriod" ColumnName="renegotiatePeriod" />
+                <ScalarProperty Name="renegotiateMaxRecordDelay" ColumnName="renegotiateMaxRecordDelay" />
+                <ScalarProperty Name="proxySslPassthrough" ColumnName="proxySslPassthrough" />
+                <ScalarProperty Name="proxySsl" ColumnName="proxySsl" />
+                <ScalarProperty Name="peerNoRenegotiateTimeout" ColumnName="peerNoRenegotiateTimeout" />
+                <ScalarProperty Name="peerCertMode" ColumnName="peerCertMode" />
+                <ScalarProperty Name="tmOptions" ColumnName="tmOptions" />
+                <ScalarProperty Name="mode" ColumnName="mode" />
+                <ScalarProperty Name="modSslMethods" ColumnName="modSslMethods" />
+                <ScalarProperty Name="maxRenegotiationsPerMinute" ColumnName="maxRenegotiationsPerMinute" />
+                <ScalarProperty Name="key" ColumnName="key" />
+                <ScalarProperty Name="inheritCertkeychain" ColumnName="inheritCertkeychain" />
+                <ScalarProperty Name="handshakeTimeout" ColumnName="handshakeTimeout" />
+                <ScalarProperty Name="genericAlert" ColumnName="genericAlert" />
+                <ScalarProperty Name="forwardProxyBypassDefaultAction" ColumnName="forwardProxyBypassDefaultAction" />
+                <ScalarProperty Name="defaultsFrom" ColumnName="defaultsFrom" />
+                <ScalarProperty Name="ciphers" ColumnName="ciphers" />
+                <ScalarProperty Name="chain" ColumnName="chain" />
+                <ScalarProperty Name="certLookupByIpaddrPort" ColumnName="certLookupByIpaddrPort" />
+                <ScalarProperty Name="certLifespan" ColumnName="certLifespan" />
+                <ScalarProperty Name="certExtensionIncludes" ColumnName="certExtensionIncludes" />
+                <ScalarProperty Name="cert" ColumnName="cert" />
+                <ScalarProperty Name="cacheTimeout" ColumnName="cacheTimeout" />
+                <ScalarProperty Name="cacheSize" ColumnName="cacheSize" />
+                <ScalarProperty Name="authenticateDepth" ColumnName="authenticateDepth" />
+                <ScalarProperty Name="authenticate" ColumnName="authenticate" />
+                <ScalarProperty Name="allowNonSsl" ColumnName="allowNonSsl" />
+                <ScalarProperty Name="alertTimeout" ColumnName="alertTimeout" />
+                <ScalarProperty Name="selfLink" ColumnName="selfLink" />
+                <ScalarProperty Name="generation" ColumnName="generation" />
+                <ScalarProperty Name="fullPath" ColumnName="fullPath" />
+                <ScalarProperty Name="partition" ColumnName="partition" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="f5HostName" ColumnName="f5HostName" />
+                <ScalarProperty Name="kind" ColumnName="kind" />
+                <ScalarProperty Name="jobguid" ColumnName="jobguid" />
+                <ScalarProperty Name="guid" ColumnName="guid" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ClientSSLCertKeyChains">
+            <EntityTypeMapping TypeName="f5dataModel.ClientSSLCertKeyChain">
+              <MappingFragment StoreEntitySet="ClientSSLCertKeyChain">
+                <ScalarProperty Name="key" ColumnName="key" />
+                <ScalarProperty Name="chain" ColumnName="chain" />
+                <ScalarProperty Name="cert" ColumnName="cert" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="CertGuid" ColumnName="CertGuid" />
+                <ScalarProperty Name="f5hostname" ColumnName="f5hostname" />
+                <ScalarProperty Name="jobguid" ColumnName="jobguid" />
+                <ScalarProperty Name="guid" ColumnName="guid" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CustomOptions">
+            <EntityTypeMapping TypeName="f5dataModel.CustomOption">
+              <MappingFragment StoreEntitySet="CustomOption">
+                <ScalarProperty Name="OptionValue" ColumnName="OptionValue" />
+                <ScalarProperty Name="OptionText" ColumnName="OptionText" />
+                <ScalarProperty Name="ColumnDefId" ColumnName="ColumnDefId" />
+                <ScalarProperty Name="CustomOptionId" ColumnName="CustomOptionId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="DeviceDatas">
+            <EntityTypeMapping TypeName="f5dataModel.DeviceData">
+              <MappingFragment StoreEntitySet="DeviceData">
+                <ScalarProperty Name="unicastAddress" ColumnName="unicastAddress" />
+                <ScalarProperty Name="version" ColumnName="version" />
+                <ScalarProperty Name="timeZone" ColumnName="timeZone" />
+                <ScalarProperty Name="selfDevice" ColumnName="selfDevice" />
+                <ScalarProperty Name="product" ColumnName="product" />
+                <ScalarProperty Name="platformId" ColumnName="platformId" />
+                <ScalarProperty Name="optionalModules" ColumnName="optionalModules" />
+                <ScalarProperty Name="multicastPort" ColumnName="multicastPort" />
+                <ScalarProperty Name="multicastIp" ColumnName="multicastIp" />
+                <ScalarProperty Name="mirrorSecondaryIp" ColumnName="mirrorSecondaryIp" />
+                <ScalarProperty Name="mirrorIp" ColumnName="mirrorIp" />
+                <ScalarProperty Name="marketingName" ColumnName="marketingName" />
+                <ScalarProperty Name="managementIp" ColumnName="managementIp" />
+                <ScalarProperty Name="devicekey" ColumnName="devicekey" />
+                <ScalarProperty Name="hostname" ColumnName="hostname" />
+                <ScalarProperty Name="haCapacity" ColumnName="haCapacity" />
+                <ScalarProperty Name="failoverState" ColumnName="failoverState" />
+                <ScalarProperty Name="edition" ColumnName="edition" />
+                <ScalarProperty Name="configsyncIp" ColumnName="configsyncIp" />
+                <ScalarProperty Name="chassisType" ColumnName="chassisType" />
+                <ScalarProperty Name="chassisId" ColumnName="chassisId" />
+                <ScalarProperty Name="cert" ColumnName="cert" />
+                <ScalarProperty Name="build" ColumnName="build" />
+                <ScalarProperty Name="baseMac" ColumnName="baseMac" />
+                <ScalarProperty Name="activeModules" ColumnName="activeModules" />
+                <ScalarProperty Name="selfLink" ColumnName="selfLink" />
+                <ScalarProperty Name="generation" ColumnName="generation" />
+                <ScalarProperty Name="fullPath" ColumnName="fullPath" />
+                <ScalarProperty Name="partition" ColumnName="partition" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="kind" ColumnName="kind" />
+                <ScalarProperty Name="jobguid" ColumnName="jobguid" />
+                <ScalarProperty Name="guid" ColumnName="guid" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Irules">
+            <EntityTypeMapping TypeName="f5dataModel.Irule">
+              <MappingFragment StoreEntitySet="Irule">
+                <ScalarProperty Name="apiRawValuesGuid" ColumnName="apiRawValuesGuid" />
+                <ScalarProperty Name="apiAnonymous" ColumnName="apiAnonymous" />
+                <ScalarProperty Name="selfLink" ColumnName="selfLink" />
+                <ScalarProperty Name="generation" ColumnName="generation" />
+                <ScalarProperty Name="fullpath" ColumnName="fullpath" />
+                <ScalarProperty Name="partition" ColumnName="partition" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="kind" ColumnName="kind" />
+                <ScalarProperty Name="f5HostName" ColumnName="f5HostName" />
+                <ScalarProperty Name="jobguid" ColumnName="jobguid" />
+                <ScalarProperty Name="guid" ColumnName="guid" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="IruleApiRawValues2">
+            <EntityTypeMapping TypeName="f5dataModel.IruleApiRawValues2">
+              <MappingFragment StoreEntitySet="IruleApiRawValues2">
+                <ScalarProperty Name="verificationStatus" ColumnName="verificationStatus" />
+                <ScalarProperty Name="iruleGuid" ColumnName="iruleGuid" />
+                <ScalarProperty Name="jobguid" ColumnName="jobguid" />
+                <ScalarProperty Name="guid" ColumnName="guid" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="JobLogs">
+            <EntityTypeMapping TypeName="f5dataModel.JobLog">
+              <MappingFragment StoreEntitySet="JobLog">
+                <ScalarProperty Name="Successful" ColumnName="Successful" />
+                <ScalarProperty Name="endTime" ColumnName="endTime" />
+                <ScalarProperty Name="startTime" ColumnName="startTime" />
+                <ScalarProperty Name="jobname" ColumnName="jobname" />
+                <ScalarProperty Name="guid" ColumnName="guid" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="JobLogTasks">
+            <EntityTypeMapping TypeName="f5dataModel.JobLogTask">
+              <MappingFragment StoreEntitySet="JobLogTask">
+                <ScalarProperty Name="ParentJobGuid" ColumnName="ParentJobGuid" />
+                <ScalarProperty Name="Successful" ColumnName="Successful" />
+                <ScalarProperty Name="EndTime" ColumnName="EndTime" />
+                <ScalarProperty Name="StartTime" ColumnName="StartTime" />
+                <ScalarProperty Name="DeviceTask" ColumnName="DeviceTask" />
+                <ScalarProperty Name="Device" ColumnName="Device" />
+                <ScalarProperty Name="JobTaskName" ColumnName="JobTaskName" />
+                <ScalarProperty Name="guid" ColumnName="guid" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="MasterDeviceLists">
+            <EntityTypeMapping TypeName="f5dataModel.MasterDeviceList">
+              <MappingFragment StoreEntitySet="MasterDeviceList">
+                <ScalarProperty Name="active" ColumnName="active" />
+                <ScalarProperty Name="mgmtIP" ColumnName="mgmtIP" />
+                <ScalarProperty Name="DeviceName" ColumnName="DeviceName" />
+                <ScalarProperty Name="guid" ColumnName="guid" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="MonitorHttps">
+            <EntityTypeMapping TypeName="f5dataModel.MonitorHttp">
+              <MappingFragment StoreEntitySet="MonitorHttp">
+                <ScalarProperty Name="upInterval" ColumnName="upInterval" />
+                <ScalarProperty Name="transparent" ColumnName="transparent" />
+                <ScalarProperty Name="timeout" ColumnName="timeout" />
+                <ScalarProperty Name="timeUntilUp" ColumnName="timeUntilUp" />
+                <ScalarProperty Name="send" ColumnName="send" />
+                <ScalarProperty Name="reverse" ColumnName="reverse" />
+                <ScalarProperty Name="recv" ColumnName="recv" />
+                <ScalarProperty Name="manualResume" ColumnName="manualResume" />
+                <ScalarProperty Name="ipDscp" ColumnName="ipDscp" />
+                <ScalarProperty Name="interval" ColumnName="interval" />
+                <ScalarProperty Name="destination" ColumnName="destination" />
+                <ScalarProperty Name="defaultsFrom" ColumnName="defaultsFrom" />
+                <ScalarProperty Name="adaptiveSamplingTimespan" ColumnName="adaptiveSamplingTimespan" />
+                <ScalarProperty Name="adaptiveLimit" ColumnName="adaptiveLimit" />
+                <ScalarProperty Name="adaptiveDivergenceValue" ColumnName="adaptiveDivergenceValue" />
+                <ScalarProperty Name="adaptiveDivergenceType" ColumnName="adaptiveDivergenceType" />
+                <ScalarProperty Name="adaptive" ColumnName="adaptive" />
+                <ScalarProperty Name="selfLink" ColumnName="selfLink" />
+                <ScalarProperty Name="generation" ColumnName="generation" />
+                <ScalarProperty Name="fullpath" ColumnName="fullpath" />
+                <ScalarProperty Name="partition" ColumnName="partition" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="kind" ColumnName="kind" />
+                <ScalarProperty Name="f5HostName" ColumnName="f5HostName" />
+                <ScalarProperty Name="jobguid" ColumnName="jobguid" />
+                <ScalarProperty Name="guid" ColumnName="guid" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="NatTranslations">
+            <EntityTypeMapping TypeName="f5dataModel.NatTranslation">
+              <MappingFragment StoreEntitySet="NatTranslation">
+                <ScalarProperty Name="FileDate" ColumnName="FileDate" />
+                <ScalarProperty Name="UploadFile" ColumnName="UploadFile" />
+                <ScalarProperty Name="ConcurrentHits" ColumnName="ConcurrentHits" />
+                <ScalarProperty Name="FailedHits" ColumnName="FailedHits" />
+                <ScalarProperty Name="SuccHits" ColumnName="SuccHits" />
+                <ScalarProperty Name="RuleTranslationHits" ColumnName="RuleTranslationHits" />
+                <ScalarProperty Name="RuleHostRoutingInstance" ColumnName="RuleHostRoutingInstance" />
+                <ScalarProperty Name="RuleAddressNetmask" ColumnName="RuleAddressNetmask" />
+                <ScalarProperty Name="RuleHostPortHigh" ColumnName="RuleHostPortHigh" />
+                <ScalarProperty Name="RuleHostPortLow" ColumnName="RuleHostPortLow" />
+                <ScalarProperty Name="RuleHostAddressPrefix" ColumnName="RuleHostAddressPrefix" />
+                <ScalarProperty Name="RuleDestinationPortHigh" ColumnName="RuleDestinationPortHigh" />
+                <ScalarProperty Name="RuleDestinationPortLow" ColumnName="RuleDestinationPortLow" />
+                <ScalarProperty Name="RuleDestinationAddressPrefix" ColumnName="RuleDestinationAddressPrefix" />
+                <ScalarProperty Name="RuleFromContextName" ColumnName="RuleFromContextName" />
+                <ScalarProperty Name="RuleFromContext" ColumnName="RuleFromContext" />
+                <ScalarProperty Name="RuleMatchingPosition" ColumnName="RuleMatchingPosition" />
+                <ScalarProperty Name="RuleId" ColumnName="RuleId" />
+                <ScalarProperty Name="RuleSetName" ColumnName="RuleSetName" />
+                <ScalarProperty Name="RuleName" ColumnName="RuleName" />
+                <ScalarProperty Name="FirewallName" ColumnName="FirewallName" />
+                <ScalarProperty Name="NatTranslationId" ColumnName="NatTranslationId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Nodes">
+            <EntityTypeMapping TypeName="f5dataModel.Node">
+              <MappingFragment StoreEntitySet="Node">
+                <ScalarProperty Name="state" ColumnName="state" />
+                <ScalarProperty Name="session" ColumnName="session" />
+                <ScalarProperty Name="ratio" ColumnName="ratio" />
+                <ScalarProperty Name="rateLimit" ColumnName="rateLimit" />
+                <ScalarProperty Name="monitor" ColumnName="monitor" />
+                <ScalarProperty Name="logging" ColumnName="logging" />
+                <ScalarProperty Name="fqdnGuid" ColumnName="fqdnGuid" />
+                <ScalarProperty Name="ephemeral" ColumnName="ephemeral" />
+                <ScalarProperty Name="dynamicRatio" ColumnName="dynamicRatio" />
+                <ScalarProperty Name="connectionLimit" ColumnName="connectionLimit" />
+                <ScalarProperty Name="address" ColumnName="address" />
+                <ScalarProperty Name="selfLink" ColumnName="selfLink" />
+                <ScalarProperty Name="generation" ColumnName="generation" />
+                <ScalarProperty Name="fullpath" ColumnName="fullpath" />
+                <ScalarProperty Name="partition" ColumnName="partition" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="kind" ColumnName="kind" />
+                <ScalarProperty Name="f5HostName" ColumnName="f5HostName" />
+                <ScalarProperty Name="jobguid" ColumnName="jobguid" />
+                <ScalarProperty Name="guid" ColumnName="guid" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="NodeFqdns">
+            <EntityTypeMapping TypeName="f5dataModel.NodeFqdn">
+              <MappingFragment StoreEntitySet="NodeFqdn">
+                <ScalarProperty Name="interval" ColumnName="interval" />
+                <ScalarProperty Name="downInterval" ColumnName="downInterval" />
+                <ScalarProperty Name="autopopulate" ColumnName="autopopulate" />
+                <ScalarProperty Name="addressFamily" ColumnName="addressFamily" />
+                <ScalarProperty Name="f5hostname" ColumnName="f5hostname" />
+                <ScalarProperty Name="nodename" ColumnName="nodename" />
+                <ScalarProperty Name="nodeguid" ColumnName="nodeguid" />
+                <ScalarProperty Name="jobguid" ColumnName="jobguid" />
+                <ScalarProperty Name="guid" ColumnName="guid" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Pools">
+            <EntityTypeMapping TypeName="f5dataModel.Pool">
+              <MappingFragment StoreEntitySet="Pool">
+                <ScalarProperty Name="membersReferenceGuid" ColumnName="membersReferenceGuid" />
+                <ScalarProperty Name="slowRampTime" ColumnName="slowRampTime" />
+                <ScalarProperty Name="serviceDownAction" ColumnName="serviceDownAction" />
+                <ScalarProperty Name="reselectTries" ColumnName="reselectTries" />
+                <ScalarProperty Name="queueTimeLimit" ColumnName="queueTimeLimit" />
+                <ScalarProperty Name="queueOnConnectionLimit" ColumnName="queueOnConnectionLimit" />
+                <ScalarProperty Name="queueDepthLimit" ColumnName="queueDepthLimit" />
+                <ScalarProperty Name="monitor" ColumnName="monitor" />
+                <ScalarProperty Name="minUpMembersChecking" ColumnName="minUpMembersChecking" />
+                <ScalarProperty Name="minUpMembersAction" ColumnName="minUpMembersAction" />
+                <ScalarProperty Name="minUpMembers" ColumnName="minUpMembers" />
+                <ScalarProperty Name="minActiveMembers" ColumnName="minActiveMembers" />
+                <ScalarProperty Name="loadBalancingMode" ColumnName="loadBalancingMode" />
+                <ScalarProperty Name="linkQosToServer" ColumnName="linkQosToServer" />
+                <ScalarProperty Name="linkQosToClient" ColumnName="linkQosToClient" />
+                <ScalarProperty Name="ipTosToServer" ColumnName="ipTosToServer" />
+                <ScalarProperty Name="ipTosToClient" ColumnName="ipTosToClient" />
+                <ScalarProperty Name="ignorePersistedWeight" ColumnName="ignorePersistedWeight" />
+                <ScalarProperty Name="AllowSnat" ColumnName="AllowSnat" />
+                <ScalarProperty Name="AllowNat" ColumnName="AllowNat" />
+                <ScalarProperty Name="selfLink" ColumnName="selfLink" />
+                <ScalarProperty Name="generation" ColumnName="generation" />
+                <ScalarProperty Name="fullpath" ColumnName="fullpath" />
+                <ScalarProperty Name="partition" ColumnName="partition" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="kind" ColumnName="kind" />
+                <ScalarProperty Name="f5HostName" ColumnName="f5HostName" />
+                <ScalarProperty Name="jobguid" ColumnName="jobguid" />
+                <ScalarProperty Name="guid" ColumnName="guid" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PoolMembers">
+            <EntityTypeMapping TypeName="f5dataModel.PoolMember">
+              <MappingFragment StoreEntitySet="PoolMember">
+                <ScalarProperty Name="state" ColumnName="state" />
+                <ScalarProperty Name="session" ColumnName="session" />
+                <ScalarProperty Name="ratio" ColumnName="ratio" />
+                <ScalarProperty Name="rateLimit" ColumnName="rateLimit" />
+                <ScalarProperty Name="monitor" ColumnName="monitor" />
+                <ScalarProperty Name="logging" ColumnName="logging" />
+                <ScalarProperty Name="fqdnGuid" ColumnName="fqdnGuid" />
+                <ScalarProperty Name="ephemeral" ColumnName="ephemeral" />
+                <ScalarProperty Name="dynamicRatio" ColumnName="dynamicRatio" />
+                <ScalarProperty Name="connectionLimit" ColumnName="connectionLimit" />
+                <ScalarProperty Name="address" ColumnName="address" />
+                <ScalarProperty Name="selfLink" ColumnName="selfLink" />
+                <ScalarProperty Name="generation" ColumnName="generation" />
+                <ScalarProperty Name="fullpath" ColumnName="fullpath" />
+                <ScalarProperty Name="partition" ColumnName="partition" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="kind" ColumnName="kind" />
+                <ScalarProperty Name="PoolGuid" ColumnName="PoolGuid" />
+                <ScalarProperty Name="f5HostName" ColumnName="f5HostName" />
+                <ScalarProperty Name="jobguid" ColumnName="jobguid" />
+                <ScalarProperty Name="guid" ColumnName="guid" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PoolMembersReferences">
+            <EntityTypeMapping TypeName="f5dataModel.PoolMembersReference">
+              <MappingFragment StoreEntitySet="PoolMembersReference">
+                <ScalarProperty Name="isSubcollection" ColumnName="isSubcollection" />
+                <ScalarProperty Name="link" ColumnName="link" />
+                <ScalarProperty Name="poolName" ColumnName="poolName" />
+                <ScalarProperty Name="PoolGuid" ColumnName="PoolGuid" />
+                <ScalarProperty Name="f5HostName" ColumnName="f5HostName" />
+                <ScalarProperty Name="jobguid" ColumnName="jobguid" />
+                <ScalarProperty Name="guid" ColumnName="guid" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Routes">
+            <EntityTypeMapping TypeName="f5dataModel.Route">
+              <MappingFragment StoreEntitySet="Routes">
+                <ScalarProperty Name="network" ColumnName="network" />
+                <ScalarProperty Name="mtu" ColumnName="mtu" />
+                <ScalarProperty Name="gw" ColumnName="gw" />
+                <ScalarProperty Name="fullpath" ColumnName="fullpath" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="f5Hostname" ColumnName="f5Hostname" />
+                <ScalarProperty Name="jobguid" ColumnName="jobguid" />
+                <ScalarProperty Name="guid" ColumnName="guid" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SelfIPs">
+            <EntityTypeMapping TypeName="f5dataModel.SelfIP">
+              <MappingFragment StoreEntitySet="SelfIP">
+                <ScalarProperty Name="allowService" ColumnName="allowService" />
+                <ScalarProperty Name="vlan" ColumnName="vlan" />
+                <ScalarProperty Name="unit" ColumnName="unit" />
+                <ScalarProperty Name="trafficGroup" ColumnName="trafficGroup" />
+                <ScalarProperty Name="inheritedTrafficGroup" ColumnName="inheritedTrafficGroup" />
+                <ScalarProperty Name="floating" ColumnName="floating" />
+                <ScalarProperty Name="address" ColumnName="address" />
+                <ScalarProperty Name="selfLink" ColumnName="selfLink" />
+                <ScalarProperty Name="generation" ColumnName="generation" />
+                <ScalarProperty Name="fullPath" ColumnName="fullPath" />
+                <ScalarProperty Name="partition" ColumnName="partition" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="kind" ColumnName="kind" />
+                <ScalarProperty Name="f5HostName" ColumnName="f5HostName" />
+                <ScalarProperty Name="jobguid" ColumnName="jobguid" />
+                <ScalarProperty Name="guid" ColumnName="guid" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SNATPools">
+            <EntityTypeMapping TypeName="f5dataModel.SNATPool">
+              <MappingFragment StoreEntitySet="SNATPool">
+                <ScalarProperty Name="members" ColumnName="members" />
+                <ScalarProperty Name="selfLink" ColumnName="selfLink" />
+                <ScalarProperty Name="generation" ColumnName="generation" />
+                <ScalarProperty Name="fullpath" ColumnName="fullpath" />
+                <ScalarProperty Name="partition" ColumnName="partition" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="kind" ColumnName="kind" />
+                <ScalarProperty Name="f5HostName" ColumnName="f5HostName" />
+                <ScalarProperty Name="jobguid" ColumnName="jobguid" />
+                <ScalarProperty Name="guid" ColumnName="guid" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="VipPersists">
+            <EntityTypeMapping TypeName="f5dataModel.VipPersist">
+              <MappingFragment StoreEntitySet="VipPersist">
+                <ScalarProperty Name="tmDefault" ColumnName="tmDefault" />
+                <ScalarProperty Name="partition" ColumnName="partition" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="vipName" ColumnName="vipName" />
+                <ScalarProperty Name="f5HostName" ColumnName="f5HostName" />
+                <ScalarProperty Name="VIPguid" ColumnName="VIPguid" />
+                <ScalarProperty Name="jobguid" ColumnName="jobguid" />
+                <ScalarProperty Name="guid" ColumnName="guid" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="VIPPersistDetails">
+            <EntityTypeMapping TypeName="f5dataModel.VIPPersistDetail">
+              <MappingFragment StoreEntitySet="VIPPersistDetails">
+                <ScalarProperty Name="iRule" ColumnName="iRule" />
+                <ScalarProperty Name="method" ColumnName="method" />
+                <ScalarProperty Name="hashOffset" ColumnName="hashOffset" />
+                <ScalarProperty Name="hashLength" ColumnName="hashLength" />
+                <ScalarProperty Name="expiration" ColumnName="expiration" />
+                <ScalarProperty Name="cookieName" ColumnName="cookieName" />
+                <ScalarProperty Name="cookieEncryption" ColumnName="cookieEncryption" />
+                <ScalarProperty Name="alwaysSend" ColumnName="alwaysSend" />
+                <ScalarProperty Name="timeout" ColumnName="timeout" />
+                <ScalarProperty Name="overrideConnectionLimit" ColumnName="overrideConnectionLimit" />
+                <ScalarProperty Name="mirror" ColumnName="mirror" />
+                <ScalarProperty Name="matchAcrossVirtuals" ColumnName="matchAcrossVirtuals" />
+                <ScalarProperty Name="matchAcrossServices" ColumnName="matchAcrossServices" />
+                <ScalarProperty Name="matchAcrossPools" ColumnName="matchAcrossPools" />
+                <ScalarProperty Name="mask" ColumnName="mask" />
+                <ScalarProperty Name="mapProxyAddress" ColumnName="mapProxyAddress" />
+                <ScalarProperty Name="mapProxies" ColumnName="mapProxies" />
+                <ScalarProperty Name="hashAlgorithm" ColumnName="hashAlgorithm" />
+                <ScalarProperty Name="defaultsFrom" ColumnName="defaultsFrom" />
+                <ScalarProperty Name="selfLink" ColumnName="selfLink" />
+                <ScalarProperty Name="generation" ColumnName="generation" />
+                <ScalarProperty Name="fullPath" ColumnName="fullPath" />
+                <ScalarProperty Name="partition" ColumnName="partition" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="kind" ColumnName="kind" />
+                <ScalarProperty Name="persistType" ColumnName="persistType" />
+                <ScalarProperty Name="f5hostname" ColumnName="f5hostname" />
+                <ScalarProperty Name="jobguid" ColumnName="jobguid" />
+                <ScalarProperty Name="guid" ColumnName="guid" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="VIPPoliciesReferences">
+            <EntityTypeMapping TypeName="f5dataModel.VIPPoliciesReference">
+              <MappingFragment StoreEntitySet="VIPPoliciesReference">
+                <ScalarProperty Name="isSubcollection" ColumnName="isSubcollection" />
+                <ScalarProperty Name="link" ColumnName="link" />
+                <ScalarProperty Name="f5HostName" ColumnName="f5HostName" />
+                <ScalarProperty Name="vipName" ColumnName="vipName" />
+                <ScalarProperty Name="VIPGuid" ColumnName="VIPGuid" />
+                <ScalarProperty Name="guid" ColumnName="guid" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="VipProfilesDetails">
+            <EntityTypeMapping TypeName="f5dataModel.VipProfilesDetail">
+              <MappingFragment StoreEntitySet="VipProfilesDetails">
+                <ScalarProperty Name="context" ColumnName="context" />
+                <ScalarProperty Name="selfLink" ColumnName="selfLink" />
+                <ScalarProperty Name="generation" ColumnName="generation" />
+                <ScalarProperty Name="fullpath" ColumnName="fullpath" />
+                <ScalarProperty Name="partition" ColumnName="partition" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="kind" ColumnName="kind" />
+                <ScalarProperty Name="vipguid" ColumnName="vipguid" />
+                <ScalarProperty Name="f5HostName" ColumnName="f5HostName" />
+                <ScalarProperty Name="jobguid" ColumnName="jobguid" />
+                <ScalarProperty Name="guid" ColumnName="guid" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="VIPProfilesReferences">
+            <EntityTypeMapping TypeName="f5dataModel.VIPProfilesReference">
+              <MappingFragment StoreEntitySet="VIPProfilesReference">
+                <ScalarProperty Name="isSubcollection" ColumnName="isSubcollection" />
+                <ScalarProperty Name="link" ColumnName="link" />
+                <ScalarProperty Name="f5HostName" ColumnName="f5HostName" />
+                <ScalarProperty Name="vipName" ColumnName="vipName" />
+                <ScalarProperty Name="vipguid" ColumnName="vipguid" />
+                <ScalarProperty Name="jobguid" ColumnName="jobguid" />
+                <ScalarProperty Name="guid" ColumnName="guid" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="VIPStats">
+            <EntityTypeMapping TypeName="f5dataModel.VIPStat">
+              <MappingFragment StoreEntitySet="VIPStats">
+                <ScalarProperty Name="TotRequests" ColumnName="TotRequests" />
+                <ScalarProperty Name="SyncookieSyncookies" ColumnName="SyncookieSyncookies" />
+                <ScalarProperty Name="SyncookieSyncacheOver" ColumnName="SyncookieSyncacheOver" />
+                <ScalarProperty Name="SyncookieSyncacheCurr" ColumnName="SyncookieSyncacheCurr" />
+                <ScalarProperty Name="SyncookieSwsyncookieInstance" ColumnName="SyncookieSwsyncookieInstance" />
+                <ScalarProperty Name="SyncookieRejects" ColumnName="SyncookieRejects" />
+                <ScalarProperty Name="SyncookieHwsyncookieInstance" ColumnName="SyncookieHwsyncookieInstance" />
+                <ScalarProperty Name="SyncookieHwSyncookies" ColumnName="SyncookieHwSyncookies" />
+                <ScalarProperty Name="SyncookieHwAccepts" ColumnName="SyncookieHwAccepts" />
+                <ScalarProperty Name="SyncookieAccepts" ColumnName="SyncookieAccepts" />
+                <ScalarProperty Name="SyncookieStatus" ColumnName="SyncookieStatus" />
+                <ScalarProperty Name="StatusStatusReason" ColumnName="StatusStatusReason" />
+                <ScalarProperty Name="StatusEnabledState" ColumnName="StatusEnabledState" />
+                <ScalarProperty Name="StatusAvailabilityState" ColumnName="StatusAvailabilityState" />
+                <ScalarProperty Name="OneMinAvgUsageRatio" ColumnName="OneMinAvgUsageRatio" />
+                <ScalarProperty Name="TmName" ColumnName="TmName" />
+                <ScalarProperty Name="FiveSecAvgUsageRatio" ColumnName="FiveSecAvgUsageRatio" />
+                <ScalarProperty Name="FiveMinAvgUsageRatio" ColumnName="FiveMinAvgUsageRatio" />
+                <ScalarProperty Name="EphemeralTotConns" ColumnName="EphemeralTotConns" />
+                <ScalarProperty Name="EphemeralSlowKilled" ColumnName="EphemeralSlowKilled" />
+                <ScalarProperty Name="EphemeralPktsOut" ColumnName="EphemeralPktsOut" />
+                <ScalarProperty Name="EphemeralPktsIn" ColumnName="EphemeralPktsIn" />
+                <ScalarProperty Name="EphemeralMaxConns" ColumnName="EphemeralMaxConns" />
+                <ScalarProperty Name="EphemeralEvictedConns" ColumnName="EphemeralEvictedConns" />
+                <ScalarProperty Name="EphemeralCurConns" ColumnName="EphemeralCurConns" />
+                <ScalarProperty Name="EphemeralBitsOut" ColumnName="EphemeralBitsOut" />
+                <ScalarProperty Name="EphemeralBitsIn" ColumnName="EphemeralBitsIn" />
+                <ScalarProperty Name="Destination" ColumnName="Destination" />
+                <ScalarProperty Name="CsMinConnDur" ColumnName="CsMinConnDur" />
+                <ScalarProperty Name="CsMeanConnDur" ColumnName="CsMeanConnDur" />
+                <ScalarProperty Name="CsMaxConnDur" ColumnName="CsMaxConnDur" />
+                <ScalarProperty Name="CmpEnabled" ColumnName="CmpEnabled" />
+                <ScalarProperty Name="CmpEnableMode" ColumnName="CmpEnableMode" />
+                <ScalarProperty Name="ClientsideTotConns" ColumnName="ClientsideTotConns" />
+                <ScalarProperty Name="ClientsideSlowKilled" ColumnName="ClientsideSlowKilled" />
+                <ScalarProperty Name="ClientsidePktsOut" ColumnName="ClientsidePktsOut" />
+                <ScalarProperty Name="ClientsidePktsIn" ColumnName="ClientsidePktsIn" />
+                <ScalarProperty Name="ClientsideMaxConns" ColumnName="ClientsideMaxConns" />
+                <ScalarProperty Name="ClientsideEvictedConns" ColumnName="ClientsideEvictedConns" />
+                <ScalarProperty Name="ClientsideCurConns" ColumnName="ClientsideCurConns" />
+                <ScalarProperty Name="ClientsideBitsOut" ColumnName="ClientsideBitsOut" />
+                <ScalarProperty Name="ClientsideBitsIn" ColumnName="ClientsideBitsIn" />
+                <ScalarProperty Name="ActualPvaAccel" ColumnName="ActualPvaAccel" />
+                <ScalarProperty Name="VIPName" ColumnName="VIPName" />
+                <ScalarProperty Name="f5HostName" ColumnName="f5HostName" />
+                <ScalarProperty Name="VIPGuid" ColumnName="VIPGuid" />
+                <ScalarProperty Name="jobguid" ColumnName="jobguid" />
+                <ScalarProperty Name="guid" ColumnName="guid" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="VLANs">
+            <EntityTypeMapping TypeName="f5dataModel.VLAN">
+              <MappingFragment StoreEntitySet="VLAN">
+                <ScalarProperty Name="tag" ColumnName="tag" />
+                <ScalarProperty Name="mtu" ColumnName="mtu" />
+                <ScalarProperty Name="learning" ColumnName="learning" />
+                <ScalarProperty Name="ifIndex" ColumnName="ifIndex" />
+                <ScalarProperty Name="failsafeTimeout" ColumnName="failsafeTimeout" />
+                <ScalarProperty Name="failsafeAction" ColumnName="failsafeAction" />
+                <ScalarProperty Name="failsafe" ColumnName="failsafe" />
+                <ScalarProperty Name="dagTunnel" ColumnName="dagTunnel" />
+                <ScalarProperty Name="dagRoundRobin" ColumnName="dagRoundRobin" />
+                <ScalarProperty Name="cmpHash" ColumnName="cmpHash" />
+                <ScalarProperty Name="autoLasthop" ColumnName="autoLasthop" />
+                <ScalarProperty Name="fullpath" ColumnName="fullpath" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="f5Hostname" ColumnName="f5Hostname" />
+                <ScalarProperty Name="jobguid" ColumnName="jobguid" />
+                <ScalarProperty Name="guid" ColumnName="guid" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="VIPs">
+            <EntityTypeMapping TypeName="f5dataModel.VIP">
+              <MappingFragment StoreEntitySet="VIP">
+                <ScalarProperty Name="PoolGuid" ColumnName="PoolGuid" />
+                <ScalarProperty Name="CertKey" ColumnName="CertKey" />
+                <ScalarProperty Name="CertChain" ColumnName="CertChain" />
+                <ScalarProperty Name="CertName" ColumnName="CertName" />
+                <ScalarProperty Name="PersistTimeOut" ColumnName="PersistTimeOut" />
+                <ScalarProperty Name="PersistType" ColumnName="PersistType" />
+                <ScalarProperty Name="PersistName" ColumnName="PersistName" />
+                <ScalarProperty Name="StatusAvailabilityState" ColumnName="StatusAvailabilityState" />
+                <ScalarProperty Name="PoolLoadBalancingMode" ColumnName="PoolLoadBalancingMode" />
+                <ScalarProperty Name="PoolMonitor" ColumnName="PoolMonitor" />
+                <ScalarProperty Name="PoolName" ColumnName="PoolName" />
+                <ScalarProperty Name="disabled" ColumnName="disabled" />
+                <ScalarProperty Name="vlans" ColumnName="vlans" />
+                <ScalarProperty Name="vlansEnabled" ColumnName="vlansEnabled" />
+                <ScalarProperty Name="description" ColumnName="description" />
+                <ScalarProperty Name="rules" ColumnName="rules" />
+                <ScalarProperty Name="persistGuid" ColumnName="persistGuid" />
+                <ScalarProperty Name="profilesReferenceGuid" ColumnName="profilesReferenceGuid" />
+                <ScalarProperty Name="policiesReferenceGuid" ColumnName="policiesReferenceGuid" />
+                <ScalarProperty Name="vsIndex" ColumnName="vsIndex" />
+                <ScalarProperty Name="vlansDisabled" ColumnName="vlansDisabled" />
+                <ScalarProperty Name="translatePort" ColumnName="translatePort" />
+                <ScalarProperty Name="translateAddress" ColumnName="translateAddress" />
+                <ScalarProperty Name="synCookieStatusnv" ColumnName="synCookieStatusnv" />
+                <ScalarProperty Name="sourcePort" ColumnName="sourcePort" />
+                <ScalarProperty Name="sourceAddressTranslationPool" ColumnName="sourceAddressTranslationPool" />
+                <ScalarProperty Name="sourceAddressTranslationType" ColumnName="sourceAddressTranslationType" />
+                <ScalarProperty Name="source" ColumnName="source" />
+                <ScalarProperty Name="rateLimitSrcMask" ColumnName="rateLimitSrcMask" />
+                <ScalarProperty Name="rateLimitMode" ColumnName="rateLimitMode" />
+                <ScalarProperty Name="rateLimitDstMask" ColumnName="rateLimitDstMask" />
+                <ScalarProperty Name="rateLimit" ColumnName="rateLimit" />
+                <ScalarProperty Name="pool" ColumnName="pool" />
+                <ScalarProperty Name="nat64" ColumnName="nat64" />
+                <ScalarProperty Name="mobileAppTunnel" ColumnName="mobileAppTunnel" />
+                <ScalarProperty Name="mirror" ColumnName="mirror" />
+                <ScalarProperty Name="mask" ColumnName="mask" />
+                <ScalarProperty Name="ipProtocol" ColumnName="ipProtocol" />
+                <ScalarProperty Name="gtmScore" ColumnName="gtmScore" />
+                <ScalarProperty Name="enabled" ColumnName="enabled" />
+                <ScalarProperty Name="destination" ColumnName="destination" />
+                <ScalarProperty Name="connectionLimit" ColumnName="connectionLimit" />
+                <ScalarProperty Name="cmpEnabled" ColumnName="cmpEnabled" />
+                <ScalarProperty Name="autoLasthop" ColumnName="autoLasthop" />
+                <ScalarProperty Name="addressStatus" ColumnName="addressStatus" />
+                <ScalarProperty Name="selfLink" ColumnName="selfLink" />
+                <ScalarProperty Name="generation" ColumnName="generation" />
+                <ScalarProperty Name="fullPath" ColumnName="fullPath" />
+                <ScalarProperty Name="partition" ColumnName="partition" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="kind" ColumnName="kind" />
+                <ScalarProperty Name="f5HostName" ColumnName="f5HostName" />
+                <ScalarProperty Name="jobguid" ColumnName="jobguid" />
+                <ScalarProperty Name="guid" ColumnName="guid" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="false" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

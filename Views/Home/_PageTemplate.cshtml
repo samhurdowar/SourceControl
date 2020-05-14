@@ -1,0 +1,242 @@
+﻿
+    <div>
+
+        <div class="command-bar">
+            Database: <input id="DbEntityId" name="DbEntityId" style="width:250px;" />&nbsp;&nbsp;&nbsp;
+
+            <span class="command-active-span" onclick="OpenNewPageTemplateWindow()"><span class="command-icon fas fa-plus-square">&nbsp;</span> Add Template</span>
+            <span class="command-active-span" onclick="DeletePageTemplate()"><span class="command-icon fas fa-trash-alt">&nbsp;</span> Delete Template</span>
+        </div>
+
+        <table id="splitterPageTemplate" style="width:100%;">
+            <tr id="panePageTemplate1" valign="top">
+                <td style="width:15%;">
+                    @Html.Partial("_PageTemplateList")
+                </td>
+
+                <td style="width:85%;">
+                    <div id="tabPageTemplate" style="display:none;">
+                        <br />
+                        <ul>
+                            <li class="k-state-active">Table</li>
+                            <li class=".table-driven-property">Fields</li>
+                            <li class=".table-driven-property">Grid</li>
+                            <li> View Page</li>
+                            <li class=".table-driven-property"> Edit Page</li>
+                            <li class=".table-driven-property"> Search Page</li>
+                        </ul>
+                        <div>
+                            @Html.Partial("_PageTemplateTable")
+                        </div>
+                        <div>
+                            @Html.Partial("_PageTemplateColumn")
+                        </div>
+                        <div>
+                            @Html.Partial("_PageTemplateGrid")
+                        </div>
+                        <div>
+                            @Html.Partial("_PageTemplateViewLayout")
+                        </div>
+                        <div>
+                            @Html.Partial("_PageTemplateEditLayout")
+                        </div>
+                        <div>
+                            @Html.Partial("_PageTemplateSearchLayout")
+                        </div>
+                    </div>
+                </td>
+
+            </tr>
+        </table>
+    </div>
+
+    <script>
+    var PageTemplateId = 0;
+    var ColumnDefId = 0;
+    var NewPageTemplateId = 0;
+
+    $("#DbEntityId").kendoDropDownList({
+        autoBind: true,
+        dataValueField: "ValueField",
+        dataTextField: "TextField",
+        dataSource: {
+            transport: {
+                read: {
+                    dataType: "json",
+                    url: "/PageTemplate/GetDbEntity"
+                }
+            }
+        },
+        change: function(e) {
+            $("#tabPageTemplate").hide();
+
+            RefreshEntityDependents();
+        },
+        dataBound: function(e) {
+            RefreshEntityDependents();
+        }
+    });
+
+
+
+    function RefreshEntityDependents() {
+
+        try {
+            $("#NewTableName").data().kendoGrid.destroy();
+            $("#NewTableName").empty();
+        } catch (e) {}
+
+        $("#NewTableName").kendoDropDownList({
+            autoBind: false,
+            dataTextField: "TextField",
+            dataValueField: "ValueField",
+            dataSource: {
+                transport: {
+                    read: {
+                        dataType: "json",
+                        url: "/PageTemplate/GetTableOptions?dbEntityId=" + $("#DbEntityId").data("kendoDropDownList").value()
+                    }
+                }
+            }
+        });
+
+        var grd = $("#gridPageTemplate").data("kendoGrid");
+        grd.dataSource.transport.options.read.url = "/PageTemplate/GetPageTemplates?dbEntityId=" + $("#DbEntityId").data("kendoDropDownList").value();
+        grd.dataSource.read();
+
+        //PageTemplateId2
+        var pageTemplateId2 = $("#PageTemplateId2").data("kendoDropDownList");
+        pageTemplateId2.dataSource.transport.options.read.url = "/PageTemplate/GetPageTemplates?dbEntityId=" + $("#DbEntityId").data("kendoDropDownList").value();
+        pageTemplateId2.dataSource.read();
+    }
+
+
+    $(document).ready(function() {
+
+        try {
+
+            $("#tabPageTemplate").kendoTabStrip();
+
+            $("#EditLayout").css("height", (window.innerHeight - 400) + "px");
+            $("#EditLayout").kendoEditor({
+                //encoded: false,
+                tools: [
+                    "pdf",
+                    "bold",
+                    "italic",
+                    "underline",
+                    "strikethrough",
+                    "justifyLeft",
+                    "justifyCenter",
+                    "justifyRight",
+                    "justifyFull",
+                    "insertUnorderedList",
+                    "insertOrderedList",
+                    "indent",
+                    "outdent",
+                    "createLink",
+                    "unlink",
+                    "subscript",
+                    "superscript",
+                    "createTable",
+                    "addRowAbove",
+                    "addRowBelow",
+                    "addColumnLeft",
+                    "addColumnRight",
+                    "deleteRow",
+                    "deleteColumn",
+                    "viewHtml",
+                    "formatting",
+                    "cleanFormatting",
+                    "fontName",
+                    "fontSize",
+                    "foreColor",
+                    "backColor"
+                ]
+            });
+
+
+
+            $("#ViewLayout").css("height", (window.innerHeight - 400) + "px");
+            $("#ViewLayout").kendoEditor({
+                //encoded: false,
+                tools: [
+                    "pdf",
+                    "bold",
+                    "italic",
+                    "underline",
+                    "strikethrough",
+                    "justifyLeft",
+                    "justifyCenter",
+                    "justifyRight",
+                    "justifyFull",
+                    "insertUnorderedList",
+                    "insertOrderedList",
+                    "indent",
+                    "outdent",
+                    "createLink",
+                    "unlink",
+                    "subscript",
+                    "superscript",
+                    "createTable",
+                    "addRowAbove",
+                    "addRowBelow",
+                    "addColumnLeft",
+                    "addColumnRight",
+                    "deleteRow",
+                    "deleteColumn",
+                    "viewHtml",
+                    "formatting",
+                    "cleanFormatting",
+                    "fontName",
+                    "fontSize",
+                    "foreColor",
+                    "backColor"
+                ]
+            });
+
+
+            $("#SearchLayout").css("height", (window.innerHeight - 400) + "px");
+            $("#SearchLayout").kendoEditor({
+                //encoded: false,
+                tools: [
+                    "pdf",
+                    "bold",
+                    "italic",
+                    "underline",
+                    "strikethrough",
+                    "justifyLeft",
+                    "justifyCenter",
+                    "justifyRight",
+                    "justifyFull",
+                    "insertUnorderedList",
+                    "insertOrderedList",
+                    "indent",
+                    "outdent",
+                    "createLink",
+                    "unlink",
+                    "subscript",
+                    "superscript",
+                    "createTable",
+                    "addRowAbove",
+                    "addRowBelow",
+                    "addColumnLeft",
+                    "addColumnRight",
+                    "deleteRow",
+                    "deleteColumn",
+                    "viewHtml",
+                    "formatting",
+                    "cleanFormatting",
+                    "fontName",
+                    "fontSize",
+                    "foreColor",
+                    "backColor"
+                ]
+            });
+
+        } catch (e) {
+            alert("document.ready _PageTemplate.cshtml " + e);
+
+        }
+    });
+    </script>

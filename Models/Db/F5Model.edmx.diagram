@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="556b98e4fbea4076a61947ccfe22380d" Name="Diagram1">
+        <EntityTypeShape EntityType="f5dataModel.App" Width="1.5" PointX="0.75" PointY="0.75" />
+        <EntityTypeShape EntityType="f5dataModel.Cert" Width="1.5" PointX="2.75" PointY="0.75" />
+        <EntityTypeShape EntityType="f5dataModel.CertFile" Width="1.5" PointX="4.75" PointY="0.75" />
+        <EntityTypeShape EntityType="f5dataModel.Client" Width="1.5" PointX="6.75" PointY="0.75" />
+        <EntityTypeShape EntityType="f5dataModel.ClientSSL" Width="1.5" PointX="6.75" PointY="3.75" />
+        <EntityTypeShape EntityType="f5dataModel.ClientSSLCertKeyChain" Width="1.5" PointX="0.75" PointY="7.75" />
+        <EntityTypeShape EntityType="f5dataModel.CustomOption" Width="1.5" PointX="8.75" PointY="0.75" />
+        <EntityTypeShape EntityType="f5dataModel.DeviceData" Width="1.5" PointX="2.75" PointY="8.75" />
+        <EntityTypeShape EntityType="f5dataModel.Irule" Width="1.5" PointX="8.75" PointY="3.75" />
+        <EntityTypeShape EntityType="f5dataModel.IruleApiRawValues2" Width="1.5" PointX="8.75" PointY="7.75" />
+        <EntityTypeShape EntityType="f5dataModel.JobLog" Width="1.5" PointX="10.75" PointY="0.75" />
+        <EntityTypeShape EntityType="f5dataModel.JobLogTask" Width="1.5" PointX="10.75" PointY="3.75" />
+        <EntityTypeShape EntityType="f5dataModel.MasterDeviceList" Width="1.5" PointX="10.75" PointY="7.75" />
+        <EntityTypeShape EntityType="f5dataModel.MonitorHttp" Width="1.5" PointX="8.75" PointY="10.75" />
+        <EntityTypeShape EntityType="f5dataModel.NatTranslation" Width="1.5" PointX="10.75" PointY="10.75" />
+        <EntityTypeShape EntityType="f5dataModel.Node" Width="1.5" PointX="12.75" PointY="0.75" />
+        <EntityTypeShape EntityType="f5dataModel.NodeFqdn" Width="1.5" PointX="12.75" PointY="6.75" />
+        <EntityTypeShape EntityType="f5dataModel.Pool" Width="1.5" PointX="12.75" PointY="10.75" />
+        <EntityTypeShape EntityType="f5dataModel.PoolMember" Width="1.5" PointX="14.75" PointY="0.75" />
+        <EntityTypeShape EntityType="f5dataModel.PoolMembersReference" Width="1.5" PointX="14.75" PointY="6.75" />
+        <EntityTypeShape EntityType="f5dataModel.Route" Width="1.5" PointX="14.75" PointY="10.75" />
+        <EntityTypeShape EntityType="f5dataModel.SelfIP" Width="1.5" PointX="14.75" PointY="14.75" />
+        <EntityTypeShape EntityType="f5dataModel.SNATPool" Width="1.5" PointX="4.75" PointY="15.75" />
+        <EntityTypeShape EntityType="f5dataModel.VipPersist" Width="1.5" PointX="16.75" PointY="11.75" />
+        <EntityTypeShape EntityType="f5dataModel.VIPPersistDetail" Width="1.5" PointX="16.75" PointY="15.75" />
+        <EntityTypeShape EntityType="f5dataModel.VIPPoliciesReference" Width="1.5" PointX="0.75" PointY="17.75" />
+        <EntityTypeShape EntityType="f5dataModel.VipProfilesDetail" Width="1.5" PointX="6.75" PointY="17.75" />
+        <EntityTypeShape EntityType="f5dataModel.VIPProfilesReference" Width="1.5" PointX="8.75" PointY="17.75" />
+        <EntityTypeShape EntityType="f5dataModel.VIPStat" Width="1.5" PointX="18.75" PointY="0.75" />
+        <EntityTypeShape EntityType="f5dataModel.VLAN" Width="1.5" PointX="10.75" PointY="18.75" />
+        <EntityTypeShape EntityType="f5dataModel.VIP" Width="1.5" PointX="3.375" PointY="19.75" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

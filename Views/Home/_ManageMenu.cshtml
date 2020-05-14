@@ -1,0 +1,696 @@
+﻿<style>
+	.expander-space {
+		margin-left: 12px;
+	}
+
+	#ul0 li {
+		list-style-type: none;
+		margin: 0;
+		padding: 0;
+		cursor: pointer;
+	}
+
+	#ul0 ul li {
+		list-style-type: none;
+		margin: 0;
+		padding: 0;
+		cursor: pointer;
+	}
+
+		#ul0 ul li li {
+			list-style-type: none;
+			margin: 0;
+			padding: 0;
+			cursor: pointer;
+		}
+
+			#ul0 ul li li li {
+				list-style-type: none;
+				margin: 0;
+				padding: 0;
+				cursor: pointer;
+			}
+
+				#ul0 ul li li li li {
+					list-style-type: none;
+					margin: 0;
+					padding: 0;
+					cursor: pointer;
+				}
+
+	.app-menu-root td {
+		border-bottom: solid 1px #ccc;
+		padding: 7px;
+	}
+
+	.app-menu-header {
+		font-size: 13px;
+		font-weight: bold;
+	}
+
+	.app-menu-submenu {
+		font-size: 13px;
+	}
+
+		.app-menu-submenu td {
+			border-bottom: solid 1px #ccc;
+			padding: 7px;
+		}
+
+	.k-spacer {
+		padding-right: 13px;
+	}
+</style>
+
+<div class="app-command-bar">
+	<a href="javascript:EditRootMenu(0)" style="text-decoration:none;"><img src="/Images/ToolBar/x24/add.jpg" /> <span style="position:relative;top:3px;margin-right:5px;">Add Root Menu</span></a>
+</div>
+
+<br />
+
+
+
+<div style="width:73%; margin: 0 auto;">
+	<table style="width:73%; margin: 0 auto;">
+		<tr class="app-menu-header">
+			<td width="40%">Menu Title</td>
+			<td width="40%">Goes To</td>
+			<td align="right" width="20%">Options</td>
+		</tr>
+	</table>
+</div>
+
+<div id="manageMenu" style="width: 75%;margin: 0 auto;"></div>
+
+<div id="windowEditMenu" style="display:none;">
+
+	<form id="FormEdit_1" name="FormEdit_1">
+		@Html.Hidden("Menu_MenuId")
+		@Html.Hidden("Menu_ParentId")
+		@Html.Hidden("Menu_HasSubMenu")
+		
+		<br />
+
+        <table>
+            <tr class="menu-menutitle">
+                <td>Menu Title</td>
+                <td><input type="text" id="Menu_MenuTitle" name="Menu_MenuTitle" style="width:300px;" required validationMessage="Required" /></td>
+            </tr>
+
+            <tr class="menu-pagetemplateid">
+                <td>Page Template</td>
+                <td><input id="Menu_MenuPageTemplateId" name="Menu_MenuPageTemplateId" style="width:370px;" /></td>
+            </tr>
+
+            <tr class="menu-searchtemplate">
+                <td>Go to Search Page first</td>
+                <td><input type="checkbox" id="Menu_SearchTemplate" name="Menu_SearchTemplate" onclick="ClickSearchTemplate(this)" /></td>
+            </tr>
+
+            <tr class="menu-pagefile">
+                <td>Custom Page File</td>
+                <td><input type="text" id="Menu_PageFile" name="Menu_PageFile" style="width:300px;" /></td>
+            </tr>
+
+            <tr>
+                <td></td>
+                <td><input type="button" value="Save" onclick="SaveMenu()" />  <input type="button" value="Cancel" onclick="CloseManageMenu()" /></td>
+            </tr>
+        </table>
+	</form>
+
+</div>
+<script>
+	
+	var Loaded = ":";
+	var SaveMenuFunction = "";
+	var MenuTableName = "";
+
+
+	$("#Menu_MenuPageTemplateId").kendoDropDownList({
+		dataTextField: "TextField",
+		dataValueField: "ValueField",
+		dataSource: {
+			transport: {
+				read: function (operation) {
+					$.ajax({
+						url: "/PageTemplate/GetPageTemplateOptionsWithAdd",
+						dataType: "json",
+						success: function (response) {
+							operation.success(response);
+						}
+					});
+				}
+			}
+		},
+        change: function (e) {
+            $("#Menu_PageFile").val("");
+            $("#Menu_SearchTemplate").prop('checked', false); 
+
+			if ($("#Menu_MenuPageTemplateId").data("kendoDropDownList").value() == "0") {
+                $(".menu-pagefile").show();
+                $(".menu-searchtemplate").hide();
+			} else {
+
+                $(".menu-pagefile").hide();
+                $(".menu-searchtemplate").show();
+			}
+		}
+	});
+
+
+
+	$("#windowEditMenu").kendoWindow({
+		height: "300px",
+		width: "600px",
+		modal: true,
+		scrollable: true,
+		title: "Manage Menu",
+		animation: {
+			open: {
+				duration: 100
+			}
+		},
+		visible: false,
+		actions: ["Close"]
+	});
+
+
+	// get root menus
+	$.ajax({
+		url: "/Menu/GetRootMenu",
+		type: "POST",
+		dataType: "text",
+		success: function (data) {
+			$("#manageMenu").html(data);
+
+			$("#ul0").sortable({
+				helper: function (event, ui) {
+					ui.children().each(function () {
+						$(this).width($(this).width());
+					});
+					return ui;
+				},
+				start: function (event, ui) {
+					ui.item.startPos = ui.item.index();
+					ui.placeholder.height(ui.item.height());
+				},
+				stop: function (event, ui) {
+					var id = $("td.index", ui.item).attr("id");
+
+					var menuId = id.replace("td", "");
+
+					$.ajax({
+						url: "/Menu/SortRootMenu",
+						type: "POST",
+						data: { menuId: menuId, newOrder: ui.item.index() },
+						dataType: "text",
+						success: function (data) {
+						}
+					});
+
+					//DebugLog("SortRootMenu From : " + ui.item.startPos + "   To: " + ui.item.index() + "   Id: " + id);
+				}
+			}).disableSelection();
+
+		}
+	});
+
+
+	function CloseManageMenu() {
+		$("#windowEditMenu").data("kendoWindow").close();
+	}
+
+	function ExpandRootMenu(menuId) {
+
+		if (Loaded.indexOf(":" + menuId + ":") == -1) {
+
+			$.ajax({
+				async: false,
+				url: "/Menu/GetLevelOneMenu?menuId=" + menuId,
+				type: "POST",
+				dataType: "text",
+				success: function (data) {
+
+
+					$("#li" + menuId).append(data);
+					Loaded += menuId + ":";
+
+					$("#expander" + menuId).removeClass("k-i-expand").removeClass("k-i-collapse").addClass("k-i-collapse");
+					//$("#ul" + menuId).slideToggle("fast");
+
+					$("#ul" + menuId).sortable({
+						helper: function (event, ui) {
+							ui.children().each(function () {
+								$(this).width($(this).width());
+							});
+							return ui;
+						},
+						start: function (event, ui) {
+							ui.item.startPos = ui.item.index();
+							ui.placeholder.height(ui.item.height());
+						},
+						stop: function (event, ui) {
+							var id = $("td.index", ui.item).attr("id");
+
+							var rayStr = id.replace("td", "");
+							var ray = rayStr.split("_");
+							var parentId = ray[0];
+							var menuId = ray[1];
+
+							$.ajax({
+								url: "/Menu/SortSubMenu",
+								type: "POST",
+								data: { menuId: menuId, parentId: parentId, newOrder: ui.item.index() },
+								dataType: "text",
+								success: function (data) {
+								}
+							});
+						}
+					}).disableSelection();
+				}
+			});
+
+		} else {
+
+			if ($("#expander" + menuId).hasClass("k-i-collapse")) {
+				$("#expander" + menuId).removeClass("k-i-collapse").addClass("k-i-expand");
+			} else {
+				$("#expander" + menuId).removeClass("k-i-expand").addClass("k-i-collapse");
+			}
+			$("#ul" + menuId).slideToggle("fast");
+		}
+	}
+
+	function ExpandLevelOneMenu(menuId) {
+
+		if (Loaded.indexOf(":" + menuId + ":") == -1) {
+
+			$.ajax({
+				async: false,
+				url: "/Menu/GetLevelOneItems?menuId=" + menuId,
+				type: "POST",
+				dataType: "text",
+				success: function (data) {
+
+
+					$("#li" + menuId).append(data);
+					$("#expander" + menuId).removeClass("k-i-expand").removeClass("k-i-collapse").addClass("k-i-collapse");
+					Loaded += menuId + ":";
+
+					$("#ul" + menuId).sortable({
+						helper: function (event, ui) {
+							ui.children().each(function () {
+								$(this).width($(this).width());
+							});
+							return ui;
+						},
+						start: function (event, ui) {
+							ui.item.startPos = ui.item.index();
+							ui.placeholder.height(ui.item.height());
+						},
+						stop: function (event, ui) {
+							var id = $("td.index", ui.item).attr("id");
+
+							var rayStr = id.replace("td", "");
+							var ray = rayStr.split("_");
+							var id1 = ray[0];
+							var id2 = ray[1];
+							var subType = ray[2];
+
+							if (subType == "M") {
+								$.ajax({
+									url: "/Menu/SortSubMenu",
+									type: "POST",
+									data: { parentId: id1, menuId: id2, newOrder: ui.item.index() },
+									dataType: "text",
+									success: function (data) {
+									}
+								});
+							}
+
+						}
+					}).disableSelection();
+				}
+			});
+
+		} else {
+
+			if ($("#expander" + menuId).hasClass("k-icon")) {
+				if ($("#expander" + menuId).hasClass("k-i-collapse")) {
+					$("#expander" + menuId).removeClass("k-i-collapse").addClass("k-i-expand");
+				} else {
+					$("#expander" + menuId).removeClass("k-i-expand").addClass("k-i-collapse");
+				}
+			}
+
+			$("#ul" + menuId).slideToggle("fast");
+		}
+	}
+
+
+	function SaveMenu() {
+		
+
+		var validator = $("#FormEdit_1").kendoValidator().data("kendoValidator");
+
+		if (!validator.validate()) {
+			return;
+		}
+
+		eval(SaveMenuFunction);
+
+		$("#windowEditMenu").data("kendoWindow").close();
+		$("#Menu_MenuTitle").val(" ");
+	}
+
+	function AddRootSubMenu(parentId) {
+		$("#windowEditMenu").data("kendoWindow").open().center();
+		$("#windowEditMenu_wnd_title").html("Add Sub Menu");
+
+
+		MenuTableName = "Menu";
+		SaveMenuFunction = "AddRootSubMenu_(" + parentId + ")";
+		$("#Menu_MenuTitle").focus();
+		$("#Menu_MenuId").val(0);
+		$("#Menu_ParentId").val(parentId);
+		$("#Menu_MenuPageTemplateId").data("kendoDropDownList").value(0);
+		$("#Menu_MenuTitle").val("");
+		$("#Menu_PageFile").val("");
+
+		$(".menu-menutitle").show();
+		$(".menu-pagetemplateid").show();
+		$(".menu-pagefile").show();
+
+
+		$("#Menu_MenuTitle").focus();
+	}
+
+	function AddRootSubMenu_(parentId) {
+
+		if (Loaded.indexOf(":" + parentId + ":") == -1) {
+			ExpandRootMenu(parentId);  // refresh parent menu
+		}
+
+		$("#ul" + parentId).show();
+
+		var json = ToJsonString("FormEdit_1");
+		$.ajax({
+			url: "/Menu/AddRootSubMenu",
+			type: "POST",
+			data: { parentId: parentId, json: json },
+			async: false,
+			dataType: "text",
+			success: function (data) {
+
+				if ($("#ul" + parentId).length) {
+					$("#ul" + parentId).append(data);
+
+				} else {
+					$("#li" + parentId).append("<ul id=\"ul" + parentId + "\">" + data + "</ul>");
+					$("#expander" + parentId).addClass("k-icon k-i-expand").click(function () {
+						ExpandRootMenu(parentId);
+					});
+				}
+			}
+		});
+	}
+
+	function EditRootMenu(menuId) {
+		$("#windowEditMenu").data("kendoWindow").open().center();
+
+		if (menuId == 0) {
+			$("#windowEditMenu_wnd_title").html("Add Root Menu");
+		} else {
+			$("#windowEditMenu_wnd_title").html("Edit Root Menu");
+		}
+
+		MenuTableName = "Menu";
+		SaveMenuFunction = "EditRootMenu_(" + menuId + ")";
+
+		BindFormData(1, menuId, "Edit");  // PageTemplateId = 1
+
+		$(".menu-menutitle").show();
+        $(".menu-pagetemplateid").show();
+
+		if ($("#Menu_MenuPageTemplateId").data("kendoDropDownList").value() == "0") {
+            $(".menu-pagefile").show();
+            $(".menu-searchtemplate").hide();
+		} else {
+            if ($("#Menu_PageFile").val() == "_SearchTemplate") {
+                $("#Menu_SearchTemplate").prop('checked', true);
+            } else {
+                $("#Menu_SearchTemplate").prop('checked', false);
+            }
+
+            $(".menu-pagefile").hide();
+            $(".menu-searchtemplate").show();
+		}
+
+		$("#Menu_MenuTitle").focus();
+	}
+
+    function ClickSearchTemplate(t) {
+        if ($("#Menu_SearchTemplate").is(":checked")) {
+            $("#Menu_PageFile").val("_SearchTemplate");
+        } else {
+            $("#Menu_PageFile").val("");
+        }
+    }
+
+
+	function EditRootMenu_(menuId) {
+
+		var json = ToJsonString("FormEdit_1");
+		$.ajax({
+			url: "/Menu/EditRootMenu",
+			type: "POST",
+			data: { json: json, menuId: menuId },
+			async: false,
+			dataType: "text",
+			success: function (data) {
+				if (menuId == 0) {
+					$("#ul0").append(data);
+				} else {
+					
+					$("#data_MenuTitle" + menuId).html($("#Menu_MenuTitle").val());
+					$("#data_PageFile" + menuId).html($("#Menu_PageFile").val());
+				}
+			}
+		});
+	}
+
+	function DeleteRootMenu(menuId) {
+		ConfirmMessage("Warning", "Deleting root menu will delete all child sub menus.  Proceed to delete?");
+
+		$("#dialogYesButton").click(function () {
+			$.ajax({
+				url: "/Menu/DeleteRootMenu",
+				type: "POST",
+				data: { menuId: menuId },
+				async: false,
+				dataType: "text",
+				success: function (data) {
+					$("#li" + menuId).remove();
+					$("#dialogYesNo").data("kendoWindow").close();
+				},
+				error: function () {
+					$("#dialogYesNo").data("kendoWindow").close();
+				}
+			});
+		})
+		$("#dialogNoButton").click(function () {
+			$("#dialogYesNo").data("kendoWindow").close();
+		})
+	}
+
+	function AddSubMenu(parentId) {
+		$("#windowEditMenu").data("kendoWindow").open().center();
+		$("#windowEditMenu_wnd_title").html("Add Sub Menu");
+		MenuTableName = "Menu";
+		SaveMenuFunction = "AddSubMenu_(" + parentId + ")";
+		$("#Menu_MenuId").val(0);
+		$("#Menu_ParentId").val(parentId);
+		$("#Menu_MenuPageTemplateId").data("kendoDropDownList").value(0);
+		$("#Menu_MenuTitle").val("");
+		$("#Menu_PageFile").val("");
+
+		$(".menu-menutitle").show();
+		$(".menu-pagetemplateid").show();
+		$(".menu-pagefile").show();
+
+		$("#Menu_MenuTitle").focus();
+	}
+
+	function AddSubMenu_(parentId) {
+
+		var json = ToJsonString("FormEdit_1");
+		$.ajax({
+			url: "/Menu/EditSubMenu",
+			type: "POST",
+			data: { menuId: 0, json: json },
+			async: false,
+			dataType: "text",
+			success: function (data) {
+				if ($("#ul" + parentId).length) {
+					$("#ul" + parentId).append(data);
+				} else {
+					$("#li" + parentId).append("<ul id=\"ul" + parentId + "\">" + data + "</ul>");
+
+
+					// create sortable
+					$("#ul" + parentId).sortable({
+						helper: function (event, ui) {
+							ui.children().each(function () {
+								$(this).width($(this).width());
+							});
+							return ui;
+						},
+						start: function (event, ui) {
+							ui.item.startPos = ui.item.index();
+							ui.placeholder.height(ui.item.height());
+						},
+						stop: function (event, ui) {
+							var id = $("td.index", ui.item).attr("id");
+
+							var rayStr = id.replace("td", "");
+							var ray = rayStr.split("_");
+							var id1 = ray[0];
+							var id2 = ray[1];
+
+							$.ajax({
+								url: "/Menu/SortSubMenu",
+								type: "POST",
+								data: { parentId: id1, menuId: id2, newOrder: ui.item.index() },
+								dataType: "text",
+								success: function (data) {
+								}
+							});
+
+						}
+					}).disableSelection();
+
+				}
+
+				$("#ul" + parentId).sortable("refresh");
+			}
+		});
+	}
+
+	function EditSubMenu(menuId) {
+		$("#windowEditMenu").data("kendoWindow").open().center();
+		$("#windowEditMenu_wnd_title").html("Edit Sub Menu");
+		MenuTableName = "Menu";
+		SaveMenuFunction = "EditSubMenu_(" + menuId + ")";
+
+		BindFormData(1, menuId, "Edit");
+
+		$(".menu-menutitle").show();
+
+		if ($("#Menu_HasSubMenu").val() == "true") {
+            $(".menu-pagetemplateid").hide();
+            $(".menu-searchtemplate").hide();
+			$(".menu-pagefile").hide();
+		} else {
+			$(".menu-pagetemplateid").show();
+
+		    if ($("#Menu_MenuPageTemplateId").data("kendoDropDownList").value() == "0") {
+                $(".menu-pagefile").show();
+                $(".menu-searchtemplate").hide();
+		    } else {
+                if ($("#Menu_PageFile").val() == "_SearchTemplate") {
+                    $("#Menu_SearchTemplate").prop('checked', true);
+                } else {
+                    $("#Menu_SearchTemplate").prop('checked', false);
+                }
+
+                $(".menu-pagefile").hide();
+                $(".menu-searchtemplate").show();
+		    }
+		}
+
+
+		$("#Menu_MenuTitle").focus();
+	}
+
+	function EditSubMenu_(menuId) {
+
+		var json = ToJsonString("FormEdit_1");
+		$.ajax({
+			url: "/Menu/EditSubMenu",
+			type: "POST",
+			data: { menuId: menuId, json: json },
+			async: false,
+			dataType: "text",
+			success: function (data) {
+
+				// see if menu is in expanded state
+				var expandIt = false;
+				if ($("#expander" + menuId).length) {
+					if ($("#expander" + menuId).hasClass("k-i-collapse")) {
+						expandIt = true;
+					}
+				}
+
+				$("#li" + menuId + " table:first").html(data);
+
+				if (expandIt) {
+					$("#expander" + menuId).removeClass("k-i-expand").removeClass("k-i-collapse").addClass("k-i-collapse");
+				}
+			}
+		});
+	}
+
+	function DeleteSubMenu(parentId, menuId) {
+
+		ConfirmMessage("Warning", "Deleting sub menu will delete all child sub menus.  Proceed to delete?");
+
+		$("#dialogYesButton").click(function () {
+			$.ajax({
+				url: "/Menu/DeleteSubMenu",
+				type: "POST",
+				data: { parentId: parentId,  menuId: menuId },
+				async: false,
+				dataType: "text",
+				success: function (data) {
+					$("#li" + menuId).remove();
+					$("#dialogYesNo").data("kendoWindow").close();
+				},
+				error: function () {
+					alert("Error DeleteSubMenu()");
+					$("#dialogYesNo").data("kendoWindow").close();
+				}
+			});
+		})
+		$("#dialogNoButton").click(function () {
+			$("#dialogYesNo").data("kendoWindow").close();
+		})
+	}
+
+	function RefreshSubMenu(menuId) {
+		$.ajax({
+			url: "/Menu/RefreshSubMenu",
+			type: "POST",
+			data: { menuId: menuId },
+			async: false,
+			dataType: "text",
+			success: function (data) {
+				$("#li" + menuId + " table:first").html(data);
+
+				// expand parent
+				if (!$("#expander" + menuId).hasClass("k-spacer")) {
+					Loaded += menuId + ":";
+					$("#expander" + menuId).removeClass("k-i-expand").removeClass("k-i-collapse").addClass("k-i-collapse");
+					$("#ul" + menuId).show();
+				}
+
+			}
+		});
+	}
+
+
+
+
+
+
+</script>

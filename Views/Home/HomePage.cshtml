@@ -1,0 +1,313 @@
+﻿
+@{
+    Layout = null;
+    var lastUpdated = SourceControl.Services.DataService.GetPasswordModifiedDate();
+
+    TimeSpan timeSpan = DateTime.Now - Convert.ToDateTime(lastUpdated);
+    var daysLeft = 60 - timeSpan.Days;
+
+    var createChart = "CreateChart();";
+    var printLink = "";
+    string username = User.Identity.Name.ToString();
+    if (username.Contains("xz07pm"))
+    {
+        printLink = "<a href='javascript:SendEIDMReport();'>Send email</a>";
+    }
+    if (username.Contains("Monkeke_Sam"))
+    {
+        createChart = "";
+    }
+
+}
+
+<style>
+    .error-tooltip {
+        cursor: pointer;
+    }
+
+        .error-tooltip:hover {
+            -moz-box-shadow: 0 0 0 15px rgba(0,0,0,0.5);
+            -webkit-box-shadow: 0 0 0 15px rgba(0,0,0,0.5);
+            box-shadow: 0 0 0 15px rgba(0,0,0,0.5);
+            -moz-transition: -moz-box-shadow .3s;
+            -webkit-transition: -webkit-box-shadow .3s;
+            transition: box-shadow .3s;
+        }
+
+    .regular-table {
+        width: 100%;
+    }
+
+        .regular-table td {
+            border-bottom: 1px solid #eee;
+            padding: 5px;
+        }
+</style>
+
+@Html.Raw(printLink)
+
+<table style="width:100%;">
+    <tr valign="top">
+        <td style="width:40%;">
+
+            @*<div style="width:100%;border:1px solid #ccc;font-size:1.2em;font-weight:bold;background-color:#eee;padding:5px;">Process Status  <span id="spanCountDown" style="font-size:.9em;float:right;position:relative;font-weight:normal;"></span></div>
+                <br />
+
+                <table class="regular-table">
+                    <tr>
+                        <td style="font-weight:bold;">Process</td>
+                        <td style="font-weight:bold;">Status</td>
+                    </tr>
+                    <tr>
+                        <td>F5 Download Service</td>
+                        <td><div id="spanF5Status" style="width:100%;margin: 0 auto;">Pending...</div></td>
+                    </tr>
+                    <tr>
+                        <td>F5 Report Service</td>
+                        <td><div id="spanF5ReportStatus" style="width:100%;margin: 0 auto;">Pending...</div></td>
+                    </tr>
+                </table>
+
+                <br />*@
+            <br />
+            <span style="cursor:pointer;text-decoration:underline;font-size:1em;" onclick="ClearError()">Clear Errors</span>
+            <div id="gridErrors" style="width:100%;margin: 0 auto;"></div>
+            <br />
+            <div style="width:100%;border:1px solid #ccc;font-size:1.2em;font-weight:bold;background-color:#eee;padding:5px;">Reminders</div>
+            <br />
+            <ol>
+                <li>&nbsp;&nbsp;<b>@daysLeft days</b> left to change password for rdcms\nettoolbox_svc. (Last updated @lastUpdated)</li>
+
+            </ol>
+        </td>
+        <td style="width:2%;">&nbsp;&nbsp;&nbsp;</td>
+        <td style="width:58%;">
+
+            <div id="example">
+                <div style="width:100%;">
+                    <div style="border:1px solid #ccc; border-radius:7px; width:100%;"><div id="chart3" style="width:98%;"></div></div>
+                    <br />
+                    <div style="border:1px solid #ccc; border-radius:7px; width:100%;"><div id="chart1" style="width:98%;"></div></div>
+                    <br />
+                    <div style="border:1px solid #ccc; border-radius:7px; width:100%;"><div id="chart2" style="width:98%;"></div></div>
+
+                </div>
+            </div>
+
+        </td>
+    </tr>
+</table>
+
+<script>
+
+	function GetNumberAndPerc(val) {
+		var n = (val / 2288507) * 100;
+		var d = n.toFixed(2);
+		return d + "%\r\n" + numberWithCommas(val);
+	}
+
+	function numberWithCommas(x) {
+		return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+	}
+
+	function CreateChart() {
+		@Html.Raw(SourceControl.Services.AppService.F5LoadCharts)
+
+		$("#chart3").kendoChart({
+			title: {
+				position: "top",
+				text: "Pool Member Status"
+			},
+			legend: {
+				visible: false
+			},
+			chartArea: {
+				background: ""
+			},
+			seriesDefaults: {
+				labels: {
+					visible: true,
+					background: "transparent",
+					template: "#= category # \n #= GetNumberAndPerc(value) #"
+				}
+			},
+			series: [{
+				type: "pie",
+				startAngle: 150,
+				data: [ @Html.Raw(SourceControl.Services.AppService.F5PoolMemberChartData) ]
+			}],
+			tooltip: {
+				visible: true,
+				format: "{0:n}"
+			}
+		});
+	}
+
+	var Seconds60 = 5;
+	var IntervalId = null;
+
+	$(document).ready(function () {
+
+		var dsErrors = new kendo.data.DataSource({
+			cache: false,
+			pageable: false,
+			transport: {
+				read: {
+					url: "App/GetDebugLog",
+					dataType: "json"
+				}
+			},
+			schema: {
+				model: {
+					fields: {
+						LogDate: { field: "LogDate", type: "date", format: "{0:MM/dd/yyyy hh:mm tt}" }
+					}
+				}
+			}
+		});
+
+		var grid = $("#gridErrors").kendoGrid({
+			cache: false,
+			toolbar: "<span style='font-size:1.2em;font-weight:bold;'>Error Logs</span>",
+			autoBind: true,
+			dataSource: dsErrors,
+			height: 500,
+			sortable: false,
+			pageable: false,
+			scrollable: true,
+			selectable: false,
+			filterable: false,
+			columns: [
+
+				{ field: "LogDate", title: "Date", type: "date", format: "{0:MM/dd/yyyy hh:mm tt}", width: 150 },
+				{ field: "Source", title: "Source" },
+				{ field: "LogContent", title: "Description", template: "#= GetShortLog(LogContent) #" },
+			]
+		});
+
+
+		@createChart
+
+		var tooltip = $(".error-tooltip").kendoTooltip({
+			width: 500,
+			position: "top",
+			animation: {
+				open: {
+					effects: "zoom",
+					duration: 150
+				}
+			}
+		}).data("kendoTooltip");
+
+		//StartInterval();
+	});
+
+
+
+	function StartInterval() {
+
+		IntervalId = setInterval(function () {
+
+			Seconds60 = Seconds60 - 1;
+
+			$("#spanCountDown").html("Next check in " + Seconds60 + " seconds");
+
+			if (Seconds60 == 0) {
+				StopInterval();
+				$("#spanCountDown").html("Sending status request...");
+
+				//setTimeout(RunStatusCheck, 2000);
+			}
+
+		}, 1100);
+
+	}
+
+
+	function RunStatusCheck() {
+		$.ajax({
+			cache: false,
+			url: "App/GetProcessStatus",
+			dataType: "text",
+			success: function (response) {
+				if (response == "Running") {
+					$("#spanF5Status").html("<span style='background-color:#b6ff00;padding:4px;border:1px solid #ccc;'> Running </span>");
+					$("#spanF5ReportStatus").html("<span style='background-color:#b6ff00;padding:4px;border:1px solid #ccc;'> Running </span>");
+				} else {
+					$("#spanF5Status").html("<span style='background-color:#f6c0c0;padding:4px;border:1px solid #ccc;'> " + response + " </span>");
+					$("#spanF5ReportStatus").html("<span style='background-color:#b6ff00;padding:4px;border:1px solid #ccc;'> Running </span>");
+				}
+
+				$("#gridErrors").data("kendoGrid").dataSource.read();
+				$("#gridErrors").data("kendoGrid").refresh();
+				Seconds60 = 30;
+				$("#spanCountDown").html("Next check in " + Seconds60 + " seconds");
+				//StartInterval();
+
+			}
+		});
+	}
+
+    function ClearError() {
+		$.ajax({
+			url: "App/ClearError",
+			dataType: "text",
+            success: function (response) {
+                if (response.length > 2) {
+                    $("body").append(response);
+                    return;
+                }
+
+                $("#gridErrors").data("kendoGrid").dataSource.read();
+                $("#gridErrors").data("kendoGrid").refresh();
+			}
+		});
+    }
+
+	function StopInterval() {
+		clearInterval(IntervalId);
+	}
+
+
+	function GetShortLog(logContent) {
+		var lc = logContent;
+		if (lc.length > 30) {
+			lc = lc.substring(0, 30) + "...";
+
+		}
+		return "<span class='error-tooltip' title='" + logContent + "'>" + lc + "</span>";
+	}
+
+
+	function TestMe() {
+
+
+		$.ajax({
+			url: "https://hooks.slack.com/services/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",
+			data: '{"text": "Test message from Omi - Network Engineering"}',
+			type: "POST"
+		})
+			.done(function (reply) {
+				alert("POST to Slack succeeded");
+			})
+			.fail(function (xhr, status, errorThrown) {
+				alert("Error in POST to Slack: " + errorThrown.toString());
+			})
+
+	}
+    function SendEIDMReport() {
+        $.ajax({
+            url: "/F5Pool/SendEIDMReport",
+            type: "POST",
+            dataType: "text",
+            success: function (response) {
+                if (response.length > 0) {
+                    alert(response);
+                }
+            }
+        });
+    }
+</script>
+
+
+﻿

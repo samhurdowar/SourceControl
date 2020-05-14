@@ -1,0 +1,221 @@
+﻿
+<table id="tableVMContent" style="display:none;">
+	<tr valign="top">
+		<td style="width:35%;">
+			<div class="panel panel-danger">
+				<div class="panel-heading">
+					<h3 class="panel-title">Critical Notifications</h3>
+				</div>
+				<div style="height: 600px; overflow:scroll" id="divNotification">
+
+				</div>
+			</div>
+
+		</td>
+		<td style="width:65%;">
+
+
+
+
+			<div class="panel panel-info">
+				<div class="panel-heading">
+					<h3 class="panel-title">Current Summary</h3>
+				</div>
+				<div class="panel-body">
+					<div class="col-sm-2">
+						<p>
+							Record Count:<br />
+							Close Pending:<br />
+							Records With Exploit:<br />
+							IP Count:<br />
+							Plugin Count:<br />
+						</p>
+					</div>
+					<div class="col-sm-1">
+						<span id="TotalRecordCount"></span><br />
+						<span id="TotalMitigated"></span><br />
+						<span id="TotalWithExploit"></span><br />
+						<span id="DistinctIPCount"></span><br />
+						<span id="DistinctPluginIDCount"></span><br />
+					</div>
+					<div class="col-sm-1">
+						<p>
+							Critical:<br />
+							High:<br />
+							Medium:<br />
+							Low:<br />
+						</p>
+					</div>
+
+					<div class="col-sm-1">
+						<span id="Sev4RecordCount"></span><br />
+						<span id="Sev3RecordCount"></span><br />
+						<span id="Sev2RecordCount"></span><br />
+						<span id="Sev1RecordCount"></span><br />
+					</div>
+					<div class="col-sm-1">
+						<p>
+							<strong>First Seen</strong><br />
+							Last 30 Days:<br />
+							Last 15 Days:<br />
+							Last 7 Days:<br />
+						</p>
+					</div>
+					<div class="col-sm-1">
+						<br />
+						<span id="FirstSeen30DayCount"></span><br />
+						<span id="FirstSeen15DayCount"></span><br />
+						<span id="FirstSeen7DayCount"></span><br />
+					</div>
+					<div class="col-sm-1">
+						<p>
+							<strong>Last Seen</strong><br />
+							Last 30 Days:<br />
+							Last 15 Days:<br />
+							Last 7 Days:<br />
+						</p>
+					</div>
+					<div class="col-sm-1">
+						<br />
+						<span id="LastSeen30DayCount"></span><br />
+						<span id="LastSeen15DayCount"></span><br />
+						<span id="LastSeen7DayCount"></span><br />
+					</div>
+
+				</div>
+			</div>
+
+
+
+			<div class="panel panel-info">
+				<div class="panel-heading">
+					<h3 class="panel-title">Top 20 Records by Plugins</h3>
+				</div>
+
+				<div class="panel-body">
+					<div class="col-sm-2">
+						&nbsp; &nbsp; PluginID - Record Count<br />
+						1. &nbsp; <span class="spanTooltip" title="" id="tooltip0"><span id="Top20PluginHitters0PluginID"></span> - <span id="Top20PluginHitters0CurrentCount"></span> </span><br />
+						2. &nbsp; <span class="spanTooltip" title="" id="tooltip1"><span id="Top20PluginHitters1PluginID"></span> - <span id="Top20PluginHitters1CurrentCount"></span> </span><br />
+						3. &nbsp; <span class="spanTooltip" title="" id="tooltip2"><span id="Top20PluginHitters2PluginID"></span> - <span id="Top20PluginHitters2CurrentCount"></span> </span><br />
+						4. &nbsp; <span class="spanTooltip" title="" id="tooltip3"><span id="Top20PluginHitters3PluginID"></span> - <span id="Top20PluginHitters3CurrentCount"></span> </span>
+					</div>
+					<div class="col-sm-2">
+						<br />
+						5. &nbsp; <span class="spanTooltip" title="" id="tooltip4"><span id="Top20PluginHitters4PluginID"></span> - <span id="Top20PluginHitters4CurrentCount"></span> </span><br />
+						6. &nbsp; <span class="spanTooltip" title="" id="tooltip5"><span id="Top20PluginHitters5PluginID"></span> - <span id="Top20PluginHitters5CurrentCount"></span> </span><br />
+						7. &nbsp; <span class="spanTooltip" title="" id="tooltip6"><span id="Top20PluginHitters6PluginID"></span> - <span id="Top20PluginHitters6CurrentCount"></span> </span><br />
+						8. &nbsp; <span class="spanTooltip" title="" id="tooltip7"><span id="Top20PluginHitters7PluginID"></span> - <span id="Top20PluginHitters7CurrentCount"></span> </span>
+					</div>
+					<div class="col-sm-2">
+						<br />
+						9. &nbsp;  <span class="spanTooltip" title="" id="tooltip8"><span id="Top20PluginHitters8PluginID"></span> - <span id="Top20PluginHitters8CurrentCount"></span> </span><br />
+						10. &nbsp; <span class="spanTooltip" title="" id="tooltip9"><span id="Top20PluginHitters9PluginID"></span> - <span id="Top20PluginHitters9CurrentCount"></span> </span><br />
+						11. &nbsp; <span class="spanTooltip" title="" id="tooltip10"><span id="Top20PluginHitters10PluginID"></span> - <span id="Top20PluginHitters10CurrentCount"></span> </span><br />
+						12. &nbsp; <span class="spanTooltip" title="" id="tooltip11"><span id="Top20PluginHitters11PluginID"></span> - <span id="Top20PluginHitters11CurrentCount"></span> </span>
+					</div>
+					<div class="col-sm-2">
+						<br />
+						13. &nbsp; <span class="spanTooltip" title="" id="tooltip12"><span id="Top20PluginHitters12PluginID"></span> - <span id="Top20PluginHitters12CurrentCount"></span> </span><br />
+						14. &nbsp; <span class="spanTooltip" title="" id="tooltip13"><span id="Top20PluginHitters13PluginID"></span> - <span id="Top20PluginHitters13CurrentCount"></span> </span><br />
+						15. &nbsp; <span class="spanTooltip" title="" id="tooltip14"><span id="Top20PluginHitters14PluginID"></span> - <span id="Top20PluginHitters14CurrentCount"></span> </span><br />
+						16. &nbsp; <span class="spanTooltip" title="" id="tooltip15"><span id="Top20PluginHitters15PluginID"></span> - <span id="Top20PluginHitters15CurrentCount"></span> </span>
+					</div>
+					<div class="col-sm-2">
+						<br />
+						17. &nbsp; <span class="spanTooltip" title="" id="tooltip16"><span id="Top20PluginHitters16PluginID"></span> - <span id="Top20PluginHitters16CurrentCount"></span> </span><br />
+						18. &nbsp; <span class="spanTooltip" title="" id="tooltip17"><span id="Top20PluginHitters17PluginID"></span> - <span id="Top20PluginHitters17CurrentCount"></span> </span><br />
+						19. &nbsp; <span class="spanTooltip" title="" id="tooltip18"><span id="Top20PluginHitters18PluginID"></span> - <span id="Top20PluginHitters18CurrentCount"></span> </span><br />
+						20. &nbsp; <span class="spanTooltip" title="" id="tooltip19"><span id="Top20PluginHitters19PluginID"></span> - <span id="Top20PluginHitters19CurrentCount"></span> </span><br />
+
+					</div>
+
+				</div>
+			</div>
+
+
+
+		</td>
+	</tr>
+</table>
+
+
+
+
+
+
+
+<script>
+
+
+	$(document).ready(function () {
+		var tooltip = $(".spanTooltip").kendoTooltip({
+			width: 500,
+			position: "top",
+			animation: {
+				open: {
+					effects: "zoom",
+					duration: 150
+				}
+			}
+		}).data("kendoTooltip");
+
+	});
+
+
+	AppSpinner(true);
+
+	$.ajax({
+		url: "/VulnManagement/NMSummary",
+		dataType: "json",
+		success: function (data) {
+			var cn = "";
+			data.criticalNotificationList
+			for (i in data.criticalNotificationList) {
+				cn += "<div class='panel-body'>";
+				cn += "<h4>" + data.criticalNotificationList[i].title + "</h4>";
+				cn += "" + data.criticalNotificationList[i].description + "<br />";
+				cn += "<a ng-href='I.link'>" + data.criticalNotificationList[i].link + "</a>";
+				cn += "</div><hr></hr>";
+			}
+
+			$("#divNotification").append(cn);
+
+			$("#TotalRecordCount").html(data.summaryData.TotalRecordCount);
+			$("#TotalMitigated").html(data.summaryData.TotalMitigated);
+			$("#TotalWithExploit").html(data.summaryData.TotalWithExploit);
+			$("#DistinctIPCount").html(data.summaryData.DistinctIPCount);
+			$("#DistinctPluginIDCount").html(data.summaryData.DistinctPluginIDCount);
+			$("#Sev4RecordCount").html(data.summaryData.Sev4RecordCount);
+			$("#Sev3RecordCount").html(data.summaryData.Sev3RecordCount);
+			$("#Sev2RecordCount").html(data.summaryData.Sev2RecordCount);
+			$("#Sev1RecordCount").html(data.summaryData.Sev1RecordCount);
+			$("#FirstSeen30DayCount").html(data.summaryData.FirstSeen30DayCount);
+			$("#FirstSeen15DayCount").html(data.summaryData.FirstSeen15DayCount);
+			$("#FirstSeen7DayCount").html(data.summaryData.FirstSeen7DayCount);
+			$("#LastSeen30DayCount").html(data.summaryData.LastSeen30DayCount);
+			$("#LastSeen15DayCount").html(data.summaryData.LastSeen15DayCount);
+			$("#LastSeen7DayCount").html(data.summaryData.LastSeen7DayCount);
+
+
+			for (var i = 0; i < 20; i++) {
+				eval("$('#Top20PluginHitters" + i + "PluginID').html(data.summaryData.Top20PluginHitters[" + i + "].PluginID);");
+				eval("$('#Top20PluginHitters" + i + "CurrentCount').html(data.summaryData.Top20PluginHitters[" + i + "].CurrentCount);");
+				eval("$(\"#tooltip" + i + "\").attr(\"title\", \"<div style='text-align:left;'>Plugin ID: \" + data.summaryData.Top20PluginHitters[" + i + "].PluginID + \"<br><br>Plugin Name: \" + data.summaryData.Top20PluginHitters[" + i + "].PluginName + \"<br><br>Description: \" + data.summaryData.Top20PluginHitters[" + i + "].Description + \"</div>\");");
+			}
+
+
+			$("#tableVMContent").show();
+
+			AppSpinner(false);
+
+		},
+		error: function (request, status, error) {
+			alert(request.responseText);
+		}
+	});
+
+</script>
+
+
+&nbsp; <span class="spanTooltip" title="" id="tooltip0"><span id="Top20PluginHitters0PluginID"></span> - <span id="Top20PluginHitters0CurrentCount"></span></span><br />

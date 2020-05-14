@@ -1,0 +1,149 @@
+﻿@using SourceControl.Services;
+
+@{
+	var vd = SessionService.VirtualDomain;
+}
+
+	<style>
+		#gridColumnDefInline .k-dirty {
+			border-width: 0 !important;
+		}
+	</style>
+
+
+	<div style="position:relative;width: 98%;" class="row">
+		<div id="gridColumnDefInline" style="width:100%;"></div>
+	</div>
+
+	<script>
+	var CurrentColumnDefColumn = "";
+	var dsgridColumnDefInline = new kendo.data.DataSource({
+		autoSync: true,
+		pageable: false,
+		transport: {
+			read: {
+				 url: "@vd/PageTemplate/GetColumnDefInline?pageTemplateId=0",
+				dataType: "json"
+			},
+			update: {
+				 url: "@vd/Data/UpdateInline",
+				dataType: "json",
+				type: "post"
+			},
+			parameterMap: function (options, operation) {
+
+				if (!options.models) return;
+
+				// get dirty
+				var grid = $("#gridColumnDefInline").data("kendoGrid");
+				var data = grid.dataSource.data();
+
+
+				var dirty = $.grep(data, function (item) {
+					return item.dirty
+				});
+
+				var json = kendo.stringify(dirty).replace("[{", "{").replace("}]", "}");
+
+				var obj = JSON && JSON.parse(json) || $.parseJSON(json);
+
+				var objId = obj.ColumnDefId;
+				var objName = CurrentColumnDefColumn;
+				var objValue = eval("obj." + CurrentColumnDefColumn);
+
+
+				// reset all dirties
+				$.each(data, function () {
+					this.dirty = false;
+				});
+
+				alert(objName);
+				return { tableName: "ColumnDef", primaryKeyValue: objId, columnName: objName, columnValue: objValue };
+
+			}
+		},
+		batch: true,
+
+		schema: {
+			model: {
+				id: "ColumnDefId",
+				fields: {
+					ColumnName: { editable: false },
+					AddBlankOption: { type: "boolean" }
+				}
+			}
+		}
+	});
+
+
+	function editor_ElementType(container, options) {
+		$('<input data-text-field="TextField" data-value-field="ValueField" data-bind="value:' + options.field + '"/>')
+		.appendTo(container)
+		.kendoDropDownList({
+			autoBind: true,
+			dataSource: dsElementType,
+			dataTextField: "TextField",
+			dataValueField: "ValueField"
+		});
+	}
+
+
+	var gridColumnDefInline = $("#gridColumnDefInline").kendoGrid({
+		dataSource: dsgridColumnDefInline,
+		autoBind: false,
+		selectable: 'cell',
+		scrollable: true,
+		sortable: false,
+		pagable: false,
+		filterable: false,
+		height: window.innerHeight - 245,
+		change: function (e) {
+			var $grid = e.sender; //grid ref
+			var $cell = $grid.select(); // selected td
+			var cell_index = $cell.index(); //cell index 0 based
+
+			CurrentColumnDefColumn = $grid.options.columns[cell_index].field;
+
+		},
+		columns: [
+			{ template: '<b>#= ColumnName #</b> #= DataType #(#= DataLength #)', title: "Column" },
+			{ field: "DisplayName", title: "Display Name" },
+			{ field: "ElementType", title: "Element Type", editor: editor_ElementType, width: 160 },
+			{ field: "DefaultValue", title: "Default<br>Value", width: 100 },
+			{ template: '<input type="checkbox" #= IsRequired ? \'checked="checked"\' : "" # onclick="CheckboxChangeColumnDef(this, \'IsRequired\')" class="chkbx3" />', title: "Is Required", width: 75 },
+			//{ template: '<input type="checkbox" #= AddBlankOption ? \'checked="checked"\' : "" # onclick="CheckboxChangeColumnDef(this, \'AddBlankOption\')" class="chkbx2" />', title: "Add Blank<br>Option", width: 75 },
+			{ field: "ElementWidth", title: "Width", width: 75 },
+			{ field: "ElementHeight", title: "Height", width: 75 },
+			{ field: "TextboxMask", title: "Textbox Mask", width: 150 },
+			{ field: "ValidationExp", title: "Validation Expression", width: 150 },
+			{ field: "ValidationMsg", title: "Validation Message", width: 150 }
+		],
+		editable: {
+			confirmation: false
+		}
+
+	}).data('kendoGrid');
+
+
+
+	$("#gridColumnDefInline .k-grid-content").on("change", "input.chkbx2", function (e) {
+		var grid1 = $("#gridColumnDefInline").data("kendoGrid");
+		var dataItem1 = grid1.dataItem($(e.target).closest("tr"));
+
+		dataItem1.set("AddBlankOption", this.checked);
+	});
+
+	$("#gridColumnDefInline .k-grid-content").on("change", "input.chkbx3", function (e) {
+		var grid1 = $("#gridColumnDefInline").data("kendoGrid");
+		var dataItem1 = grid1.dataItem($(e.target).closest("tr"));
+
+		dataItem1.set("IsRequired", this.checked);
+	 });
+
+
+	 function CheckboxChangeColumnDef(t, columnName) {
+		  CurrentColumnDefColumn = columnName;
+	 }
+	</script>
+
+

@@ -1,0 +1,125 @@
+﻿@{
+	var dsMenu = SourceControl.Services.AccessService.GetMenuTreeView(SourceControl.Services.SessionService.UserId);
+	var vd = SourceControl.Services.SessionService.VirtualDomain;
+}
+
+
+<table>
+	<tr valign="top">
+		<td>
+			Welcome @Html.Raw(SourceControl.Services.SessionService.CurrentUser.FullName).
+			<br />
+			Please select the pages that you would like access to.<br />
+			The Network Team will review and assign accordingly.<br />
+			<br />
+			Thank you.
+			<br /><br />
+			<div style="padding-top: 2em;">
+				<button class="btn btn-primary" onclick="SubmitRequest()">Submit Request</button>
+			</div>
+
+		</td>
+		<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+		<td>
+			<div id="example">
+
+				<div class="demo-section k-content">
+					<div>
+						<div id="treeview"></div>
+					</div>
+				</div>
+
+			</div>
+
+		</td>
+
+	</tr>
+
+</table>
+
+
+<script>
+	$("#treeview").kendoTreeView({
+		checkboxes: { checkChildren: true },
+		check: onCheck,
+		dataSource: @Html.Raw(dsMenu)
+
+	});
+
+	function checkedNodeIds(nodes, checkedNodes) {
+		for (var i = 0; i < nodes.length; i++) {
+			if (nodes[i].checked) {
+				checkedNodes.push(nodes[i].id);
+			}
+
+			if (nodes[i].hasChildren) {
+				checkedNodeIds(nodes[i].children.view(), checkedNodes);
+			}
+		}
+	}
+
+	function onCheck() {
+	}
+
+	
+
+	function SubmitRequest() {
+		var checkedNodes = [];
+		var treeView = $("#treeview").data("kendoTreeView");
+		var message = "";
+
+		checkedNodeIds(treeView.dataSource.view(), checkedNodes);
+
+		if (checkedNodes.length > 0) {
+
+   		$.ajax({
+   			async: false,
+				url: "@vd/Access/SubmitRequestAccess",
+				data: { menuIds: checkedNodes.join(",") },
+   			dataType: "text",
+   			type: "POST",
+   			success: function (response) {
+					MessageBox("Information", "Request submitted.", true);
+					CloseSpecificTab("RequestAccess");
+   			}
+   		});
+
+
+			message = "IDs of checked nodes: " + checkedNodes.join(",");
+		} else {
+			MessageBox("Information", "Select the pages you would like access to.", true);
+			return;
+		}
+
+		console.log(message);
+
+
+	}
+
+</script>
+
+<style>
+	#treeview .k-sprite {
+		background-image: url(/Images/coloricons-sprite.png);
+	}
+
+	.rootfolder {
+		background-position: 0 0;
+	}
+
+	.folder {
+		background-position: 0 -16px;
+	}
+
+	.pdf {
+		background-position: 0 -32px;
+	}
+
+	.html {
+		background-position: 0 -48px;
+	}
+
+	.image {
+		background-position: 0 -64px;
+	}
+</style>

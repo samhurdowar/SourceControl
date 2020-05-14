@@ -1,0 +1,67 @@
+﻿
+<div id="gridOffline"></div>
+
+
+
+<script>
+	var dsOffline = new kendo.data.DataSource({
+		pageable: false,
+		transport: {
+			read: {
+				url: "/App/GetOfflineVIP",
+				dataType: "json"
+			}
+		}
+	});
+
+	$("#gridOffline").kendoGrid({
+		dataSource: dsOffline,
+		autoBind: true,
+		scrollable: true,
+		height: window.innerHeight - 270,
+		sortable: true,
+		pageable: false,
+		filterable: true,
+		resizable: true,
+		detailInit: detailInit,
+		columns: [
+			{ field: "Activef5Name", title: "f5 NAME" },
+			{ field: "ActiveVIPName", title: "VIP NAME" },
+			{ field: "StatusAvailabilityState", title: "Status" },
+			{ field: "StatusEnabledState", title: "Enabled" },
+			{ field: "StatusStatusReason", title: "Reason" },
+			{ field: "VIPIP", title: "VIPIP" },
+			{ field: "pool", title: "Pool" }
+
+		]
+
+	});
+
+	//f5Name  vipName
+	function detailInit(e) {
+
+		var dsGroupDetail = new kendo.data.DataSource({
+			transport: {
+				read: {
+					url: "/App/GetOfflineVIPOverTime?f5Name=" + e.data.Activef5Name + "&vipName=" + e.data.ActiveVIPName,
+					dataType: "json"
+				}
+			}
+		});
+
+		$("<div/>").appendTo(e.detailCell).kendoGrid({
+			scrollable: true,
+			height: 300,
+			dataSource: dsGroupDetail,
+			columns: [
+				{ field: "jobname", title: "JobName" },
+				{ field: "f5Name", title: "f5" },
+				{ field: "VIPName", title: "VIP" },
+				{ field: "ClientsideBitsIn", title: "ClientsideBitsIn" },
+				{ field: "ClientsideBitsIn", title: "ClientsideBitsOut" },
+				{ field: "ClientsideTotConns", title: "ClientsideTotalConnections" }
+			]
+		});
+	}
+
+</script>

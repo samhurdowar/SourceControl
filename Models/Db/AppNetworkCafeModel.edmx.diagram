@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="9c658fb70653490aa43421f66dd49677" Name="Diagram1">
+        <EntityTypeShape EntityType="AppNetworkCafeModel.ACI" Width="1.5" PointX="0.75" PointY="0.75" />
+        <EntityTypeShape EntityType="AppNetworkCafeModel.API_Commands" Width="1.5" PointX="2.75" PointY="0.75" />
+        <EntityTypeShape EntityType="AppNetworkCafeModel.ApplicationFeatureRequest" Width="1.5" PointX="0.75" PointY="3.75" />
+        <EntityTypeShape EntityType="AppNetworkCafeModel.ApplicationUpdate" Width="1.5" PointX="2.75" PointY="3.75" />
+        <EntityTypeShape EntityType="AppNetworkCafeModel.ContactDB" Width="1.5" PointX="4.75" PointY="0.75" />
+        <EntityTypeShape EntityType="AppNetworkCafeModel.ContractV2" Width="1.5" PointX="4.75" PointY="4.75" />
+        <EntityTypeShape EntityType="AppNetworkCafeModel.CustomOption" Width="1.5" PointX="6.75" PointY="0.75" />
+        <EntityTypeShape EntityType="AppNetworkCafeModel.DeviceGroup" Width="1.5" PointX="6.75" PointY="3.75" />
+        <EntityTypeShape EntityType="AppNetworkCafeModel.DeviceGroupMember" Width="1.5" PointX="6.75" PointY="6.75" />
+        <EntityTypeShape EntityType="AppNetworkCafeModel.DeviceGroupTask" Width="1.5" PointX="0.75" PointY="7.75" />
+        <EntityTypeShape EntityType="AppNetworkCafeModel.Device" Width="1.5" PointX="8.75" PointY="0.75" />
+        <EntityTypeShape EntityType="AppNetworkCafeModel.eVPN" Width="1.5" PointX="2.75" PointY="8.75" />
+        <EntityTypeShape EntityType="AppNetworkCafeModel.FWNat" Width="1.5" PointX="8.75" PointY="4.75" />
+        <EntityTypeShape EntityType="AppNetworkCafeModel.FWRoute" Width="1.5" PointX="8.75" PointY="7.75" />
+        <EntityTypeShape EntityType="AppNetworkCafeModel.HPNA_DEVICE" Width="1.5" PointX="4.75" PointY="9.75" />
+        <EntityTypeShape EntityType="AppNetworkCafeModel.HPNA_DEVICE_MODULE" Width="1.5" PointX="10.75" PointY="0.75" />
+        <EntityTypeShape EntityType="AppNetworkCafeModel.HPNA_DEVICE_PORT" Width="1.5" PointX="10.75" PointY="7.75" />
+        <EntityTypeShape EntityType="AppNetworkCafeModel.HPNA_DEVICE_VLAN_INFO" Width="1.5" PointX="6.75" PointY="11.75" />
+        <EntityTypeShape EntityType="AppNetworkCafeModel.InternalMailServer" Width="1.5" PointX="12.75" PointY="0.75" />
+        <EntityTypeShape EntityType="AppNetworkCafeModel.IPNetwork" Width="1.5" PointX="12.75" PointY="4.75" />
+        <EntityTypeShape EntityType="AppNetworkCafeModel.LBPoolMember" Width="1.5" PointX="12.75" PointY="9.75" />
+        <EntityTypeShape EntityType="AppNetworkCafeModel.LBVIPRequest" Width="1.5" PointX="0.75" PointY="13.75" />
+        <EntityTypeShape EntityType="AppNetworkCafeModel.Link" Width="1.5" PointX="12.75" PointY="13.75" />
+        <EntityTypeShape EntityType="AppNetworkCafeModel.MasterDevice" Width="1.5" PointX="14.75" PointY="0.75" />
+        <EntityTypeShape EntityType="AppNetworkCafeModel.ReportList" Width="1.5" PointX="14.75" PointY="6.75" />
+        <EntityTypeShape EntityType="AppNetworkCafeModel.Request" Width="1.5" PointX="8.75" PointY="14.75" />
+        <EntityTypeShape EntityType="AppNetworkCafeModel.SiteMap" Width="1.5" PointX="14.75" PointY="9.75" />
+        <EntityTypeShape EntityType="AppNetworkCafeModel.SiteMapRole" Width="1.5" PointX="14.75" PointY="14.75" />
+        <EntityTypeShape EntityType="AppNetworkCafeModel.SiteSetting" Width="1.5" PointX="16.75" PointY="0.75" />
+        <EntityTypeShape EntityType="AppNetworkCafeModel.SMChanx" Width="1.5" PointX="16.75" PointY="3.75" />
+        <EntityTypeShape EntityType="AppNetworkCafeModel.SMChangesTemp" Width="1.5" PointX="16.75" PointY="10.75" />
+        <EntityTypeShape EntityType="AppNetworkCafeModel.SMGroup" Width="1.5" PointX="10.75" PointY="16.75" />
+        <EntityTypeShape EntityType="AppNetworkCafeModel.SMJobLog" Width="1.5" PointX="12.75" PointY="17.75" />
+        <EntityTypeShape EntityType="AppNetworkCafeModel.SMTask" Width="1.5" PointX="14.75" PointY="17.75" />
+        <EntityTypeShape EntityType="AppNetworkCafeModel.SMTasksTemp" Width="1.5" PointX="16.75" PointY="17.75" />
+        <EntityTypeShape EntityType="AppNetworkCafeModel.SMUserAssignment" Width="1.5" PointX="18.75" PointY="0.75" />
+        <EntityTypeShape EntityType="AppNetworkCafeModel.SwitchModule" Width="1.5" PointX="18.75" PointY="3.75" />
+        <EntityTypeShape EntityType="AppNetworkCafeModel.SwitchPort" Width="1.5" PointX="18.75" PointY="6.75" />
+        <EntityTypeShape EntityType="AppNetworkCafeModel.UserActivityLog" Width="1.5" PointX="18.75" PointY="10.75" />
+        <EntityTypeShape EntityType="AppNetworkCafeModel.UserReport" Width="1.5" PointX="18.75" PointY="13.75" />
+        <EntityTypeShape EntityType="AppNetworkCafeModel.VMPhoneBook" Width="1.5" PointX="18.75" PointY="16.75" />
+        <EntityTypeShape EntityType="AppNetworkCafeModel.DebugLog" Width="1.5" PointX="0.75" PointY="19.75" />
+      </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

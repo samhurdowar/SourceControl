@@ -1,0 +1,247 @@
+﻿@using SourceControl.Services;
+
+@{
+	var vd = SessionService.VirtualDomain;
+
+	var pageTemplateId = 645126;
+	var obj = "obj" + pageTemplateId;
+
+	var primaryKey = "guid";
+
+    var doubleClick = "";
+    System.Text.StringBuilder sb = new System.Text.StringBuilder();
+    sb.AppendLine("grid.tbody.find('tr').dblclick(function (e) { ");
+    sb.AppendLine("		var dataItem = grid.dataItem(this); ");
+    sb.AppendLine(obj + "Edit(dataItem." + primaryKey + ");");
+    sb.AppendLine("}); ");
+
+    doubleClick = sb.ToString();
+}
+
+<style>
+	#grid_@pageTemplateId .k-dirty {
+		border-width: 0 !important;
+	}
+
+	#grid_@pageTemplateId tbody tr:hover {
+		cursor: pointer;
+	}
+
+	#grid_@pageTemplateId .k-grid-content input {
+		 height: 1em !important;
+		 padding: 1px !important;
+		 padding-left: 0px !important;
+	}
+
+	.select-row-@pageTemplateId td:first-child {
+		background-color: #007cc0;
+		border: none;
+	}
+
+</style>
+<div style="margin-bottom:5px;">
+	Select Vendor <input id='deviceVendor' name='deviceVendor' style='width:300px;' />
+</div>
+
+<center>
+    <div id="@Html.Raw(obj)divGrid" class="app-command-bar" style="width:98%">
+        <div style="text-align:left;">
+            <a href="javascript:@Html.Raw(obj)Edit(0)"><img src="@vd/Images/ToolBar/add.png" /><span> Add Contract</span></a>
+            <a href="javascript:@Html.Raw(obj)Edit_Click()"><img src="@vd/Images/ToolBar/edit.png" /><span> Edit Contract</span></a>
+            <a href="javascript:DeleteFromGrid(@pageTemplateId, '@primaryKey', 'TEXT', 'grid','')"><img src="@vd/Images/ToolBar/delete.png" /><span> Delete</span></a>
+        </div>
+    </div>
+
+    <div style="position:relative;width: 98%;" class="row">
+        <div id="grid_@pageTemplateId" style="width:100%;"></div>
+    </div>
+</center>
+
+
+<script>
+
+
+	$("#deviceVendor").kendoDropDownList({
+		autoBind: true,
+		optionLabel: {
+			TextField: "",
+			ValueField: "0"
+		},
+      dataTextField: "TextField",
+      dataValueField: "ValueField",
+      dataSource: {
+         transport: {
+            read: {
+               dataType: "json",
+               url: "@vd/App/GetDeviceVendors"
+            }
+         }
+		},
+		change: function (e) {
+			var deviceVendor = $("#deviceVendor").data("kendoDropDownList").value();
+
+			var grid = $("#grid_@pageTemplateId").data("kendoGrid");
+			grid.dataSource.transport.options.read.url = "@vd/App/GetNetworkInformationContracts?deviceVendor=" + deviceVendor;
+			grid.dataSource.read();
+
+		}
+   });
+
+
+	var dsgrid_@pageTemplateId = new kendo.data.DataSource({
+		autoSync: true,
+		pageable: false,
+		transport: {
+			read: {
+				url: "@vd/App/GetNetworkInformationContracts?deviceVendor=F5",
+				dataType: "json",
+				type: "post"
+			},
+			parameterMap: function (options) {
+                return JSON.stringify(options);
+			}
+		},
+		batch: true,
+		schema: {
+			model: {
+				id: "@primaryKey",
+				fields: {
+					guid: { editable: false },
+					startDate: { type: "date" },
+					endDate: { type: "date" }
+				}
+			}
+		}
+	});
+
+	
+	var grid_@pageTemplateId = $("#grid_@pageTemplateId").kendoGrid({
+		dataSource: dsgrid_@pageTemplateId,
+        selectable: "single row",
+        autoBind: false,
+		scrollable: true,
+		sortable: true,
+		pagable: false,
+
+		filterable: {
+			extra: false,
+			operators: {
+				string: {
+					startswith: "Starts with",
+					endswith: "Ends with",
+					eq: "Is equal to",
+					neq: "Is not equal to",
+					contains: "Contains",
+					doesnotcontain: "Does not contain"
+				}
+			}
+		},
+		height: window.innerHeight - 245,
+        columns: [
+            { title: "<input type='checkbox' value='0' id='chkAll_@pageTemplateId' />", width: 25, template: '<input type="checkbox" value="#= @primaryKey #" class="chk_@pageTemplateId" />' },
+			{ template: "#= Site #", title: "Site" },
+			{ template: "#= DeviceVendor #", title: "Vendor" },
+			{ template: "#= HostName #", title: "HostName" },
+			{ template: "#= DeviceModel #", title: "Model" },
+			{ template: "#= SerialNumber #", title: "SerialNumber" },
+			{ field: "contractNumber", title: "Contract" },
+
+			{ field: "startDate", title: "Start Date", width: "200px", type: "number", template: "#= kendo.toString(new Date(startDate), 'MM/dd/yyyy') #", editor: editor_startDate },
+			{ field: "endDate", title: "End Date", width: "200px", type: "number", template: "#= kendo.toString(new Date(endDate), 'MM/dd/yyyy') #", editor: editor_endDate },
+
+			{ field: "poNumber", title: "PO Number" },
+			{ template: "#= DeviceLocation #", title: "Device Location" },
+
+			{ field: "licenses", title: "Licenses", editor: editor_Textarea, filterable: false },
+			{ field: "notes", title: "Notes", editor: editor_Textarea, filterable: false }
+        ],
+        dataBound: function (e) {
+            $("#grid_@pageTemplateId tbody tr").hover(
+                function () {
+                    $(this).addClass('select-row-@pageTemplateId');
+                },
+                function () {
+                    $(this).removeClass('select-row-@pageTemplateId');
+                }
+            );
+
+            try {
+                var grid = $("#grid_@pageTemplateId").data("kendoGrid");
+			    @Html.Raw(doubleClick)
+
+                // select current row
+                var dataItem = grid.dataSource.get(CurrentRowId_@pageTemplateId);
+                var row = grid.tbody.find("tr[data-uid='" + dataItem.uid + "']");
+                grid.select(row);
+
+            } catch (e) {
+            }
+
+        },
+		editable: {
+			confirmation: false
+		}
+
+	}).data('kendoGrid');
+
+	function editor_startDate(container, options) {
+		$('<input type="text" />')
+			.appendTo(container)
+			.kendoDatePicker({
+				format: "MM/dd/yyyy",
+				value: kendo.toString(new Date(options.model.startDate), 'MM/dd/yyyy')
+			});
+	}
+
+
+	function editor_endDate(container, options) {
+		$('<input type="text" />')
+			.appendTo(container)
+			.kendoDatePicker({
+				format: "MM/dd/yyyy",
+				value: kendo.toString(new Date(options.model.endDate), 'MM/dd/yyyy')
+			});
+	}
+
+
+	function editor_Textarea(container, options) {
+
+		$('<textarea data-text-field="Label" data-value-field="Value" data-bind="value:' + options.field + '" style="width: ' + (container.width() - 10) + 'px;height:' + (container.height() - 12) + 'px" />')
+			.appendTo(container);
+    }
+
+   	$("#chkAll_@pageTemplateId").click(function (e) {
+      	if (this.checked) {
+      		$(".chk_@pageTemplateId").each(function () {
+      			this.checked = true;
+      		});
+      	} else {
+      		$(".chk_@pageTemplateId").each(function () {
+      			this.checked = false;
+      		});
+      	}
+      });
+
+
+    function @Html.Raw(obj)Edit_Click() {
+        var grid = $("#grid_@pageTemplateId").data("kendoGrid");
+        var dataItem = grid.dataItem(grid.select());
+        if (dataItem == null) {
+            alert("No row to edit.");
+            return;
+        }
+
+        @Html.Raw(obj)Edit(dataItem.@primaryKey);
+    }
+
+    function @Html.Raw(obj)Edit(recordId) {
+        CurrentRowId_@pageTemplateId = recordId;
+        GoToEditTab(@pageTemplateId, @pageTemplateId, recordId, '', '', 'Add Contract', 'Edit Contract');
+    }
+
+
+
+</script>
+
+
+

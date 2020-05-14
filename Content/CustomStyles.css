@@ -1,0 +1,168 @@
+﻿.refreshdiv {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    margin-top: -9em; /*set to a negative number 1/2 of your height*/
+    margin-left: -15em; /*set to a negative number 1/2 of your width*/
+}
+/*Here I will add some css for looks good*/
+.tabContainer {
+    max-height: 400px;
+    overflow: auto;
+    width: 80%;
+}
+
+.tableData {
+    border-left: solid 1px #000000;
+    border-top: solid 1px #000000;
+    width: 100%;
+}
+    .tableData tr {
+
+    }
+
+        .tableData tr.success {
+            background-color: #554a4a;
+            border-left: solid 1px #000000;
+            border-top: solid 1px #000000;
+        }
+
+        .tableData tr.warning {
+            background-color: #ff6a00;
+            color: cornsilk;
+            border-left: solid 1px #000000;
+            border-top: solid 1px #000000;
+        }
+
+        .tableData tr.danger {
+            background-color: #e83108;
+            border-left: solid 1px #000000;
+            border-top: solid 1px #000000;
+        }
+
+
+    .tableData td, .tableData th {
+        border-right: solid 1px #000000;
+        border-bottom: solid 1px #000000;
+        text-align: left;
+        padding: 5px;
+    }
+
+    .tableData td {
+        border-left: solid 1px #000000;
+        border-top: solid 1px #000000;
+    }
+
+    .tableData th {
+        background-color: #808080;
+        padding: 7px 5px;
+        border-bottom-color: #ff6a00;
+        border-left: solid 1px #000000;
+        border-top: solid 1px #000000;
+    }
+
+.odd {
+    background-color: #554a4a;
+}
+
+.even {
+    background-color: #808080;
+}
+
+tr.sub {
+    display: none;
+}
+
+.CX {
+    width: 35px;
+}
+
+    .CX span {
+        font-family: fantasy;
+        font-size: 15px;
+        display: block;
+        width: 100%;
+        cursor: pointer;
+        text-align: center;
+    }
+
+.datepickerdemoBasicUsage {
+    /** Demo styles for mdCalendar. */
+}
+
+    .datepickerdemoBasicUsage md-content {
+        padding-bottom: 200px;
+    }
+
+    .datepickerdemoBasicUsage .validation-messages {
+        font-size: 12px;
+        color: #dd2c00;
+        margin: 10px 0 0 25px;
+    }
+
+.full button span {
+    background-color: limegreen;
+    border-radius: 32px;
+    color: black;
+}
+
+.partially button span {
+    background-color: orange;
+    border-radius: 32px;
+    color: black;
+}
+
+.nav,
+.pagination,
+.carousel,
+.panel-title a {
+    cursor: pointer;
+}
+
+.dropdown-submenu {
+    position: relative;
+}
+
+    .dropdown-submenu > .dropdown-menu {
+        top: 0;
+        left: 100%;
+        margin-top: -6px;
+        margin-left: -1px;
+        -webkit-border-radius: 0 6px 6px 6px;
+        -moz-border-radius: 0 6px 6px;
+        border-radius: 0 6px 6px 6px;
+    }
+
+    .dropdown-submenu:hover > .dropdown-menu {
+        display: block;
+    }
+
+    .dropdown-submenu > a:after {
+        display: block;
+        content: " ";
+        float: right;
+        width: 0;
+        height: 0;
+        border-color: transparent;
+        border-style: solid;
+        border-width: 5px 0 5px 5px;
+        border-left-color: #ccc;
+        margin-top: 5px;
+        margin-right: -10px;
+    }
+
+    .dropdown-submenu:hover > a:after {
+        border-left-color: #fff;
+    }
+
+    .dropdown-submenu.pull-left {
+        float: none;
+    }
+
+        .dropdown-submenu.pull-left > .dropdown-menu {
+            left: -100%;
+            margin-left: 10px;
+            -webkit-border-radius: 6px 0 6px 6px;
+            -moz-border-radius: 6px 0 6px 6px;
+            border-radius: 6px 0 6px 6px;
+        }

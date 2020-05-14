@@ -1,0 +1,240 @@
+﻿@{
+	var recordId = ViewData["RecordId"].ToString();
+	var pageTemplate = (SourceControl.Models.Db.PageTemplate)ViewData["PageTemplate"];
+}
+
+<style>
+	#grid1, #grid2 {
+		position: relative;
+		width: 300px;
+		height: 400px;
+		cursor: pointer;
+	}
+</style>
+
+
+
+<div class="app-command-bar">
+	<a href="javascript:@Html.Raw(pageTemplate.PageTemplateId)Save('default')" ><img src="/Images/ToolBar/save.png" > <span>Save</span></a>
+	<a href="javascript:@Html.Raw(pageTemplate.PageTemplateId)Cancel()" ><img src="/Images/ToolBar/cancel.png" > <span>Cancel</span></a>
+</div>
+
+
+<br>
+
+
+<form id="FormEdit_@Html.Raw(pageTemplate.PageTemplateId)">
+	<input type="hidden" id="@Html.Raw(pageTemplate.TableName)_UserId" value="@recordId">
+	<input type="hidden" id="InternalId_@Html.Raw(pageTemplate.PageTemplateId)" value="@recordId">
+
+	<table>
+
+		<tr valign="top">
+			<td>
+				<table style="width:60%;height:142px;">
+					<tbody>
+						<tr style="height:20px;">
+							<td nowrap="nowrap" style="width:10.1064%;">AD Name</td>
+							<td style="width:89.8936%;">
+								<input type="text" id="@Html.Raw(pageTemplate.TableName)_AdName" name="@Html.Raw(pageTemplate.TableName)_AdName" style="width:300px;" , maxlength="250" required="" validationmessage="Required">
+
+							</td>
+						</tr>
+						<tr style="height:20px;">
+							<td nowrap="nowrap" style="width:10.1064%;">
+								Is Active
+							</td>
+							<td style="width:89.8936%;">
+								<div class="pretty p-default"><input type="checkbox" id="@Html.Raw(pageTemplate.TableName)_IsActive" name="@Html.Raw(pageTemplate.TableName)_IsActive" value="true"><div class="state p-primary"><label> </label></div></div>
+
+							</td>
+						</tr>
+						<tr style="height:20px;">
+							<td nowrap="nowrap" style="width:10.1064%;">
+								First Name
+							</td>
+							<td style="width:89.8936%;">
+								<input type="text" id="@Html.Raw(pageTemplate.TableName)_FirstName" name="@Html.Raw(pageTemplate.TableName)_FirstName" style="width:300px;" maxlength="100" required="" validationmessage="Required">
+
+							</td>
+						</tr>
+						<tr style="height:20px;">
+							<td nowrap="nowrap" style="width:10.1064%;">
+								Last Name
+							</td>
+							<td style="width:89.8936%;">
+								<input type="text" id="@Html.Raw(pageTemplate.TableName)_LastName" name="@Html.Raw(pageTemplate.TableName)_LastName" style="width:300px;" maxlength="100" required="" validationmessage="Required">
+
+							</td>
+						</tr>
+
+
+						<tr style="height:20px;"><td nowrap="nowrap" style="width:10.1064%;"><br></td><td style="width:89.8936%;"><br></td></tr>
+
+
+
+						<tr ><td nowrap="nowrap" style="width:10.1064%;"><br></td>
+							
+							  <td style="width:89.8936%;">
+
+
+							  	<table>
+							  		<tr><td align="center" style="font-size:1em;font-weight:bold;" colspan="3">Assigned Role(s)</td></tr>
+							  		<tr valign="top">
+
+							  			<td><div id="grid1"></div></td>
+							  			<td valign="middle">
+
+							  				<button class="k-button fas fa-caret-right" style="color:#808080;font-size:17px;width:30px;padding-left:4px;margin-bottom:5px;" onclick="AddRemoveGrid('grid1', 'grid2', 'add')"> </button>
+							  				<br />
+							  				<button class="k-button fas fa-caret-left" style="color:#808080;font-size:17px;width:30px;padding-right:4px;" onclick="AddRemoveGrid('grid1', 'grid2', 'remove')"> </button>
+
+							  			</td>
+							  			<td><div id="grid2"></div></td>
+							  		</tr>
+							  	</table>
+
+							  </td>
+
+						</tr>
+
+					</tbody>
+				</table>
+
+			</td>
+		</tr>
+
+
+	</table>
+
+</form>
+
+
+<script>
+
+    var ds1 = new kendo.data.DataSource({
+        transport: {
+            read: {
+                url: "/Access/GetAvailRoles/@recordId",
+                dataType: "json"
+            }
+        }
+    });
+
+    var ds2 = new kendo.data.DataSource({
+        transport: {
+            read: {
+					url: "/Access/GetAssignedRoles/@recordId",
+                dataType: "json"
+            }
+        }
+    });
+
+    $(document).ready(function () {
+
+        var grid1 = $("#grid1").kendoGrid({
+            dataSource: ds1,
+			  editable: "popup",
+            selectable: "multiple",
+			  filterable: false,
+            pageable: false,
+            columns: [
+					{ field: "RoleName", title: "Available Roles" }
+            ]
+        }).data("kendoGrid");
+
+        var grid2 = $("#grid2").kendoGrid({
+			  dataSource: ds2,
+            editable: "popup",
+            selectable: "multiple",
+			  filterable: false,
+            pageable: false,
+            columns: [
+					{ field: "RoleName",  title: "Assigned to User" }
+            ]
+        }).data("kendoGrid");
+
+
+    });
+</script>
+
+
+<script>
+		$(document).ready(function () {
+
+			$("#gridAccess").kendoGrid({
+				dataSource: {
+					transport: {
+						read: {
+							dataType: 'json',
+							url: '/Access/GetMenuForUser',
+						}
+					},
+					group: { field: "FirstName" }
+				},
+
+				groupable: false, // this will remove the group bar
+				sortable: true,
+				columns: ["FirstName", "LastName"]
+			});
+
+			BindFormData(@Html.Raw(pageTemplate.PageTemplateId), "@recordId", "Edit");
+		});
+
+
+
+	function @Html.Raw(pageTemplate.PageTemplateId)Cancel() {
+		GoToListTab(@Html.Raw(pageTemplate.PageTemplateId));
+	}
+
+	function @Html.Raw(pageTemplate.PageTemplateId)Save(nextStep) {
+
+		// validation
+		var validCustomRule = true;
+		var validator = $("#FormEdit_@Html.Raw(pageTemplate.PageTemplateId)").kendoValidator().data("kendoValidator");
+
+		if (!validator.validate() || !validCustomRule) {
+			return;
+		}
+
+		var json = ToJsonString("FormEdit_@Html.Raw(pageTemplate.PageTemplateId)");
+
+		// get access
+		var ids = GetGridIds("grid2", "RoleId");
+
+		var uid = "";
+		$.ajax({
+			url: "/Page/SaveFormData",
+			type: "POST",
+			data: { pageTemplate.PageTemplateId: @Html.Raw(pageTemplate.PageTemplateId), json: json, oldJson: "" },
+			async: false,
+			dataType: "text",
+			success: function (currentRowId) {
+				$.ajax({
+					url: "/Access/UpdateAccess",
+					type: "POST",
+					data: { userId: @recordId, ids: ids},
+					async: false,
+					dataType: "text",
+					success: function (data) {
+						if (data != "SUCCESS") {
+							MessageBox("Warning","Error updating user access.",false)
+						}
+
+					}
+				});
+
+			}
+		}).done(function () {
+
+			$("#grid_@Html.Raw(pageTemplate.PageTemplateId)").data("kendoGrid").dataSource.read();
+			$("#grid_@Html.Raw(pageTemplate.PageTemplateId)").data("kendoGrid").refresh(); 
+			if (nextStep == "close") {
+				CloseSpecificTab("PageTemplate@Html.Raw(pageTemplate.PageTemplateId)");
+			} else {
+				GoToListTab(@Html.Raw(pageTemplate.PageTemplateId));
+			}
+		});
+	}
+</script>
+

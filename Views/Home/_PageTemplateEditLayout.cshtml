@@ -1,0 +1,143 @@
+﻿
+<div id="tabEditLayout" style="width:100%;">
+    <ul>
+        <li class="k-state-active">Layout</li>
+        <li>Custom Options</li>
+    </ul>
+    <div>
+        <form id="FormEditLayout" name="FormEditLayout">
+
+            <div class="command-bar">
+                <span id="cmdSaveEditLayout" formname="FormEditLayout" class="command-disabled-span"><span class="command-icon fas fa-save">&nbsp;</span> Save</span>
+                <span class="app-command-item">
+                    Num of Columns &nbsp;
+                    <select id="numOfEditCol" name="numOfEditCol" style="width:100px;">
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                    </select>
+
+                    <span class="command-active-span" onclick="LoadEditLayout()"><span class="command-icon fas fa-tasks">&nbsp;</span> Load Layout</span>
+
+                </span>
+            </div>
+
+            <div>
+                <div id="progressFormEditLayout">
+                    <textarea id="EditLayout" name="EditLayout" cols="80" rows="200" class="expandEditor"></textarea>
+                </div>
+
+            </div>
+        </form>
+
+    </div>
+    <div>
+        <div class="command-bar">
+            <span id="cmdSaveEditLayoutOption" formname="FormEditLayoutOption" class="command-disabled-span"><span class="command-icon fas fa-save">&nbsp;</span> Save</span>
+        </div>
+
+        <form id="FormEditLayoutOption" name="FormEditLayoutOption">
+            <table style="width:100%;" class="form-layout-sm">
+                <tr>
+                    <td>Custom Edit Form</td>
+                    <td>
+                        <input type="text" id="CustomEditForm" style="width:400px;" />
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>Style</td>
+                    <td>
+                        <textarea id="EditFormStyle" name="EditFormStyle" style="width:100%;height:150px;" />
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>Command</td>
+                    <td>
+                        <textarea id="EditFormCommand" name="EditFormCommand" style="width:100%;height:150px;" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>Body</td>
+                    <td>
+                        <textarea id="EditFormBody" name="EditFormBody" style="width:100%;height:150px;" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>Script</td>
+                    <td>
+                        <textarea id="EditFormScript" name="EditFormScript" style="width:100%;height:400px;" />
+                    </td>
+                </tr>
+            </table>
+        </form>
+
+    </div>
+
+</div>
+
+<script>
+
+    $(document).ready(function () {
+
+        setTimeout(function () {
+            BindButtonToForm("cmdSaveEditLayout");
+            BindButtonToForm("cmdSaveEditLayoutOption");
+        }, 1000);
+
+        $("#tabEditLayout").kendoTabStrip();
+    });
+
+
+    function SaveEditLayoutOption() {
+        var json = ToJsonString("FormEditLayoutOption");
+        json = InjectPrimaryKey(json, "PageTemplateId", $("#PageTemplateId").val());
+
+        $.ajax({
+            url: "/PageTemplate/SavePageTemplate",
+            type: "POST",
+            data: { pageTemplateId: $("#PageTemplateId").val(), json: json },
+            dataType: "text",
+            success: function (response) {
+                if (response.indexOf("Unable to process") > -1) {
+                    MessageBox("Information", response, false);
+                } else {
+                    DisableButton("cmdSaveEditLayoutOption");
+                }
+            }
+        });
+    }
+
+    function SaveEditLayout() {
+        $.ajax({
+            url: "/PageTemplate/SaveLayout",
+            type: "POST",
+            data: { pageTemplateId: PageTemplateId, layout: $("#EditLayout").data("kendoEditor").value(), columnName: "EditLayout" },
+            dataType: "text",
+            success: function (response) {
+                if (response.indexOf("Unable to process") > -1) {
+                    MessageBox("Information", response, false);
+                } else {
+                    DisableButton("cmdSaveEditLayout");
+                }
+            }
+        });
+    }
+
+    function LoadEditLayout() {
+        $.ajax({
+            url: "/PageTemplate/GetLayoutFromColumnDef",
+            data: { pageTemplateId: PageTemplateId, numOfCol: $("#numOfEditCol").val() },
+            dataType: "text",
+            type: "POST",
+            success: function (response) {
+                $("#EditLayout").data("kendoEditor").value(response);
+            }
+        });
+    }
+
+
+
+</script>

@@ -1,0 +1,239 @@
+﻿<style>
+    .disabled {
+        color: grey;
+    }
+
+    #gridPageTemplate tbody tr:hover {
+        cursor: pointer;
+    }
+
+    #gridPageTemplate .k-grid-content {
+        overflow-y: scroll;
+    }
+
+    .divTableField {
+        cursor: pointer;
+    }
+
+    #gridPageTemplate .k-alt {
+        background-color: white;
+    }
+
+    #gridPageTemplate .k-state-selected {
+        background-color: #007cc0;
+        color: white;
+    }
+
+    #gridPageTemplate .k-header {
+        font-weight: bold;
+        padding: 3px;
+    }
+
+    .active-template {
+        color: #007cc0;
+    }
+</style>
+
+<div id="progressGridPageTemplate">
+    <div id="gridPageTemplate"></div>
+</div>
+
+
+<script>
+var dsPageTemplate = new kendo.data.DataSource({
+    pageable: false,
+    autoSync: false,
+    transport: {
+        read: {
+            url: "/PageTemplate/GetPageTemplates",
+            dataType: "json"
+        }
+    },
+    schema: {
+        model: {
+            id: "PageTemplateId",
+            fields: {
+                PageTemplateId: { editable: false, defaultValue: 0 }
+            }
+        }
+    }
+});
+
+
+$("#gridPageTemplate").kendoGrid({
+    dataSource: dsPageTemplate,
+    autoBind: false,
+    selectable: "single row",
+    scrollable: false,
+    pagable: false,
+    height: (window.innerHeight - 250),
+    columns: [
+        { field: "TemplateName", title: "Templates" }
+    ],
+    editable: false,
+    change: change_gridPageTemplate,
+    dataBound: dataBound_gridPageTemplate
+});
+
+function change_gridPageTemplate(e) {
+    try {
+
+        var gridPageTemplate = $("#gridPageTemplate").data("kendoGrid").dataItem(this.select());
+        PageTemplateId = gridPageTemplate.PageTemplateId;
+
+        $("#tabPageTemplate").show();
+        $("#divEditField").hide();
+
+        // ajax to get data
+        $.ajax({
+            url: "/PageTemplate/GetPageTemplate",
+            data: { pageTemplateId: PageTemplateId },
+            dataType: "json",
+            type: "POST",
+            success: function (data) {
+
+                DisableButtonClass("pagetemplate-button");
+
+                if (data.PageTemplateId2 > 0) {
+                    var refKey2 = $("#RefKey2").data("kendoDropDownList");
+                    refKey2.dataSource.transport.options.read.url = "/PageTemplate/GetColumnOptions?pageTemplateId=" + data.PageTemplateId2;
+                    refKey2.dataSource.read();
+
+                    var primaryKey2 = $("#PrimaryKey2").data("kendoDropDownList");
+                    primaryKey2.dataSource.transport.options.read.url = "/PageTemplate/GetColumnOptions?pageTemplateId=" + data.PageTemplateId;
+                    primaryKey2.dataSource.read();
+                }
+
+
+                // Set PageTemplate Form
+                BindForm("FormPageTemplate", data);
+
+
+                // Set Fields  xxx
+                SetkendoListView("ColumnDefs", "/PageTemplate/GetColumnDefs?pageTemplateId=" + data.PageTemplateId);
+
+                
+                if (data.TableName.length < 2) {  // Free form
+                    $("#displayTableName_").html("<< Not mapped >>");
+                    $(".table-driven-property").hide();
+                } else {
+                    
+                    $("#displayTableName_").html(data.TableName);
+                    $(".table-driven-property").show();
+
+                    // set Lookup tables for specific database
+                    SetkendoDropDownList("LookupTable", "/PageTemplate/GetTableOptions?dbEntityId=" + $("#DbEntityId").data("kendoDropDownList").value());
+                }
+
+
+                // set layout
+                var editLayout= (data.EditLayout != null) ? data.EditLayout : "";
+                var viewLayout = (data.ViewLayout != null) ? data.ViewLayout : "";
+                var searchLayout = (data.SearchLayout != null) ? data.SearchLayout : "";
+                $("#EditLayout").data("kendoEditor").value(editLayout);
+                $("#ViewLayout").data("kendoEditor").value(viewLayout);
+                $("#SearchLayout").data("kendoEditor").value(searchLayout);
+
+                // bind other forms
+                BindForm("FormViewLayoutOption", data);
+                BindForm("FormEditLayoutOption", data);
+                BindForm("FormSearchLayoutOption", data);
+            }
+        });
+    } catch (e) {
+        alert(e);
+    }
+
+}
+
+
+function dataBound_gridPageTemplate(e) {
+    try {
+        // select the current pageTemplateId
+        var view = this.dataSource.view();
+        for (var i = 0; i < view.length; i++) {
+            if (view[i].id == PageTemplateId) {
+                this.select(this.table.find("tr[data-uid='" + view[i].uid + "']"));
+                break;
+            }
+        }
+    } catch (e) {
+
+    }
+
+    try {
+        $("#Table2").data().kendoGrid.destroy();
+        $("#Table2").empty();
+    } catch (e) {
+    }
+
+    $("#Table2").kendoDropDownList({
+        optionLabel: {
+            ValueField: "",
+            TextField: ""
+        },
+        autoBind: false,
+        dataValueField: "ValueField",
+        dataTextField: "TextField",
+        dataSource: {
+            transport: {
+                read: {
+                    dataType: "json",
+                    url: "/PageTemplate/GetTableOptions?dbEntityId=" + $("#DbEntityId").data("kendoDropDownList").value()
+                }
+            }
+        },
+        change: function (e) {
+            var dataItem = e.sender.dataItem();
+            SetkendoDropDownList("RefKey2", "/PageTemplate/GetColumnOptionsByName?tableName=" + dataItem.ValueField + "&dbEntityId=" + $("#DbEntityId").data("kendoDropDownList").value());
+        }
+    });
+
+}
+
+function DeletePageTemplate() {
+    if (PageTemplateId == 0) {
+        MessageBox("Information", "Select template to delete.", false);
+        return;
+    }
+
+    ConfirmMessage("Warning", "Delete template?");
+
+    $("#dialogYesButton").click(function () {
+        try {
+
+            $.ajax({
+                url: "/PageTemplate/DeletePageTemplate",
+                data: { pageTemplateId: PageTemplateId },
+                dataType: "text",
+                type: "POST",
+                success: function (response) {
+                    if (response != "T") {
+                        MessageBox("Information", response, false);
+                    } else {
+                        $("#gridPageTemplate").data("kendoGrid").dataSource.read();
+                        PageTemplateId = 0;
+
+                        $("#tabPageTemplate").hide();
+                        $("#dialogYesNo").data("kendoWindow").close();
+                    }
+                },
+                error: function (x, y, z) {
+                    alert("Error DeletePageTemplate.");
+                    $("#dialogYesNo").data("kendoWindow").close();
+                }
+            });
+
+        } catch (e) {
+            $("#dialogYesNo").data("kendoWindow").close();
+        }
+
+    })
+
+    $("#dialogNoButton").click(function () {
+        $("#dialogYesNo").data("kendoWindow").close();
+    })
+}
+
+
+</script>

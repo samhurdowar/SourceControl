@@ -1,0 +1,324 @@
+﻿<div class="k-content k-state-active" style="display: block; height: auto; overflow: auto; opacity: 1;" aria-expanded="true" role="tabpanel" id="tabstrip-2">
+
+
+
+
+    <style>
+        #grid_2087 tbody tr:hover {
+            cursor: pointer;
+        }
+
+        #grid_2087 .k-grid-content input {
+            height: 1em !important;
+            padding: 1px !important;
+            padding-left: 0px !important;
+        }
+
+        .select-row-2087 td:first-child {
+            background-color: #007cc0;
+            border: none;
+        }
+    </style>
+
+    <div id="gridBody_2087" style="padding: 0px;">
+
+    </div>
+
+    <div id="obj2087divGrid" class="app-command-bar">
+
+        <a href="javascript:obj2087Edit(0)"><img src="/Images/ToolBar/add.png"><span> Add Link</span></a>
+        <a href="javascript:obj2087Edit_Click()"><img src="/Images/ToolBar/edit.png"><span> Edit Link</span></a>
+        <a href="javascript:DeleteFromGrid(2087, 'LinkGuid', 'TEXT', 'grid')"><img src="/Images/ToolBar/delete.png"><span> Delete</span></a>
+        <a href="javascript:ReloadTab()"><img src="/Images/ToolBar/reload.png"><span> Refresh</span></a>
+        <a href="javascript:Download_obj2087_Excel()"><img src="/Images/ToolBar/download.png"><span> Download to Excel</span></a>
+        <a href="javascript:ClearPageFilter(2087)"><img src="/Images/ToolBar/filter-remove.png"><span> Clear Filters</span></a>
+
+
+    </div>
+
+    <div id="grid_2087"></div>
+
+
+    <script type="text/x-kendo-template" id="template_2087">
+        <div class="app-command-bar" id="detailGrid_2087">
+
+            <a href="javascript:obj2087Edit2(0, '[RefKeyValue1]')"><img src="/Images/ToolBar/add.png" /><span>  </span></a>
+            <a href="javascript:obj2087Edit2_Click('[RefKeyValue2]')"><img src="/Images/ToolBar/edit.png" /><span> </span></a>
+            <a href="javascript:DeleteFromGrid(0, 'dummy', 'grid')"><img src="/Images/ToolBar/delete.png" /><span> Delete</span></a>
+
+        </div>
+    </script>
+
+
+
+
+
+    <script>
+
+
+        function Download_obj2087_Excel() {
+            var grid = $("#grid_2087").data("kendoGrid");
+            grid.dataSource.read();
+            $("#grid_2087").getKendoGrid().saveAsExcel();
+        }
+
+
+
+
+        var CurrentRowId_2087 = "";
+
+        $(document).ready(function () {
+
+
+            $("#grid_2087").kendoGrid({
+                excel: {
+                    fileName: "ExportData.xlsx",
+                    allPages: true,
+                    filterable: true
+                },
+                selectable: "single row",
+                autoBind: true,
+                dataSource: {
+                    type: "json",
+                    serverPaging: true, serverSorting: true, serverFiltering: true, pageable: true, pageSize: 50,
+                    allowUnsort: true,
+                    transport: {
+                        read: {
+                            url: "/Page/GetServerSideRecords?pageTemplateId=2087",
+                            dataType: "json",
+                            type: "POST",
+                            contentType: "application/json; charset=utf-8"
+                        },
+                        parameterMap: function (options) {
+                            return JSON.stringify(options);
+                        }
+                    },
+                    schema: {
+                        data: "data", total: "total",
+                        model: {
+                            id: "LinkGuid",
+                            fields: {
+                                LinkGuid: { type: "string", editable: false }
+                                ,
+                                LinkName: { type: "string" }
+                                ,
+                                LinkURL: { type: "string" }
+                                ,
+                                Comments: { type: "string" }
+
+                            }
+                        }
+                    }
+
+                },
+                pageable: { pageSizes: [10, 20, 50, 75] },
+                scrollable: true,
+                //scrollable: { virtual: true },
+                sortable: true,
+                resizable: true,
+
+                groupable: false,
+
+                filterable: {
+                    extra: false,
+                    operators: {
+                        string: {
+                            text_startswith: "Starts with",
+                            text_endswith: "Ends with",
+                            text_eq: "Is equal to",
+                            text_neq: "Is not equal to",
+                            text_contains: "Contains",
+                            text_doesnotcontain: "Does not contain"
+                        },
+                        number: {
+                            number_eq: "Is equal to",
+                            number_neq: "Is not equal to",
+                            number_gt: "Is greater than",
+                            number_lt: "Is less than"
+                        },
+                        date: {
+                            date_eq: "Is equal to",
+                            date_neq: "Is not equal to",
+                            date_lt: "Is before",
+                            date_gt: "Is after"
+
+                        }
+                    }
+                },
+                height: window.innerHeight - 225,
+                columns: [
+                    { title: "<input type='checkbox' value='0' id='chkAll_2087' />", width: 25, template: '<input type="checkbox" value="#= LinkGuid #" class="chk_2087" />' },
+                    {
+                        field: "LinkName", title: "LinkName", encoded: false, attributes: { "style": "white-space:nowrap;" }
+                    }, {
+                        field: "LinkURL", title: "LinkURL", template: "#= GetHyperLink(LinkURL) #", encoded: false, attributes: { "style": "white-space:nowrap;" }, width: "55%"
+                    }, {
+                        field: "Comments", title: "Comments", encoded: false, attributes: { "style": "white-space:nowrap;" }
+                    }
+                ],
+                change: function (e) {
+
+                },
+                dataBound: function (e) {
+                    $("#grid_2087 tbody tr").hover(
+                        function () {
+                            $(this).addClass('select-row-2087');
+                        },
+                        function () {
+                            $(this).removeClass('select-row-2087');
+                        }
+                    );
+
+                    try {
+
+                    } catch (e) {
+                    }
+
+                    try {
+                        var grid = $("#grid_2087").data("kendoGrid");
+                        grid.tbody.find('tr').dblclick(function (e) {
+                            var dataItem = grid.dataItem(this);
+                            obj2087Edit(dataItem.LinkGuid);
+                        });
+
+
+                        // select current row
+                        var dataItem = grid.dataSource.get(CurrentRowId_2087);
+                        var row = grid.tbody.find("tr[data-uid='" + dataItem.uid + "']");
+                        grid.select(row);
+
+                    } catch (e) {
+                    }
+
+                }
+
+            });
+
+
+
+
+
+
+
+
+            $("#chkAll_2087").click(function (e) {
+                if (this.checked) {
+                    $(".chk_2087").each(function () {
+                        this.checked = true;
+                    });
+                } else {
+                    $(".chk_2087").each(function () {
+                        this.checked = false;
+                    });
+                }
+            });
+
+
+            $("#chkAll_0").click(function (e) {
+                if (this.checked) {
+                    $(".chk_0").each(function () {
+                        this.checked = true;
+                    });
+                } else {
+                    $(".chk_0").each(function () {
+                        this.checked = false;
+                    });
+                }
+            });
+        });
+
+
+        function obj2087detailInit(e) {
+
+            $("<div></div>").appendTo(e.detailCell).kendoGrid({
+                dataSource: {
+                    type: "json",
+                    transport: {
+                        read: {
+                            url: "/Page/GetDetailGrid?pageTemplateId=2087&refKeyValue=" + e.data.dummy,
+                            dataType: 'json',
+                            type: 'POST'
+                        }
+                    },
+
+                    schema: {
+                        data: "data",
+                        total: "total",
+                        model: {
+                            id: "dummy",
+                            fields: {
+                                dummy: { type: "string" },
+                                xxx : {}
+                            }
+                        }
+                  }
+                },
+        scrollable: true,
+            sortable: true,
+                pageable: false,
+                    selectable: "single row",
+                        toolbar: kendo.template($("#template_2087").html().replace("[RefKeyValue1]", e.data.dummy).replace("[RefKeyValue2]", e.data.dummy)),
+                            columns: [
+
+                            ],
+                                dataBound: function (e) {
+                                    try {
+                                        var grid = this;
+                                        // set double click
+                                        grid.tbody.find('tr').dblclick(function (e) {
+                                            var data = grid.dataItem(this);
+                                            obj2087Edit2(data.dummy, data.);
+                                        });
+                                    } catch (e) {
+                                        alert(e);
+                                    }
+                                },
+        change: function (e) {
+            try {
+                var dataItem = this.dataItem(this.select());
+                ChildRecordId_0 = dataItem.dummy;
+
+            } catch (e) {
+                //alert(e);
+            }
+        }
+            });
+        }
+
+        function obj2087Edit_Click() {
+            var grid = $("#grid_2087").data("kendoGrid");
+            var dataItem = grid.dataItem(grid.select());
+            if (dataItem == null) {
+                alert("No row to edit.");
+                return;
+            }
+
+            obj2087Edit(dataItem.LinkGuid);
+        }
+
+        function obj2087Edit(recordId) {
+            CurrentRowId_2087 = recordId;
+            GoToEditTab(2087, 2087, recordId, '', 'Add Link', 'Edit Link');
+        }
+
+        var ChildRecordId_0 = "";
+
+        function obj2087Edit2_Click(refKeyValue) {
+
+            if (ChildRecordId_0 == "") {
+                alert("No row to edit.");
+                return;
+            }
+
+            obj2087Edit2(ChildRecordId_0, refKeyValue);
+        }
+
+        function obj2087Edit2(recordId, refKeyValue) {
+            CurrentRowId_2087 = recordId;
+            GoToEditTab(2087, 0, recordId, '', refKeyValue, '', '');
+        }
+
+
+    </script>
+
+</div>

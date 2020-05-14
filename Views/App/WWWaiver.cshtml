@@ -1,0 +1,235 @@
+﻿
+<style>
+	/*Here I will add some css for looks good*/
+	.tabContainer {
+		max-height: 400px;
+		overflow: auto;
+		width: 80%;
+	}
+
+	.tableData {
+		border-left: solid 1px #000000;
+		border-top: solid 1px #000000;
+		width: 100%;
+	}
+
+		.tableData tr {
+		}
+
+			.tableData tr.success {
+				background-color: lightskyblue;
+			}
+
+			.tableData tr.warning {
+				background-color: #ff6a00;
+			}
+
+
+		.tableData td, .tableData th {
+			border-right: solid 1px #000000;
+			border-bottom: solid 1px #000000;
+			text-align: left;
+			padding: 5px;
+		}
+
+		.tableData td {
+		}
+
+		.tableData th {
+			background-color: #808080;
+			padding: 7px 5px;
+			border-bottom-color: #ff6a00;
+		}
+
+	.odd {
+		background-color: #707070;
+	}
+
+	.even {
+		background-color: #909090;
+	}
+
+	tr.sub {
+		display: none;
+	}
+
+	.CX {
+		width: 35px;
+	}
+
+		.CX span {
+			font-family: fantasy;
+			font-size: 15px;
+			display: block;
+			width: 100%;
+			cursor: pointer;
+			text-align: center;
+		}
+
+	.refreshdiv {
+		position: fixed;
+		top: 50%;
+		left: 50%;
+		margin-top: -9em; /*set to a negative number 1/2 of your height*/
+		margin-left: -15em; /*set to a negative number 1/2 of your width*/
+	}
+
+	label {
+		display: inline-block;
+		width: 5em;
+	}
+</style>
+<div id="AngularTemplatePlaceHolder008"></div>
+
+<div id="AngularTemplateBody008">
+
+	  
+	<div class="container" style="width:97%" ng-app="MainApp">
+		<div class="bs-docs" ng-controller="VMWaiverController" >
+			<div class="row">
+				<div stlye="float:left">
+					<button class="btn btn-success" ng-click="createWaiver()"> Create New Waiver</button>
+				</div>
+
+				<div style="float:right"><span ng-show="showCount"><br />Applied to {{count}} records. </span></div>
+				<hr />
+			</div>
+			<div class="row">
+				<table class="tableData">
+					<thead>
+						<tr>
+							<th>Create On</th>
+							<th>Waiver ID</th>
+							<th>STIG ID</th>
+							<th>Wavier Name</th>
+							<th>Waiver Type</th>
+							<th>Waiver Owner</th>
+							<th>Platform</th>
+							<th>Device List</th>
+							<th>Waiver Last Applied</th>
+							<th>expires</th>
+							<th>Options</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr ng-class-even="'even'" ng-class-odd="'odd'" ng-repeat="I in waiverList">
+							<td>{{I.created}}</td>
+							<td><a ng-click="showDetailWaiver(I)">{{I.waiverID}}</a></td>
+							<td>{{I.stigID}}</td>
+							<td>{{I.waiverName}}</td>
+							<td>{{I.waiverType}}</td>
+							<td>{{I.businessOwner}}</td>
+							<td>{{I.platform}}</td>
+							<td>{{I.deviceID}}</td>
+							<td>
+								<span ng-show="I.lastApplied = appling">appling</span> {{I.lastApplied}}
+
+							</td>
+							<td>{{I.expirationDate}}</td>
+							<td><button class="btn btn-danger" ng-click="deleteWaiver(I.guid)">Delete Waiver</button> &nbsp;<button class="btn btn-warning" ng-click="applyWaiver(I.waiverID)">Apply Waiver</button></td>
+
+						</tr>
+					</tbody>
+				</table>
+			</div>
+			<div ng-show="showDetails">
+				<div class="row">
+					<hr />
+					<h2>Waiver Details</h2>
+				</div>
+				<div class="row">
+
+
+					<table>
+						<tr>
+							<td>Waiver ID</td>
+							<td><input type="text" class="input-sm" size="80" class="input-sm" size="80" ng-model="EditWaiver.waiverID" /></td>
+						</tr>
+						<tr>
+							<td>STIG ID</td>
+							<td><input type="text" class="input-sm" size="80" ng-model="EditWaiver.stigID" /></td>
+						</tr>
+						<tr>
+							<td>Name</td>
+							<td><input type="text" class="input-sm" size="80" ng-model="EditWaiver.waiverName" /></td>
+						</tr>
+						<tr>
+							<td>Waiver Type</td>
+							<td><input type="text" class="input-sm" size="80" ng-model="EditWaiver.waiverType" /></td>
+						</tr>
+						<tr>
+							<td>Business Owner</td>
+							<td><input type="text" class="input-sm" size="80" ng-model="EditWaiver.businessOwner" /></td>
+						</tr>
+						<tr>
+							<td>Platform</td>
+							<td><input type="text" class="input-sm" size="80" ng-model="EditWaiver.platform" /></td>
+						</tr>
+						<tr>
+							<td>Expiration Date</td>
+							<td>
+								<input type="text" class="input-sm" size="80" class="form-control input-sm" uib-datepicker-popup="{{format}}" ng-model="E.expirationDate" is-open="E.opened" datepicker-options="dateOptions" ng-required="true" close-text="Close" alt-input-formats="altInputFormats" />
+								<span class="input-group-btn">
+									<button type="button" class="btn btn-default btn-sm" ng-click="open($event,E)"><i class="glyphicon glyphicon-calendar"></i></button>
+								</span>
+							</td>
+						</tr>
+						<tr>
+							<td>Security Impact</td>
+							<td><input type="text" class="input-sm" size="80" ng-model="EditWaiver.securityImpact" /></td>
+						</tr>
+						<tr>
+							<td>World Writable Paths</td>
+							<td><input type="text" class="input-sm" size="80" ng-model="EditWaiver.worldWritablePaths" />    (Separate paths with commas. Use % to wildcard )</td>
+						</tr>
+						<tr>
+							<td>Business Justification</td>
+							<td><input type="text" class="input-sm" size="80" ng-model="EditWaiver.businessJustification" /></td>
+						</tr>
+						<tr>
+							<td>Business Impact</td>
+							<td><input type="text" class="input-sm" size="80" ng-model="EditWaiver.businessImpact" /></td>
+						</tr>
+						<tr>
+							<td>Operational Impact</td>
+							<td><input type="text" class="input-sm" size="80" ng-model="EditWaiver.operationalImpact" /></td>
+						</tr>
+						<tr>
+							<td>Mitigating Controls</td>
+							<td><input type="text" class="input-sm" size="80" ng-model="EditWaiver.mitigatingControls" /></td>
+						</tr>
+						<tr>
+							<td>Residual Risk</td>
+							<td><input type="text" class="input-sm" size="80" ng-model="EditWaiver.residualRisk" /></td>
+						</tr>
+						<tr>
+							<td></td>
+							<td><button class="btn btn-success" ng-click="submitWaiverChanges(EditWaiver)">Submit Changes</button></td>
+						</tr>
+					</table>
+
+				</div>
+			</div>
+			<div ng-show="loading" class="refreshdiv">
+				<h2>LOADING</h2><br /><center><i class="fa fa-refresh fa-spin fa-3x fa-fw margin-bottom"></i></center>
+			</div>
+		</div>
+	</div>
+
+
+</div>
+
+
+
+<script>
+	
+
+	var AngularTemplateBody = $("#AngularTemplateBody008").html();
+
+	$("#AngularTemplateBody008").remove();
+	$("#btnTriggerAngular008").click();
+
+	
+
+
+</script>

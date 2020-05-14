@@ -1,0 +1,81 @@
+@{ 
+    var printLink = "";
+    string username = User.Identity.Name.ToString();
+    if (username.Contains("xz07pm"))
+    {
+        printLink = "<a href='javascript:SendEIDMReport();'>Send email</a>";
+    }
+}
+
+<div id="divLoading"><br /><br /><br /><br />Loading real time F5 Data.... Please wait (3+ minutes).</div>
+
+<div id="divF5" style="display:none;">
+    <button class='export-pdf k-button'>Export as PDF</button>
+
+    <div class="demo-section content-wrapper wide">
+        <div id="divF5Pool"></div>
+    </div>
+
+</div>
+
+@Html.Raw(printLink)
+
+<script>
+$(document).ready(function () {
+
+    setTimeout(function () {
+
+        $.ajax({
+            url: "/F5Pool/GetEIDMReport",
+            type: "POST",
+            dataType: "text",
+            success: function (response) {
+
+                $("#divLoading").hide();
+
+                $("#divF5Pool").html(response);
+                $("#divF5").show();
+
+                $(".export-pdf").click(function() {
+                    // Convert the DOM element to a drawing using kendo.drawing.drawDOM
+                    kendo.drawing.drawDOM($(".content-wrapper"))
+                    .then(function(group) {
+                        // Render the result as a PDF file
+                        return kendo.drawing.exportPDF(group, {
+                            paperSize: "auto",
+                            margin: { left: "1cm", top: "1cm", right: "1cm", bottom: "1cm" }
+                        });
+                    })
+                    .done(function(data) {
+                        // Save the PDF file
+                        kendo.saveAs({
+                            dataURI: data,
+                            fileName: "EIDM-Inventory.pdf"
+                        });
+                    });
+                });
+
+
+            },
+            error: function (request, status, error)  {
+                alert(request.responseText);
+            }
+        });
+    }, 2000);
+
+});
+
+
+    function SendEIDMReport() {
+        $.ajax({
+            url: "/F5Pool/SendEIDMReport",
+            type: "POST",
+            dataType: "text",
+            success: function (response) {
+                if (response.length > 0) {
+                    alert(response);
+                }
+            }
+        });
+    }
+</script>
