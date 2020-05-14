@@ -1,0 +1,223 @@
+﻿@using SourceControl.Services;
+@{
+	var recordId = ViewData["RecordId"].ToString();
+	var pageTemplate = (SourceControl.Models.Db.PageTemplate)ViewData["PageTemplate"];
+}
+
+
+<div class="app-command-bar">
+	@{
+		if (recordId.ToString() == "0")
+		{
+			<a href="javascript:@Html.Raw(pageTemplate.PageTemplateId)Add()"><img src="/Images/ToolBar/save.png"> <span>Save</span></a>
+		}
+		else
+		{
+			<a href="javascript:@Html.Raw(pageTemplate.PageTemplateId)Save('default')"><img src="/Images/ToolBar/save.png"> <span>Save</span></a>
+		}
+	}
+	<a href="javascript:@Html.Raw(pageTemplate.PageTemplateId)Cancel()"><img src="/Images/ToolBar/cancel.png"> <span>Cancel</span></a>
+</div>
+
+<br>
+
+<form id="FormEdit_@Html.Raw(pageTemplate.PageTemplateId)">
+	<input type="hidden" id="@Html.Raw(pageTemplate.TableName)_PortGUID" value="@recordId">
+	<input type="hidden" id="InternalId_@Html.Raw(pageTemplate.PageTemplateId)" value="@recordId">
+
+	<table>
+
+		<tr valign="top">
+			<td>
+				<table style="width:100%;">
+					<tbody>
+
+						<tr style="height:20px;">
+							<td nowrap="nowrap" style="width:15%;">
+								Switch Name
+							</td>
+							<td style="width:85%;">
+								<input type="text" id="@Html.Raw(pageTemplate.TableName)_DeviceName" name="@Html.Raw(pageTemplate.TableName)_DeviceName" style="width:300px;" maxlength="100" required validationmessage="Required">
+							</td>
+						</tr>
+
+						@{
+							if (recordId.ToString() == "0")
+							{
+
+								<tr style="height:20px;">
+									<td nowrap="nowrap" style="width:15%;">
+										Port Prefix: (Ethernet or Eth. please verify before using)
+									</td>
+									<td style="width:85%;">
+										<input type="text" id="PortPrefix" name="PortPrefix" style="width:300px;" required />
+									</td>
+								</tr>
+							}
+							else
+							{
+								<tr style="height:20px;">
+									<td nowrap="nowrap" style="width:15%;">
+										PortNum
+									</td>
+									<td style="width:85%;">
+										<input type="text" id="@Html.Raw(pageTemplate.TableName)_PortNum" name="@Html.Raw(pageTemplate.TableName)_PortNum" style="width:300px;" maxlength="100" required validationmessage="Required">
+									</td>
+								</tr>
+
+							}
+						}
+
+						<tr style="height:20px;">
+							<td nowrap="nowrap" style="width:15%;">
+								HostName (Use OPEN if its new)
+							</td>
+							<td style="width:85%;">
+								<input type="text" id="@Html.Raw(pageTemplate.TableName)_HostName" name="@Html.Raw(pageTemplate.TableName)_HostName" style="width:300px;" maxlength="100" required validationmessage="Required">
+							</td>
+						</tr>
+
+
+						<tr style="height:20px;">
+							<td nowrap="nowrap" style="width:15%;">
+								VLAN (Use 999 if its new)
+							</td>
+							<td style="width:85%;">
+								<input type="text" id="@Html.Raw(pageTemplate.TableName)_VLAN" name="@Html.Raw(pageTemplate.TableName)_VLAN" style="width:300px;" maxlength="100">
+							</td>
+						</tr>
+
+
+						<tr style="height:20px;">
+							<td nowrap="nowrap" style="width:15%;">
+								Port Type
+							</td>
+							<td style="width:85%;">
+								<input id="@Html.Raw(pageTemplate.TableName)_PortType" name="@Html.Raw(pageTemplate.TableName)_PortType" style="width:300px;">
+							</td>
+						</tr>
+
+
+						@{
+							if (recordId.ToString() == "0")
+							{
+								<tr style="height:20px;">
+									<td nowrap="nowrap" style="width:15%;">
+										Start Blade
+									</td>
+									<td style="width:85%;">
+										<input type="text" id="StartBlade" name="StartBlade" style="width:100px;" required /> &nbsp;&nbsp;&nbsp;&nbsp; End Blade <input type="text" id="EndBlade" name="EndBlade" style="width:100px;" required validationmessage="Required" />
+									</td>
+								</tr>
+
+								<tr style="height:20px;">
+									<td nowrap="nowrap" style="width:15%;">
+										Start Port
+									</td>
+									<td style="width:85%;">
+										<input type="text" id="StartPort" name="StartPort" style="width:100px;" required /> &nbsp;&nbsp;&nbsp;&nbsp; End Port <input type="text" id="EndPort" name="EndPort" style="width:100px;" required validationmessage="Required" />
+									</td>
+								</tr>
+							}
+						}
+
+
+
+						<tr style="height:20px;"><td nowrap="nowrap" style="width:15%;"><br></td><td style="width:85%;"><br></td></tr>
+
+
+
+					</tbody>
+				</table>
+
+			</td>
+		</tr>
+
+
+	</table>
+
+</form>
+
+
+
+<script>
+		$(document).ready(function () {
+
+			$("#@Html.Raw(pageTemplate.TableName)_PortType").kendoDropDownList({
+				dataTextField: "text",
+				dataValueField: "value",
+				dataSource: [
+					{ text: "", value: "" },
+					{ text: "Copper", value: "Copper" },
+					{ text: "Fiber", value: "Fiber" }
+				]
+			});
+
+
+			BindFormData(@Html.Raw(pageTemplate.PageTemplateId), "@recordId", "Edit");
+		});
+
+
+
+	function @Html.Raw(pageTemplate.PageTemplateId)Cancel() {
+		GoToListTab(@Html.Raw(pageTemplate.PageTemplateId));
+	}
+
+	function @Html.Raw(pageTemplate.PageTemplateId)Save(nextStep) {
+
+		var validator = $("#FormEdit_@Html.Raw(pageTemplate.PageTemplateId)").kendoValidator().data("kendoValidator");
+
+		if (!validator.validate()) {
+			return;
+		}
+
+		var json = ToJsonString("FormEdit_@Html.Raw(pageTemplate.PageTemplateId)");
+
+		$.ajax({
+			url: "/Page/SaveFormData",
+			type: "POST",
+			data: { pageTemplate.PageTemplateId: @Html.Raw(pageTemplate.PageTemplateId), json: json, oldJson: "" },
+			async: false,
+			dataType: "text",
+			success: function (currentRowId) {
+
+
+			}
+		}).done(function () {
+
+			$("#grid_@Html.Raw(pageTemplate.PageTemplateId)").data("kendoGrid").dataSource.read();
+			$("#grid_@Html.Raw(pageTemplate.PageTemplateId)").data("kendoGrid").refresh();
+			if (nextStep == "close") {
+				CloseSpecificTab("PageTemplate@Html.Raw(pageTemplate.PageTemplateId)");
+			} else {
+				GoToListTab(@Html.Raw(pageTemplate.PageTemplateId));
+			}
+		});
+
+	}
+
+	function @Html.Raw(pageTemplate.PageTemplateId)Add() {
+
+		var validator = $("#FormEdit_@Html.Raw(pageTemplate.PageTemplateId)").kendoValidator().data("kendoValidator");
+
+		if (!validator.validate()) {
+			return;
+		}
+
+		var json = ToJsonString("FormEdit_@Html.Raw(pageTemplate.PageTemplateId)");
+
+		$.ajax({
+			url: "/SwitchPorts/AddSwitches",
+			type: "POST",
+			data: { pageTemplate.PageTemplateId: @Html.Raw(pageTemplate.PageTemplateId), json: json },
+			dataType: "text",
+			success: function (response) {
+				MessageBox("Information", response, true);
+			}
+		}).done(function () {
+			GoToListTab(@Html.Raw(pageTemplate.PageTemplateId));
+		});
+
+	}
+</script>
+

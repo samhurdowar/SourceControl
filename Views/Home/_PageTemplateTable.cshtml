@@ -1,0 +1,347 @@
+﻿@using SourceControl.Services;
+
+<style>
+    #tablePageTemplate td:first-child {
+        width: 10%;
+        white-space: nowrap;
+    }
+
+    .textbox-readonly {
+        border-radius:2px;
+        border:1px solid #ccc;
+        padding:5px;
+        display: inline-block;
+        width:300px;
+        background-color:#eee;
+    }
+</style>
+
+<div class="command-bar">
+    <span id="cmdSavePageTemplate" formname="FormPageTemplate" class="command-disabled-span"><span class="command-icon fas fa-save">&nbsp;</span> Save</span>
+</div>
+
+<br />
+<div id="progressUpdatePageTemplate">
+    <form id="FormPageTemplate">
+        <input id="PageTemplateId" type="hidden" />
+        <table id="tablePageTemplate" style="width:100%;">
+            <tr>
+                <td nowrap>Template Id</td>
+                <td><span id="display_PageTemplateId" class="textbox-readonly"></span></td>
+            </tr>
+
+            <tr>
+                <td>Template Name</td>
+                <td><input type="text" id="TemplateName" name="TemplateName" style="width:300px;" required /></td>
+            </tr>
+
+            <tr>
+                <td>Table</td>
+                <td><span id="display_TableName" name="display_TableName" class="textbox-readonly"></span></td>
+            </tr>
+
+            <tr class="tr-non-blank">
+                <td>Page Type</td>
+                <td><input id="PageType" style="width:300px;" /></td>
+            </tr>
+
+            <tr class="tr-non-blank">
+                <td>Child Template</td>
+                <td nowrap>
+                    <input id="PageTemplateId2" name="PageTemplateId2" style="width:300px;" />&nbsp;&nbsp;&nbsp;
+
+                    Parent Key &nbsp;<input id="PrimaryKey2" name="PrimaryKey2" style="width:300px;" />&nbsp;&nbsp;&nbsp;
+
+                    Foreign Key &nbsp;<input id="RefKey2" name="RefKey2" style="width:300px;" />
+                </td>
+            </tr>
+            <tr class="tr-non-blank">
+                <td>Add Tab Label</td>
+                <td>
+                    <input type="text" id="AddTabLabel" style="width:300px;" />
+                    &nbsp;&nbsp;&nbsp;
+                    View Tab Label &nbsp;<input type="text" id="ViewTabLabel" style="width:300px;" />
+                    &nbsp;&nbsp;&nbsp;
+                    Edit Tab Label &nbsp;<input type="text" id="EditTabLabel" style="width:300px;" />
+                </td>
+            </tr>
+
+            @*<tr class="tr-non-blank">
+                <td nowrap>Grid OnDataBound</td>
+                <td>
+                    <textarea id="GridOnDataBound" name="GridOnDataBound" style="width:100%;height:150px;" />
+                </td>
+            </tr>*@
+
+        </table>
+
+    </form>
+</div>
+
+<div id="windowNewPageTemplate">
+
+    <form id="NewFormPageTemplate">
+
+        <div style="width:100%;">
+
+            <table>
+                <tr>
+                    <td>Template Name</td>
+                    <td><input type="text" id="NewTemplateName" name="NewTemplateName" style="width:370px;" /><span id="spanNewTemplateName" style="color:red;display:none;"> Required</span></td>
+                </tr>
+
+
+                <tr id="divPageType">
+                    <td>Page Type</td>
+                    <td><input type="text" id="NewPageType" name="NewPageType" style="width:370px;" /></td>
+                </tr>
+
+                <tr id="divNewTableName">
+                    <td>Database Table</td>
+                    <td><input type="text" id="NewTableName" name="NewTableName" style="width:370px;" /></td>
+                </tr>
+
+                <tr>
+                    <td></td>
+                    <td>
+                        <input type="button" id="cmdSaveCreatePageTemplate" value="Save" onclick="CreatePageTemplate()" />
+                        <input type="button" id="cmdCancelCreatePageTemplate" value="Cancel" onclick="$('#windowNewPageTemplate').data('kendoWindow').close();" />
+                    </td>
+                </tr>
+
+            </table>
+
+        </div>
+    </form>
+</div>
+
+<script>
+
+    var dsPageType = [
+        { TextField: "Grid > Edit", ValueField: "gridedit" },
+        { TextField: "Grid > View > Edit", ValueField: "gridviewedit" },
+        { TextField: "Grid Only", ValueField: "gridonly" },
+        { TextField: "Grid Only With Delete Options", ValueField: "gridonly_with_delete" },
+        { TextField: "Form Only", ValueField: "formonly" },
+        { TextField: "Inline", ValueField: "inline" }
+    ];
+
+
+    $("#PageTemplateId2").kendoDropDownList({
+        autoBind: false,
+        optionLabel: {
+            PageTemplateId: "0",
+            TemplateName: ""
+        },
+        dataValueField: "PageTemplateId",
+        dataTextField: "TemplateName",
+        dataSource: {
+            transport: {
+                read: {
+                    dataType: "json",
+                    url: "/PageTemplate/GetPageTemplates?dbEntityId=1"
+                }
+            }
+        },
+        change: function (e) {
+            var refKey2 = $("#RefKey2").data("kendoDropDownList");
+            refKey2.dataSource.transport.options.read.url = "/PageTemplate/GetColumnOptions?pageTemplateId=" + $("#PageTemplateId2").data("kendoDropDownList").value();
+            refKey2.dataSource.read();
+        },
+        dataBound: function (e) {
+
+        }
+    });
+
+    $("#PrimaryKey2").kendoDropDownList({
+        autoBind: false,
+        optionLabel: {
+            ValueField: "",
+            TextField: ""
+        },
+        dataValueField: "ValueField",
+        dataTextField: "TextField",
+        dataSource: {
+            transport: {
+                read: {
+                    dataType: "json",
+                    url: "/PageTemplate/GetColumnOptions?pageTemplateId=0"
+                }
+            }
+        }
+    });
+
+
+    $("#RefKey2").kendoDropDownList({
+        autoBind: false,
+        optionLabel: {
+            ValueField: "",
+            TextField: ""
+        },
+        dataValueField: "ValueField",
+        dataTextField: "TextField",
+        dataSource: {
+            transport: {
+                read: {
+                    dataType: "json",
+                    url: "/PageTemplate/GetColumnOptions?pageTemplateId=0"
+                }
+            }
+        }
+    });
+
+    $("#HelpId").kendoDropDownList({
+        dataTextField: "TextField",
+        dataValueField: "ValueField",
+        dataSource: {
+            transport: {
+                read: {
+                    dataType: "json",
+                    url: "/Help/GetHelpOptions"
+                }
+            }
+        }
+    });
+
+    $("#PageType").kendoDropDownList({
+        dataTextField: "TextField",
+        dataValueField: "ValueField",
+        dataSource: dsPageType
+    });
+
+    $("#DefaultSortColumn").kendoDropDownList({
+        autoBind: false,
+        dataTextField: "TextField",
+        dataValueField: "ValueField",
+        dataSource: {
+            transport: {
+                read: {
+                    dataType: "json",
+                    url: "/PageTemplate/GetDefaultSortColumn?pageTemplateId=0"
+                }
+            }
+        }
+    });
+
+    $("#NewPageType").kendoDropDownList({
+        dataTextField: "TextField",
+        dataValueField: "ValueField",
+        dataSource: dsPageType
+    });
+
+    function OpenNewPageTemplateWindow() {
+        $("#spanNewTemplateName").hide();
+        $("#NewTemplateName").val("");
+
+
+        $("#windowNewPageTemplate").data("kendoWindow").open().center();
+        $("#NewTemplateName").focus();
+
+    }
+
+    function CreatePageTemplate() {
+        $("#spanNewTemplateName").hide();
+
+        if ($("#NewTemplateName").val().trim().length < 1) {
+            $("#spanNewTemplateName").show();
+            return;
+        }
+
+        $("#NewTemplateName").focus();
+
+
+        $.ajax({
+            url: "/PageTemplate/CreatePageTemplate",
+            type: "POST",
+            async: false,
+            data: { dbEntityId: $("#DbEntityId").data("kendoDropDownList").value(), newTemplateName: $("#NewTemplateName").val(), newPageType: $("#NewPageType").data("kendoDropDownList").value(), newTableName: $("#NewTableName").data("kendoDropDownList").value() },
+            dataType: "text",
+            success: function (response) {
+                if (response.indexOf("Unable to process") > -1) {
+                    MessageBox("Information", response, false);
+                } else {
+                    NewPageTemplateId = response * 1;
+
+                    $("#gridPageTemplate").data("kendoGrid").dataSource.read();
+                    $("#gridPageTemplate").data("kendoGrid").dataSource.sync();
+                }
+            },
+            error: function (x, y, z) {
+                alert("Error _PageTemplateTable.cshtml - javascript CreatePageTemplate()");
+            }
+        }).done(function () {
+            $("#windowNewPageTemplate").data("kendoWindow").close();
+            setTimeout(SelectNewTemplate, 700);
+        });
+    }
+
+    function SelectNewTemplate() {
+        try {
+            var grid = $("#gridPageTemplate").data("kendoGrid");
+            var dataItem = grid.dataSource.get(NewPageTemplateId);
+            var row = grid.tbody.find("tr[data-uid='" + dataItem.uid + "']");
+            grid.select(row);
+
+        } catch (e) {
+
+        }
+    }
+
+    function SavePageTemplate() {
+
+        var json = ToJsonString("FormPageTemplate");
+
+        $.ajax({
+            url: "/PageTemplate/SavePageTemplate",
+            type: "POST",
+            data: { pageTemplateId: $("#PageTemplateId").val(), json: json },
+            dataType: "text",
+            success: function (response) {
+                if (response.indexOf("Unable to process") > -1) {
+                    MessageBox("Information", response, false);
+                } else {
+                    DisableButton("cmdSavePageTemplate");
+                    $("#gridPageTemplate").data("kendoGrid").dataSource.read();
+                }
+            },
+            error: function (x, y, z) {
+                alert("Error SavePageTemplate()");
+            }
+        });
+    }
+
+
+    $(document).ready(function () {
+        // Bind form elements to enable save button
+        BindButtonToForm("cmdSavePageTemplate");
+
+        // set up lookup dialog
+        $("#windowNewPageTemplate").kendoWindow({
+            height: "400px",
+            width: "600px",
+            modal: true,
+            scrollable: false,
+            title: "New Template",
+            animation: {
+                open: {
+                    duration: 100
+                }
+            },
+            visible: false,
+            actions: ["Minimize", "Maximize", "Close"],
+            activate: function () {
+                $("#NewTemplateName").focus();
+            }
+        });
+
+
+        $("#divCopyFromPageTemplatId").hide();
+
+
+    });
+
+
+
+</script>
+
+

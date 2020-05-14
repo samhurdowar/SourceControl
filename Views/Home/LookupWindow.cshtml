@@ -1,0 +1,111 @@
+﻿@using SourceControl.Services;
+@{
+	var vd = SessionService.VirtualDomain;
+
+	Layout = null;
+}
+<style>
+	#grid_@Html.Raw(ViewBag.columnDefId) tbody tr:hover {
+		cursor: pointer;
+	}
+</style>
+
+<div id="grid_@Html.Raw(ViewBag.columnDefId)" style="width:100%;"></div>
+
+
+
+<script>
+
+	$("#grid_@Html.Raw(ViewBag.columnDefId)").kendoGrid({
+		selectable: "single row",
+		autoBind: true,
+		dataSource: {
+			type: "json",
+			serverPaging: true,
+			serverSorting: true,
+			serverFiltering: true,
+			allowUnsort: true,
+			pageSize: 50,
+			transport: {
+				read: {
+					url: "@vd/Page/GetServerSideRecords?pageTemplateId=" + @Html.Raw(ViewBag.pageTemplateId) + "&tableNameOveride=@Html.Raw(ViewBag.tableNameOveride)&selectColumns=@Html.Raw(ViewBag.selectColumns)&sortOveride=@Html.Raw(ViewBag.sortOveride)",
+						dataType: "json",
+							type: "POST",
+								contentType: "application/json; charset=utf-8"
+				},
+	parameterMap: function (options) {
+		return JSON.stringify(options);
+	}
+			},
+	schema: {
+		data: "data",
+			total: "total"
+		//model: {
+		//	id: "SerialNumberId",
+		//	fields: {
+		//		SerialNumberId: { type: "number" },
+		//		SerialNumber: { type: "string" },
+		//			HostName: { type: "string" }
+		//	}
+		//}
+	}
+		},
+	height: 680,
+		scrollable: { virtual: true },
+	sortable: true,
+		groupable: false,
+			//pageable: true,
+
+			filterable: {
+		extra: false,
+			operators: {
+			string: {
+				startswith: "Starts with",
+					endswith: "Ends with",
+						eq: "Is equal to",
+							neq: "Is not equal to",
+								contains: "Contains",
+									doesnotcontain: "Does not contain"
+			}
+		}
+	},
+	columns: [
+			@Html.Raw(ViewBag.gridColumns)
+		 ],
+	change: onChange_gridLookup
+		//dataBound: dataBound_gridLookup,
+		//filterMenuInit: function (e) {
+		//	e.container.on("click", "[type='reset']", function () {
+		//		ClearPageFilter(RandomGridNumber, e.field);
+		//	});
+		//}
+	}).data("kendoGrid");
+
+
+	function onChange_gridLookup(e) {
+		var data = $("#grid_@Html.Raw(ViewBag.columnDefId)").data("kendoGrid").dataItem(this.select());
+
+		var lookupText = eval("data.@Html.Raw(ViewBag.selectColumn)");
+
+		var lookupValue = eval("data.@Html.Raw(ViewBag.targetColumn)");
+
+
+		// set form values on select
+		$("#Form_@Html.Raw(ViewBag.pageTemplateId) input[id=@Html.Raw(ViewBag.targetColumn)_]").val(lookupText);
+		$("#Form_@Html.Raw(ViewBag.pageTemplateId) input[id=@Html.Raw(ViewBag.targetColumn)]").val(lookupValue);
+		$("#LookupWindow_@Html.Raw(ViewBag.columnDefId)").data("kendoWindow").close();
+	}
+
+	function dataBound_gridLookup(e) {
+
+		// hide id field
+		$("#grid_@Html.Raw(ViewBag.columnDefId)").find("table th").eq(0).css("width", "0%");  // hides the first column header
+		$("#grid_@Html.Raw(ViewBag.columnDefId)").find("table td:nth-child(1)").css("width", "0%");    // hides the data rows for the first column
+
+
+		// rename columns
+		for (var i = 0; i < HeaderNames.length; i++) {
+			$("#grid_@Html.Raw(ViewBag.columnDefId)").find("table th").eq(i).html(HeaderNames[i]);
+		}
+	}
+</script>

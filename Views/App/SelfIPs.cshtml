@@ -1,0 +1,38 @@
+﻿<div id="gridSelfIp"></div>
+
+
+<script>
+	var dsSelfIp = new kendo.data.DataSource({
+		pageable: false,
+		transport: {
+			read: {
+				url: "/App/GetSelfIps",
+				dataType: "json"
+			}
+		}
+	});
+
+	$("#gridSelfIp").kendoGrid({
+		dataSource: dsSelfIp,
+		autoBind: true,
+		scrollable: true,
+		height: window.innerHeight - 250,
+		sortable: true,
+		pageable: false,
+		filterable: true,
+		resizable: true,
+		columns: [
+			{ field: "name", title: "Device Name" },
+			{ field: "address", title: "IP Address" },
+			{ field: "interfaceName", title: "Inteface Name" },
+			{ field: "floating", title: "Floating" },
+			{ field: "vlan", title: "VLAN Name" },
+			{ field: "mtu", title: "MTU" },
+			{ field: "tag", title: "VLAN ID" }
+
+		]
+
+	});
+
+
+</script>

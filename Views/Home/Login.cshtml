@@ -1,0 +1,102 @@
+﻿@{
+	Layout = null;
+
+	//var pwd = Crypto.HashPassword("test123");
+}
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<title>Welcome to IMCRM</title>
+
+	<link href="@Url.Content("~/Content/kendo/2018.1.117/kendo.default.mobile.min.css")" rel="stylesheet" type="text/css" />
+	<link href="@Url.Content("~/Content/kendo/2018.1.117/kendo.default.min.css")" rel="stylesheet" type="text/css" />
+	<link href="@Url.Content("~/Content/kendo/2018.1.117/kendo.common-fiori.min.css")" rel="stylesheet" type="text/css" />
+	<link href="@Url.Content("~/Content/kendo/2018.1.117/kendo.mobile.all.min.css")" rel="stylesheet" type="text/css" />
+	<link href="@Url.Content("~/Content/kendo/2018.1.117/kendo.dataviz.min.css")" rel="stylesheet" type="text/css" />
+	<link href="@Url.Content("~/Content/kendo/2018.1.117/kendo.fiori.min.css")" rel="stylesheet" type="text/css" />
+	<link href="@Url.Content("~/Content/kendo/2018.1.117/kendo.dataviz.fiori.min.css")" rel="stylesheet" type="text/css" />
+	<link href="@Url.Content("~/Content/ui-grid.css")" rel="stylesheet" type="text/css" />
+	<link href="@Url.Content("~/Content/ui-grid-sky.css")" rel="stylesheet" type="text/css" />
+
+	<link href="@Url.Content("~/Content/tooltipster.css")" rel="stylesheet" type="text/css" />
+	<link href="@Url.Content("~/Content/jquery-ui.min.css")" rel="stylesheet" type="text/css" />
+
+	<link href="@Url.Content("~/Content/bootstrap.css")" rel="stylesheet" type="text/css" />
+	<link href="@Url.Content("~/Content/font-awesome.css")" rel="stylesheet" type="text/css" />
+
+	<link href="@Url.Content("~/Content/Site.css?v=1.1.2")" rel="stylesheet" type="text/css" />
+
+	<link href="~/Content/pretty-checkbox.css" rel="stylesheet" type="text/css" />
+
+
+	@Scripts.Render("~/bundles/angular")
+
+	<script src="@Url.Content("~/Scripts/kendo/2018.1.117/pako_deflate.min.js")"></script>
+	<script src="@Url.Content("~/Scripts/kendo/2018.1.117/jquery.min.js")"></script>
+	<script src="@Url.Content("~/Scripts/kendo/2018.1.117/jszip.min.js")"></script>
+	<script src="@Url.Content("~/Scripts/kendo/2018.1.117/angular.min.js")"></script>
+	<script src="@Url.Content("~/Scripts/kendo/2018.1.117/kendo.all.min.js")"></script>
+	<script src="@Url.Content("~/Scripts/kendo/2018.1.117/kendo.aspnetmvc.min.js")"></script>
+	<script src="@Url.Content("~/Scripts/jquery.tooltipster.min.js")"></script>
+	<script src="@Url.Content("~/Scripts/jquery-ui.min.js")"></script>
+
+	<script src="~/Scripts/angular-animate.min.js"></script>
+	<script src="~/Scripts/angular-touch.min.js"></script>
+	<script src="~/Scripts/angular-ui-grid.js"></script>
+	<script src="~/Scripts/AngularModules/cvs.js"></script>
+	<script src="~/Scripts/AngularModules/pdfmake.js"></script>
+	<script src="~/Scripts/AngularModules/vfs_fonts.js"></script>
+	<script src="~/Scripts/angular-sanitize.js"></script>
+	<script src="~/Scripts/angular-cookies.js?v=1.1.1"></script>
+	<script src="~/Scripts/xeditable.js?v=1.1.1"></script>
+
+</head>
+<body>
+	<center>
+		@using (Html.BeginForm("Login", "Home", new { ReturnUrl = ViewBag.ReturnUrl }, FormMethod.Post, new { @class = "form-horizontal", role = "form" }))
+		{
+			@Html.AntiForgeryToken()
+
+			@Html.ValidationSummary(true)
+
+			<br />
+			<br />
+			<br />
+			<br />
+
+			<br />
+			<br />
+			<table>
+				<tr><td colspan="2" align="center"><img src="~/Images/imcrm.png" /></td></tr>
+				<tr>
+					<td>Username&nbsp;&nbsp;&nbsp;</td>
+					<td><input type="text" id="usr" name="usr" class="form-control" style="width:300px;" value="" /></td>
+				</tr>
+				<tr>
+					<td>Password&nbsp;&nbsp;&nbsp;</td>
+					<td><input type="password" id="pwd" name="pwd" class="form-control" style="width:300px;height:28px;" value="" /></td>
+				</tr>
+
+				<tr>
+					<td></td>
+					<td><input type="submit" value="Log in" class="btn btn-primary" /></td>
+				</tr>
+
+			</table>
+
+
+		}
+	</center>
+	@section Scripts {
+		@Scripts.Render("~/bundles/jqueryval")
+	}
+
+
+</body>
+</html>
+
+
+
+
+
+

@@ -1,0 +1,135 @@
+﻿
+<div id="tabSearchLayout" style="width:100%;">
+    <ul>
+        <li class="k-state-active">Layout</li>
+        <li>Custom Options</li>
+    </ul>
+    <div>
+        <form id="FormSearchLayout" name="FormSearchLayout">
+
+            <div class="command-bar">
+                <span id="cmdSaveSearchLayout" formname="FormSearchLayout" class="command-disabled-span"><span class="command-icon fas fa-save">&nbsp;</span> Save</span>
+                <span class="app-command-item">
+                    Num of Columns &nbsp;
+                    <select id="numOfSearchCol" name="numOfSearchCol" style="width:100px;">
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                        <option value="4">4</option>
+                    </select>
+
+                    <span class="command-active-span" onclick="LoadSearchLayout()"><span class="command-icon fas fa-tasks">&nbsp;</span> Load Layout</span>
+
+                </span>
+            </div>
+
+            <div>
+                <div id="progressFormSearchLayout">
+                    <textarea id="SearchLayout" name="SearchLayout" cols="80" rows="200" class="expandEditor"></textarea>
+                </div>
+
+            </div>
+        </form>
+
+    </div>
+    <div>
+        <div class="command-bar">
+            <span id="cmdSaveSearchLayoutOption" formname="FormSearchLayoutOption" class="command-disabled-span"><span class="command-icon fas fa-save">&nbsp;</span> Save</span>
+        </div>
+
+        <form id="FormSearchLayoutOption" name="FormSearchLayoutOption">
+            <table style="width:100%;" class="form-layout-sm">
+                <tr>
+                    <td>Style</td>
+                    <td>
+                        <textarea id="SearchFormStyle" name="SearchFormStyle" style="width:100%;height:150px;" />
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>Command</td>
+                    <td>
+                        <textarea id="SearchFormCommand" name="SearchFormCommand" style="width:100%;height:150px;" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>Body</td>
+                    <td>
+                        <textarea id="SearchFormBody" name="SearchFormBody" style="width:100%;height:150px;" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>Script</td>
+                    <td>
+                        <textarea id="SearchFormScript" name="SearchFormScript" style="width:100%;height:400px;" />
+                    </td>
+                </tr>
+            </table>
+        </form>
+
+    </div>
+
+</div>
+
+<script>
+
+    $(document).ready(function () {
+
+        setTimeout(function () {
+            BindButtonToForm("cmdSaveSearchLayout");
+            BindButtonToForm("cmdSaveSearchLayoutOption");
+        }, 1000);
+
+        $("#tabSearchLayout").kendoTabStrip();
+	});
+
+
+    function SaveSearchLayoutOption() {
+        var json = ToJsonString("FormSearchLayoutOption");
+        json = InjectPrimaryKey(json, "PageTemplateId", $("#PageTemplateId").val());
+
+        $.ajax({
+            url: "/PageTemplate/SavePageTemplate",
+            type: "POST",
+            data: { pageTemplateId: $("#PageTemplateId").val(), json: json },
+            dataType: "text",
+            success: function (response) {
+                if (response.indexOf("Unable to process") > -1) {
+                    MessageBox("Information", response, false);
+                } else {
+                    DisableButton("cmdSaveSearchLayoutOption");
+                }
+            }
+        });
+    }
+
+    function SaveSearchLayout() {
+        $.ajax({
+            url: "/PageTemplate/SaveLayout",
+            type: "POST",
+            data: { pageTemplateId: PageTemplateId, layout: $("#SearchLayout").data("kendoEditor").value(), columnName: "SearchLayout" },
+            dataType: "text",
+            success: function (response) {
+                if (response.indexOf("Unable to process") > -1) {
+                    MessageBox("Information", response, false);
+                } else {
+                    DisableButton("cmdSaveSearchLayout");
+                }
+            }
+        });
+    }
+
+    function LoadSearchLayout() {
+        $.ajax({
+            url: "/PageTemplate/GetLayoutFromColumnDef",
+            data: { pageTemplateId: PageTemplateId, numOfCol: $("#numOfSearchCol").val() },
+            dataType: "text",
+            type: "POST",
+            success: function (response) {
+                $("#SearchLayout").data("kendoEditor").value(response);
+            }
+        });
+    }
+
+
+</script>

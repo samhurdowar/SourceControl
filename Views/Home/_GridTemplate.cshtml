@@ -1,0 +1,404 @@
+﻿@using SourceControl.Services;
+
+@{
+    var pageTemplate = (SourceControl.Models.Db.PageTemplate)ViewData["PageTemplate"];
+    var pageTemplate2 = (SourceControl.Models.Db.PageTemplate)ViewData["PageTemplate2"];
+
+    var primaryKey2Name = (pageTemplate.PrimaryKey2 > 0) ? pageTemplate.PrimaryKey2Name : "dummy";
+    var refKey2Name = (pageTemplate.RefKey2 > 0) ? pageTemplate.RefKey2Name : "dummy";
+    var pageTemplate2PrimaryKey = (pageTemplate2.PrimaryKey.Length > 0) ? pageTemplate2.PrimaryKey : "dummy";
+
+    var pageTemplateId = pageTemplate.PageTemplateId;
+    var obj = "obj" + pageTemplateId;
+
+    // set child table
+    var detailInit = "";
+
+    if (pageTemplate.PageTemplateId2 > 0 && pageTemplate.PrimaryKey2 > 0 && pageTemplate.RefKey2 > 0)
+    {
+        detailInit = "detailInit: " + obj + "detailInit,";
+    }
+
+    var doubleClick = "";
+    System.Text.StringBuilder sb = new System.Text.StringBuilder();
+    if (pageTemplate.PageType != "gridonly" && pageTemplate.PageType != "gridonly_with_delete")
+    {
+        sb.AppendLine("grid.tbody.find('tr').dblclick(function (e) { ");
+        sb.AppendLine("		var dataItem = grid.dataItem(this); ");
+        sb.AppendLine(obj + "Edit(dataItem." + pageTemplate.PrimaryKey + ");");
+        sb.AppendLine("}); ");
+
+        doubleClick = sb.ToString();
+    }
+
+    var gridScripts = SessionService.GridScripts(Convert.ToInt32(pageTemplateId));
+    var gridSchema = SessionService.GridSchema(Convert.ToInt32(pageTemplateId));
+    var gridColumns = SessionService.GridColumns(Convert.ToInt32(pageTemplateId));
+
+
+    // set grid height
+    var heightCut = "225";
+    if (pageTemplate.GridBody.Length > 100)
+    {
+        heightCut = "300";
+    }
+
+    var primaryKeyDataType = SessionService.DataType(pageTemplateId, pageTemplate.PrimaryKey);
+    var primaryKey2DataType = SessionService.DataType(pageTemplate2.PageTemplateId, pageTemplate2.PrimaryKey);
+
+
+    // group by columns
+    var serverPaging = "serverPaging: true, serverSorting: true, serverFiltering: true, pageable: true, pageSize: 50,";
+    var pageable = "pageable: { pageSizes: [10, 20, 50, 75] },";
+    var schemaData = "data: \"data\", total: \"total\",";
+    var url = "/Page/GetServerSideRecords?pageTemplateId=" + pageTemplateId;
+
+    var groupByColumns = "";
+    var groupable = "groupable: false,";
+    if (pageTemplate.GroupByColumns != null && pageTemplate.GroupByColumns.Length > 1)
+    {
+        serverPaging = "serverPaging: false, serverSorting: false, serverFiltering: false, pageable: false,";
+        pageable = "pageable: false,";
+        schemaData = "";
+        url = "/Page/GetServerSideRecords?pageTemplateId=" + pageTemplateId + "&take=0";
+
+        sb.Clear();
+        sb.Append(", group: [ ");
+
+        groupable = "groupable: true,";
+        var columndIds = pageTemplate.GroupByColumns.Split(new char[] { ',' });
+        foreach (var columndId in columndIds)
+        {
+            var columnDef = SessionService.ColumnDef(Convert.ToInt32(columndId));
+            sb.Append("{ field: \"" + columnDef.ColumnName + "\" }, ");
+        }
+        groupByColumns = sb.ToString();
+        groupByColumns = groupByColumns.Substring(0, groupByColumns.Length - 2) + " ]";
+
+    }
+}
+
+<style>
+	#grid_@pageTemplateId tbody tr:hover {
+		cursor: pointer;
+	}
+
+	#grid_@pageTemplateId .k-grid-content input {
+		 height: 1em !important;
+		 padding: 1px !important;
+		 padding-left: 0px !important;
+	}
+
+	.select-row-@pageTemplateId td:first-child {
+		background-color: #007cc0;
+		border: none;
+	}
+
+	@Html.Raw(pageTemplate.GridStyle)
+
+</style>
+
+<div id="gridBody_@pageTemplateId" style="padding: 0px;">
+    @Html.Raw(pageTemplate.GridBody)
+</div>
+
+<div id="@Html.Raw(obj)divGrid" class="command-bar">
+    @Html.Raw(SourceControl.Common.Helper.HTMLEncode(pageTemplate.GridCommand))
+
+    @{
+        if (pageTemplate.PageType != "gridonly")
+        {
+            if (pageTemplate.PageType != "gridonly_with_delete")
+            {
+                <span class="command-active-span" onclick="@Html.Raw(obj)Edit(0)"><span class="command-icon fas fa-plus-square">&nbsp;</span> @pageTemplate.AddTabLabel</span>
+
+                if (pageTemplate.PageType == "gridviewedit")
+                {
+                    <span class="command-active-span" onclick="@Html.Raw(obj)Edit_Click()"><span class="command-icon fas fa-edit">&nbsp;</span> @pageTemplate.ViewTabLabel</span>
+                }
+                else
+                {
+                    <span class="command-active-span" onclick="@Html.Raw(obj)Edit_Click()"><span class="command-icon fas fa-edit">&nbsp;</span> @pageTemplate.EditTabLabel</span>
+                }
+
+            }
+            <span class="command-active-span" onclick="DeleteFromGrid(@pageTemplateId, '@pageTemplate.PrimaryKey', '@primaryKeyDataType', 'grid','')"><span class="command-icon fas fa-trash-alt">&nbsp;</span> Delete</span>
+            <span class="command-active-span" onclick="ReloadTab()"><span class="command-icon fas fa-sync">&nbsp;</span> Refresh</span>
+        }
+
+        <span class="command-active-span" onclick="Download_@Html.Raw(obj)_Excel()"><span class="command-icon fas fa-file-download">&nbsp;</span> Download to Excel</span>
+
+        <span class="command-active-span" onclick="ClearPageFilter(@pageTemplateId)"><span class="command-icon fas fa-search-minus">&nbsp;</span> Clear Filter</span>
+    }
+
+</div>
+
+
+<div id="grid_@pageTemplateId"></div>
+
+<script type="text/x-kendo-template" id="template_@pageTemplateId">
+    <div class="command-bar" id="detailGrid_@pageTemplateId">
+        <span class="command-active-span" onclick="@Html.Raw(obj)Edit2(0, '[RefKeyValue1]')"><span class="command-icon fas fa-plus-square">&nbsp;</span> @pageTemplate2.AddTabLabel</span>
+        <span class="command-active-span" onclick="@Html.Raw(obj)Edit2_Click('[RefKeyValue2]')"><span class="command-icon fas fa-edit">&nbsp;</span> @pageTemplate2.EditTabLabel</span>
+        <span class="command-active-span" onclick="DeleteFromGrid(@pageTemplate2.PageTemplateId, '@pageTemplate2PrimaryKey', '@primaryKey2DataType', 'detailgrid','[RefKeyValue3]')"><span class="command-icon fas fa-trash-alt">&nbsp;</span> Delete</span>
+    </div>
+</script>
+
+<script>
+
+
+	function Download_@Html.Raw(obj)_Excel() {
+		var grid = $("#grid_@pageTemplateId").data("kendoGrid");
+		grid.dataSource.read();
+		$("#grid_@pageTemplateId").getKendoGrid().saveAsExcel();
+	}
+
+    @Html.Raw(SourceControl.Common.Helper.HTMLEncode(pageTemplate.GridScript))
+
+
+	var CurrentRowId_@pageTemplateId = "";
+
+   $(document).ready(function () {
+
+       $("#grid_@pageTemplateId").kendoGrid({
+           excel: {
+               fileName: "ExportData.xlsx",
+               allPages: true,
+               filterable: true
+           },
+           selectable: "single row",
+           autoBind: true,
+           dataSource: {
+               type: "json",
+			   @Html.Raw(serverPaging)
+               allowUnsort: true,
+               transport: {
+                   read: {
+                       url: "@Html.Raw(url)",
+                       dataType: "json",
+                       type: "POST",
+                       contentType: "application/json; charset=utf-8"
+                   },
+                   parameterMap: function (options) {
+                       return JSON.stringify(options);
+                   }
+               },
+               schema: {
+      			@Html.Raw(schemaData)
+                   model: {
+                       id: "@pageTemplate.PrimaryKey",
+                       fields: {
+							@Html.Raw(gridSchema)
+                       }
+                   }
+               }
+			   @Html.Raw(groupByColumns)
+           },
+		   @Html.Raw(pageable)
+           scrollable: true,
+           sortable: true,
+           resizable: true,
+		   @Html.Raw(groupable)
+           @Html.Raw(detailInit)
+           filterable: {
+               extra: false,
+               operators: {
+                   string: {
+                       text_startswith: "Starts with",
+                       text_endswith: "Ends with",
+                       text_eq: "Is equal to",
+                       text_neq: "Is not equal to",
+                       text_contains: "Contains",
+                       text_doesnotcontain: "Does not contain"
+                   },
+                   number: {
+                       number_eq: "Is equal to",
+                       number_neq: "Is not equal to",
+                       number_gt: "Is greater than",
+                       number_lt: "Is less than"
+                   },
+                   date: {
+                       date_eq: "Is equal to",
+                       date_neq: "Is not equal to",
+                       date_lt: "Is before",
+                       date_gt: "Is after"
+
+                   }
+               }
+           },
+           height: window.innerHeight - @heightCut,
+           columns: [
+				@Html.Raw(gridColumns)
+           ],
+           change: function (e) {
+
+           },
+           dataBound: function (e) {
+               $("#grid_@pageTemplateId tbody tr").hover(
+                   function () {
+                       $(this).addClass('select-row-@pageTemplateId');
+                   },
+                   function () {
+                       $(this).removeClass('select-row-@pageTemplateId');
+                   }
+               );
+
+               try {
+				@Html.Raw(pageTemplate.GridOnDataBound)
+               } catch (e) {
+               }
+
+               try {
+                   var grid = $("#grid_@pageTemplateId").data("kendoGrid");
+			       @Html.Raw(doubleClick)
+
+                   // select current row
+                   var dataItem = grid.dataSource.get(CurrentRowId_@pageTemplateId);
+                   var row = grid.tbody.find("tr[data-uid='" + dataItem.uid + "']");
+                   grid.select(row);
+
+               } catch (e) {
+               }
+
+           }
+      	@*filterMenuInit: function (e) {
+				e.container.on("click", "[type='reset']", function () {
+					ClearPageFilter(@pageTemplateId, e.field);
+				});
+			}*@
+       }).on("click", ".grid-detail-refresh", function (e) {
+           var childGrid = $(e.target).closest(".k-grid").data("kendoGrid");
+           childGrid.dataSource.read();
+       });
+
+
+   	$("#chkAll_@pageTemplateId").click(function (e) {
+      	if (this.checked) {
+      		$(".chk_@pageTemplateId").each(function () {
+      			this.checked = true;
+      		});
+      	} else {
+      		$(".chk_@pageTemplateId").each(function () {
+      			this.checked = false;
+      		});
+      	}
+      });
+
+
+		$("#chkAll_@pageTemplate2.PageTemplateId").click(function (e) {
+      	if (this.checked) {
+      		$(".chk_@pageTemplate2.PageTemplateId").each(function () {
+      			this.checked = true;
+      		});
+      	} else {
+      		$(".chk_@pageTemplate2.PageTemplateId").each(function () {
+      			this.checked = false;
+      		});
+      	}
+      });
+	});
+
+	function @Html.Raw(obj)detailInit(e) {
+
+        $("<div/>").appendTo(e.detailCell).kendoGrid({
+            dataSource: {
+                type: "json",
+                transport: {
+                    read: {
+                        url: "/Page/GetDetailGrid?pageTemplateId=@pageTemplateId&refKeyValue=" + e.data.@primaryKey2Name,
+                        dataType: 'json',
+                        type: 'POST'
+                    }
+                },
+
+                schema: {
+                    data: "data",
+                    total: "total",
+                    model: {
+                        id: "@pageTemplate2PrimaryKey",
+                        fields: {
+							@pageTemplate2PrimaryKey: { type: "string" },
+                            @refKey2Name: { }
+						}
+					}
+      		    }
+			},
+			scrollable: true,
+			sortable: true,
+			pageable: false,
+			selectable: "single row",
+			toolbar: kendo.template($("#template_@pageTemplateId").html().replace("[RefKeyValue1]", e.data.@primaryKey2Name).replace("[RefKeyValue2]", e.data.@primaryKey2Name).replace("[RefKeyValue3]", e.data.@primaryKey2Name).replace("[RefKeyValue4]", e.data.@primaryKey2Name)),
+            columns: [
+				@Html.Raw(SessionService.GridColumns(pageTemplate2.PageTemplateId))
+			],
+			dataBound: function (e) {
+                try {
+					var grid = this;
+					// set double click
+					grid.tbody.find('tr').dblclick(function (e) {
+						var data = grid.dataItem(this);
+						@Html.Raw(obj)Edit2(data.@pageTemplate2PrimaryKey, data.@refKey2Name);
+					});
+				} catch (e) {
+					alert(e);
+   			    }
+            },
+			change: function (e) {
+				try {
+					var dataItem = this.dataItem(this.select());
+					ChildRecordId_@pageTemplate2.PageTemplateId = dataItem.@pageTemplate2PrimaryKey;
+
+				} catch (e) {
+					//alert(e);
+   			    }
+			}
+		});
+	}
+
+    function @Html.Raw(obj)Edit_Click() {
+        var grid = $("#grid_@pageTemplateId").data("kendoGrid");
+        var dataItem = grid.dataItem(grid.select());
+        if (dataItem == null) {
+            alert("No row to edit.");
+            return;
+        }
+
+        @Html.Raw(obj)Edit(dataItem.@pageTemplate.PrimaryKey);
+    }
+
+    function @Html.Raw(obj)Edit(recordId) {
+        CurrentRowId_@pageTemplateId = recordId;
+
+        var title = '@pageTemplate.AddTabLabel';
+        if (recordId != "0") title = '@pageTemplate.EditTabLabel';
+        var layoutType = "";
+        if ('@pageTemplate.PageType' == "gridviewedit") {
+            title = '@pageTemplate.ViewTabLabel';
+            layoutType = "View";
+        }
+
+        GoToEditTab(@pageTemplateId, @pageTemplateId, recordId, '', '', title, layoutType);
+    }
+
+	var ChildRecordId_@pageTemplate2.PageTemplateId = "";
+
+    function @Html.Raw(obj)Edit2_Click(refKeyValue) {
+
+		if (ChildRecordId_@pageTemplate2.PageTemplateId == "") {
+   		    alert("No row to edit.");
+   		    return;
+		}
+
+		@Html.Raw(obj)Edit2(ChildRecordId_@pageTemplate2.PageTemplateId, refKeyValue);
+   }
+
+    function @Html.Raw(obj)Edit2(recordId, refKeyValue) {
+        CurrentRowId_@pageTemplateId = recordId;
+        var title = '@pageTemplate2.AddTabLabel';
+        if (recordId != "0") title = '@pageTemplate2.EditTabLabel';
+
+		GoToEditTab(@pageTemplateId, @pageTemplate2.PageTemplateId, recordId, '@pageTemplate.RefKey2Name', refKeyValue, title, "");
+	}
+
+</script>
+

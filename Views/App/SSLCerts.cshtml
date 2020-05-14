@@ -1,0 +1,84 @@
+﻿<table>
+	<tr>
+		<td>Job <input id="jobCertGuid" name="jobCertGuid" style="width:200px;"></td>
+		<td>&nbsp;&nbsp;&nbsp;<button onclick="SearchCert()" class="btn btn-primary">Search</button></td>
+	</tr>
+</table>
+
+
+<div id="gridCert"></div>
+
+<script>
+	var dsCert = new kendo.data.DataSource({
+		pageable: false,
+		transport: {
+			read: {
+				url: "/App/GetCerts",
+				dataType: "json"
+			}
+		}
+	});
+
+	$("#gridCert").kendoGrid({
+		dataSource: dsCert,
+		autoBind: false,
+		scrollable: true,
+		height: window.innerHeight - 250,
+		sortable: true,
+		pageable: false,
+		filterable: true,
+		resizable: true,
+
+		columns: [
+			{ field: "f5HostName", title: "f5 Device" },
+			{ field: "VIPName", title: "VIP Name" },
+			{ field: "subject", title: "CN Name" },
+			{ field: "subjectAlternativeName", title: "Alt Name" },
+			{ field: "ProfileName", title: "Profile Name" },
+			{ field: "chain", title: "Chain Name" },
+			{ field: "expiration", title: "Expiration Date" }
+		]
+
+	});
+
+
+
+	$("#jobCertGuid").kendoDropDownList({
+		optionLabel: {
+			TextField: "Select Job",
+			ValueField: ""
+		},
+		dataTextField: "TextField",
+		dataValueField: "ValueField",
+		dataSource: {
+			transport: {
+				read: {
+					dataType: "json",
+					url: "App/GetJobs",
+				}
+			}
+		},
+		change: function (e) {
+			GetDevices();
+		}
+	});
+
+
+
+	function SearchCert() { 
+		var jobGuid = $("#jobCertGuid").data("kendoDropDownList").value();
+
+		if (jobGuid.length == 0) {
+			MessageBox("Information", "Please select a job.", false);
+			return;
+		}
+		var grid = $("#gridCert").data("kendoGrid");
+		grid.dataSource.transport.options.read.url = "App/GetCerts?jobGuid=" + jobGuid;
+		grid.dataSource.read();
+
+
+	}
+
+
+
+</script>

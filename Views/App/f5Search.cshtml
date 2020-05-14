@@ -1,0 +1,490 @@
+﻿
+<style>
+	#gridVIPName tbody tr:hover {
+		background: #e5f3ff;
+		cursor: pointer;
+	}
+
+	#gridVIPIP tbody tr:hover {
+		background: #e5f3ff;
+		cursor: pointer;
+	}
+
+	#gridPoolName tbody tr:hover {
+		background: #e5f3ff;
+		cursor: pointer;
+	}
+
+	#gridNodeName tbody tr:hover {
+		background: #e5f3ff;
+		cursor: pointer;
+	}
+
+	#gridNodeIp tbody tr:hover {
+		background: #e5f3ff;
+		cursor: pointer;
+	}
+</style>
+
+<table>
+	<tr>
+		<td>Job: <input id="jobGuid" name="jobGuid" style="width:200px;" /></td>
+		<td style="padding-left:100px;">&nbsp;</td>
+		<td>Search: <span id="tipSearch" style="position:relative; top:3px;"><img src="/Images/ToolBar/x16/info.png" /></span> <input type="text" id="searchString" name="searchString" style="width:300px;" /> <input type="button" value="Submit" onclick="SearchJob()"></td>
+		<td></td>
+		<td></td>
+	</tr>
+</table>
+
+<br />
+
+<div id="divPIVName" style="width:95%;">
+	<div style="width:100%;margin: 0 auto;resize:1.2em;background-color:#808080;color:white;padding:7px;font-weight:bold;">VIP Name Results</div>
+	<div id="gridVIPName" style="width:100%;margin: 0 auto;"></div>
+</div>
+
+<br />
+
+<div id="divPIVIP" style="width:95%;">
+	<div style="width:100%;margin: 0 auto;resize:1.2em;background-color:#808080;color:white;padding:7px;font-weight:bold;">VIP IP Results</div>
+	<div id="gridVIPIP" style="width:100%;margin: 0 auto;"></div>
+</div>
+
+
+<br />
+
+<div id="divPoolName" style="width:95%;">
+	<div style="width:100%;margin: 0 auto;resize:1.2em;background-color:#808080;color:white;padding:7px;font-weight:bold;">Pool Name Results</div>
+	<div id="gridPoolName" style="width:100%;margin: 0 auto;"></div>
+</div>
+
+<br />
+
+<div id="divNodeName" style="width:95%;">
+	<div style="width:100%;margin: 0 auto;resize:1.2em;background-color:#808080;color:white;padding:7px;font-weight:bold;">Node Name Results</div>
+	<div id="gridNodeName" style="width:100%;margin: 0 auto;"></div>
+</div>
+
+<br />
+
+
+<div id="divNodeIp" style="width:95%;">
+	<div style="width:100%;margin: 0 auto;resize:1.2em;background-color:#808080;color:white;padding:7px;font-weight:bold;">Node IP Results</div>
+	<div id="gridNodeIp" style="width:100%;margin: 0 auto;"></div>
+</div>
+
+<br />
+
+
+<div id="dialogDetail2346">eat me alive</div>
+
+<script>
+
+	var dsVIPName = new kendo.data.DataSource({
+		pageable: true,
+		pageSize: 20,
+		transport: {
+			read: {
+				url: "/F5/GetVIP",
+				dataType: "json"
+			}
+		}
+	});
+
+	var grid = $("#gridVIPName").kendoGrid({
+		autoBind: false,
+		dataSource: dsVIPName,
+		height: 300,
+		sortable: true,
+		pageable: true,
+		scrollable: true,
+		selectable: "row",
+		filterable: {
+			extra: false,
+			operators: {
+				string: {
+					startswith: "Starts with",
+					eq: "Is equal to",
+					neq: "Is not equal to"
+				}
+			}
+		},
+		columns: [
+
+			{ field: "f5Name", title: "Load Balancer Name", width: "180px", attributes: { "style": "text-align:left;white-space:nowrap;" } },
+			{ field: "VIPNAME", title: "Virtual NAME", width: "180px", attributes: { "style": "text-align:left;white-space:nowrap;" } },
+			{ field: "VIPIP", title: "Virtual IP", width: "180px", attributes: { "style": "text-align:left;white-space:nowrap;" } },
+			{ field: "PoolName", title: "Pool Name", width: "180px", attributes: { "style": "text-align:left;white-space:nowrap;" } },
+			{ field: "NodeName", title: "Node Name", width: "180px", attributes: { "style": "text-align:left;white-space:nowrap;" } },
+			{ field: "NodeIP", title: "Node IP", width: "180px", attributes: { "style": "text-align:left;white-space:nowrap;" } }
+		],
+		change: function (arg) {
+
+			var data = this.dataItem(this.select());
+
+			OpenDetail();
+
+			//$("#dialogVIPDetailContent").html("Clicked id: " + data.VIPNAME);
+
+			//$("#dialogVIPDetail").data("kendoWindow").open().center();
+
+			//alert("Clicked id: " + data.VIPNAME);
+			//return $http.get('../F5Data/GetVipsForDevice?jobguid=' + guid + '&f5HostName=' + f5hostname + '&vip=' + selectedVIP)
+		},
+		dataBound: function (e) {
+			e.preventDefault();
+			var count = this.dataSource.total();
+			if (count > 0) {
+				$("#divPIVName").show();
+			} else {
+				$("#divPIVName").hide();
+			}
+		}
+	});
+
+
+	var dsVIPIP = new kendo.data.DataSource({
+		pageable: true,
+		pageSize: 20,
+		transport: {
+			read: {
+				url: "/F5/GetVIP",
+				dataType: "json"
+			}
+		}
+	});
+
+	var grid = $("#gridVIPIP").kendoGrid({
+		autoBind: false,
+		dataSource: dsVIPIP,
+		height: 300,
+		sortable: true,
+		pageable: true,
+		scrollable: true,
+		selectable: "row",
+		filterable: {
+			extra: false,
+			operators: {
+				string: {
+					startswith: "Starts with",
+					eq: "Is equal to",
+					neq: "Is not equal to"
+				}
+			}
+		},
+		columns: [
+
+			{ field: "f5Name", title: "Load Balancer Name", width: "180px", attributes: { "style": "text-align:left;white-space:nowrap;" } },
+			{ field: "VIPNAME", title: "Virtual NAME", width: "180px", attributes: { "style": "text-align:left;white-space:nowrap;" } },
+			{ field: "VIPIP", title: "Virtual IP", width: "180px", attributes: { "style": "text-align:left;white-space:nowrap;" } },
+			{ field: "PoolName", title: "Pool Name", width: "180px", attributes: { "style": "text-align:left;white-space:nowrap;" } },
+			{ field: "NodeName", title: "Node Name", width: "180px", attributes: { "style": "text-align:left;white-space:nowrap;" } },
+			{ field: "NodeIP", title: "Node IP", width: "180px", attributes: { "style": "text-align:left;white-space:nowrap;" } }
+		],
+		change: function (arg) {
+			OpenDetail();
+
+			//var data = this.dataItem(this.select());
+			//$("#dialogVIPDetailContent").html("Clicked id: " + data.VIPNAME);
+
+			//$("#dialogVIPDetail").data("kendoWindow").open().center();
+
+			//alert("Clicked id: " + data.VIPNAME);
+			//return $http.get('../F5Data/GetVipsForDevice?jobguid=' + guid + '&f5HostName=' + f5hostname + '&vip=' + selectedVIP)
+		},
+		dataBound: function (e) {
+			e.preventDefault();
+			var count = this.dataSource.total();
+			if (count > 0) {
+				$("#divPIVIP").show();
+			} else {
+				$("#divPIVIP").hide();
+			}
+		}
+	});
+
+
+
+
+	var dsPoolName = new kendo.data.DataSource({
+		pageable: true,
+		pageSize: 20,
+		transport: {
+			read: {
+				url: "/F5/GetPoolName",
+				dataType: "json"
+			}
+		}
+	});
+
+	var grid = $("#gridPoolName").kendoGrid({
+		autoBind: false,
+		dataSource: dsPoolName,
+		height: 300,
+		sortable: true,
+		pageable: true,
+		scrollable: true,
+		selectable: "row",
+		filterable: {
+			extra: false,
+			operators: {
+				string: {
+					startswith: "Starts with",
+					eq: "Is equal to",
+					neq: "Is not equal to"
+				}
+			}
+		},
+		columns: [
+
+			{ field: "f5Name", title: "Load Balancer Name", width: "180px", attributes: { "style": "text-align:left;white-space:nowrap;" } },
+			{ field: "VIPNAME", title: "Virtual NAME", width: "180px", attributes: { "style": "text-align:left;white-space:nowrap;" } },
+			{ field: "VIPIP", title: "Virtual IP", width: "180px", attributes: { "style": "text-align:left;white-space:nowrap;" } },
+			{ field: "PoolName", title: "Pool Name", width: "180px", attributes: { "style": "text-align:left;white-space:nowrap;" } },
+			{ field: "NodeName", title: "Node Name", width: "180px", attributes: { "style": "text-align:left;white-space:nowrap;" } },
+			{ field: "NodeIP", title: "Node IP", width: "180px", attributes: { "style": "text-align:left;white-space:nowrap;" } }
+		],
+		dataBound: function (e) {
+			e.preventDefault();
+			var count = this.dataSource.total();
+			if (count > 0) {
+				$("#divPoolName").show();
+			} else {
+				$("#divPoolName").hide();
+			}
+		}
+	});
+
+
+	var dsNodeName = new kendo.data.DataSource({
+		pageable: true,
+		pageSize: 20,
+		transport: {
+			read: {
+				url: "/F5/GetNodeName",
+				dataType: "json"
+			}
+		}
+	});
+
+	var grid = $("#gridNodeName").kendoGrid({
+		autoBind: false,
+		dataSource: dsNodeName,
+		height: 300,
+		sortable: true,
+		pageable: true,
+		scrollable: true,
+		selectable: "row",
+		filterable: {
+			extra: false,
+			operators: {
+				string: {
+					startswith: "Starts with",
+					eq: "Is equal to",
+					neq: "Is not equal to"
+				}
+			}
+		},
+		columns: [
+
+			{ field: "f5Name", title: "Load Balancer Name", width: "180px", attributes: { "style": "text-align:left;white-space:nowrap;" } },
+			{ field: "VIPNAME", title: "Virtual NAME", width: "180px", attributes: { "style": "text-align:left;white-space:nowrap;" } },
+			{ field: "VIPIP", title: "Virtual IP", width: "180px", attributes: { "style": "text-align:left;white-space:nowrap;" } },
+			{ field: "PoolName", title: "Pool Name", width: "180px", attributes: { "style": "text-align:left;white-space:nowrap;" } },
+			{ field: "NodeName", title: "Node Name", width: "180px", attributes: { "style": "text-align:left;white-space:nowrap;" } },
+			{ field: "NodeIP", title: "Node IP", width: "180px", attributes: { "style": "text-align:left;white-space:nowrap;" } }
+		],
+		dataBound: function (e) {
+			e.preventDefault();
+			var count = this.dataSource.total();
+			if (count > 0) {
+				$("#divNodeName").show();
+			} else {
+				$("#divNodeName").hide();
+			}
+		}
+	});
+
+
+
+	var dsNodeIp = new kendo.data.DataSource({
+		pageable: true,
+		pageSize: 20,
+		transport: {
+			read: {
+				url: "/F5/GetNodeIp",
+				dataType: "json"
+			}
+		}
+	});
+
+	var grid = $("#gridNodeIp").kendoGrid({
+		autoBind: false,
+		dataSource: dsNodeIp,
+		height: 300,
+		sortable: true,
+		pageable: true,
+		scrollable: true,
+		selectable: "row",
+		filterable: {
+			extra: false,
+			operators: {
+				string: {
+					startswith: "Starts with",
+					eq: "Is equal to",
+					neq: "Is not equal to"
+				}
+			}
+		},
+		columns: [
+
+			{ field: "f5Name", title: "Load Balancer Name", width: "180px", attributes: { "style": "text-align:left;white-space:nowrap;" } },
+			{ field: "VIPNAME", title: "Virtual NAME", width: "180px", attributes: { "style": "text-align:left;white-space:nowrap;" } },
+			{ field: "VIPIP", title: "Virtual IP", width: "180px", attributes: { "style": "text-align:left;white-space:nowrap;" } },
+			{ field: "PoolName", title: "Pool Name", width: "180px", attributes: { "style": "text-align:left;white-space:nowrap;" } },
+			{ field: "NodeName", title: "Node Name", width: "180px", attributes: { "style": "text-align:left;white-space:nowrap;" } },
+			{ field: "NodeIP", title: "Node IP", width: "180px", attributes: { "style": "text-align:left;white-space:nowrap;" } }
+		],
+		dataBound: function (e) {
+			e.preventDefault();
+			var count = this.dataSource.total();
+			if (count > 0) {
+				$("#divNodeIp").show();
+			} else {
+				$("#divNodeIp").hide();
+			}
+		}
+	});
+
+
+	$(document).ready(function () {
+
+
+		$("#dialogDetail2346").kendoWindow({
+			height: "800px",
+			width: "1500px",
+			modal: true,
+			scrollable: true,
+			title: "Virtual Details",
+			animation: {
+				open: {
+					duration: 100
+				}
+			},
+			visible: false,
+			actions: ["Minimize", "Maximize", "Close"]
+		});
+
+
+		$("#dialogVIPDetail").kendoWindow({
+			height: "500px",
+			width: "800px",
+			modal: true,
+			scrollable: true,
+			title: "Virtual Details",
+			animation: {
+				open: {
+					duration: 100
+				}
+			},
+			visible: false,
+			actions: ["Close"]
+		});
+
+
+		$("#tipSearch").tooltipster({
+			content: $("<span>This feature supports both name and ip address. All searches are appended and prepended with wildcards.<br>Example: 10.20.30 would return 10.10.20.30 and 10.20.30.40. However queries can return large amounts of <br>data, try to be as specific as possible. <br>Once results are displayed, you can the click the Virtual Name to get more information.</span>")
+		});
+
+		$("#jobGuid").kendoDropDownList({
+			autoBind: true,
+			dataTextField: "jobname",
+			dataValueField: "guid",
+			dataSource: {
+				transport: {
+					read: {
+						dataType: "json",
+						url: "/F5/GetJobs",
+					}
+				}
+			}
+
+		});
+
+		
+
+		$("#searchString").focus();
+
+	});
+
+	function SearchJob() {
+		if ($("#searchString").val().length == 0) {
+			MessageBox("Information", "Please enter a search parameter.", false);
+			return;
+		}
+
+		var gridVIPName = $("#gridVIPName").data("kendoGrid");
+		gridVIPName.dataSource.transport.options.read.url = "/F5/GetVIPName?jobGuid=" + $("#jobGuid").data("kendoDropDownList").value() + "&searchString=" + $("#searchString").val();
+		gridVIPName.dataSource.read();
+
+
+		var gridVIPIP = $("#gridVIPIP").data("kendoGrid");
+		gridVIPIP.dataSource.transport.options.read.url = "/F5/GetVIPIP?jobGuid=" + $("#jobGuid").data("kendoDropDownList").value() + "&searchString=" + $("#searchString").val();
+		gridVIPIP.dataSource.read();
+
+		var gridPoolName = $("#gridPoolName").data("kendoGrid");
+		gridPoolName.dataSource.transport.options.read.url = "/F5/GetPoolName?jobGuid=" + $("#jobGuid").data("kendoDropDownList").value() + "&searchString=" + $("#searchString").val();
+		gridPoolName.dataSource.read();
+
+
+		var gridNodeName = $("#gridNodeName").data("kendoGrid");
+		gridNodeName.dataSource.transport.options.read.url = "/F5/GetNodeName?jobGuid=" + $("#jobGuid").data("kendoDropDownList").value() + "&searchString=" + $("#searchString").val();
+		gridNodeName.dataSource.read();
+
+		var gridNodeIp = $("#gridNodeIp").data("kendoGrid");
+		gridNodeIp.dataSource.transport.options.read.url = "/F5/GetNodeIp?jobGuid=" + $("#jobGuid").data("kendoDropDownList").value() + "&searchString=" + $("#searchString").val();
+		gridNodeIp.dataSource.read();
+	}
+
+
+	function OpenDetail() {
+
+		$("#dialogDetail2346").load('/App/f5Detail', { pageTemplateId: "Hello World" }, function (response, status, xhr) {
+			if (status == "error") {
+				alert("Error parsing server response");
+			} else {
+				$("#dialogDetail2346").data("kendoWindow").open().center();
+			}
+		});
+
+
+	}
+
+
+</script>
+
+
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />
+<br />

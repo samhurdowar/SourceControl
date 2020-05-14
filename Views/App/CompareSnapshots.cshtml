@@ -1,0 +1,149 @@
+﻿<table>
+	<tr>
+		<td>First Snapshot <input id="firstSnapshot" name="firstSnapshot" style="width:220px;"></td>
+		<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+		<td>Second Snapshot <input id="secondSnapshot" name="secondSnapshot" style="width:220px;"></td>
+		<td>&nbsp;&nbsp;&nbsp;<button onclick="SearchCompare()" class="btn btn-primary">Start Report</button></td>
+
+		<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+		<td nowrap>It better to put newest config you want to compare in the first box and a later config in the second box.</td>
+
+
+
+	</tr>
+</table>
+
+
+<div id="gridCompare"></div>
+
+
+
+<script>
+	var dsCompare = new kendo.data.DataSource({
+		pageable: false,
+		transport: {
+			read: {
+				url: "/App/GetCompareSnapshots",
+				dataType: "json"
+			}
+		}
+	});
+
+	$("#gridCompare").kendoGrid({
+		dataSource: dsCompare,
+		autoBind: false,
+		scrollable: true,
+		height: window.innerHeight - 330,
+		sortable: false,
+		pageable: false,
+		filterable: false,
+		resizable: true,
+		detailInit: detailInit,
+		columns: [
+
+			{ field: "LoadBalancer", title: "Load Balancer" },
+			{ field: "VIPNAME", title: "VIP Name" },
+			{ field: "StatusAvailabilityState", title: "State" },
+			{ field: "StatusEnabledState", title: "Enabled" },
+			{ field: "StatusStatusReason", title: "Reason" },
+			{ field: "PoolName", title: "Pool" }
+
+		],
+		dataBound: function (e) {
+
+			var rows = e.sender.tbody.children();
+
+			//for (var j = 0; j < rows.length; j++) {
+			//	var row = $(rows[j]);
+			//	var dataItem = e.sender.dataItem(row);
+
+			//	var stat = dataItem.get("StatusAvailabilityState");
+			//	if (stat == "offline") {
+			//		row.addClass('bcolor-red');
+			//	}
+			//	if (stat == "available") {
+			//		//row.addClass('bcolor-red');
+			//	}
+			//	if (stat == "unknown") {
+			//		row.addClass('bcolor-orange');
+			//	}
+
+			//}
+		}
+
+	});
+
+
+	$("#firstSnapshot").kendoDropDownList({
+		dataTextField: "TextField",
+		dataValueField: "ValueField",
+		dataSource: {
+			transport: {
+				read: {
+					dataType: "json",
+					url: "App/GetJobs",
+				}
+			}
+		}
+	});
+
+	$("#secondSnapshot").kendoDropDownList({
+		dataTextField: "TextField",
+		dataValueField: "ValueField",
+		dataSource: {
+			transport: {
+				read: {
+					dataType: "json",
+					url: "App/GetJobs",
+				}
+			}
+		}
+	});
+
+
+
+	function SearchCompare() {
+		var firstSnapshot = $("#firstSnapshot").data("kendoDropDownList").value();
+		var secondSnapshot = $("#secondSnapshot").data("kendoDropDownList").value();
+		var grid = $("#gridCompare").data("kendoGrid");
+
+
+		if (firstSnapshot.length == 0 || secondSnapshot.length == 0) {
+			MessageBox("Information", "Please select 2 jobs to compare.", false);
+			return;
+		}
+
+		grid.dataSource.transport.options.read.url = "App/GetCompareSnapshots?firstSnapshot=" + firstSnapshot + "&secondSnapshot=" + secondSnapshot;
+		grid.dataSource.read();
+
+
+	}
+
+	function detailInit(e) {
+
+		var dsGroupDetail = new kendo.data.DataSource({
+			transport: {
+				read: {
+					url: "/App/GetComparePoolMembers?loadBalancer=" + e.data.LoadBalancer + "&poolName=" + e.data.PoolName + "&firstSnapshot=" + $("#firstSnapshot").data("kendoDropDownList").value(),  
+					dataType: "json"
+				}
+			}
+		});
+
+		$("<div/>").appendTo(e.detailCell).kendoGrid({
+			scrollable: true,
+			height: 200,
+			dataSource: dsGroupDetail,
+			columns: [
+				{ field: "ServerName", title: "Server" },
+				{ field: "ServerAddress", title: "IP" },
+				{ field: "ServerMonitor", title: "Monitor" },
+				{ field: "ServerSession", title: "Session" },
+				{ field: "ServerState", title: "State" }
+			]
+		});
+	}
+
+
+</script>
+

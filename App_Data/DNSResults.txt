@@ -1,0 +1,67 @@
+﻿[
+  {
+    "_ref": "record:host/ZG5zLmhvc3QkLl9kZWZhdWx0LmJ1ci51c3RsdmNtc3AyMTY3:ustlvcmsp2167.bur/Internal_DNS",
+    "ipv6addrs": [
+      {
+        "_ref": "record:host_ipv6addr/ZG5zLmhvc3RfYWRkcmVzcyQuX2RlZmF1bHQuYnVyLnVzdGx2Y21zcDIxNjcuMjYwNzpmMjIwOjIwMjo5MWU6MDphOjA6ZC4:2607%3Af220%3A202%3A91e%3A0%3Aa%3A0%3Ad/ustlvcmsp2167.bur/Internal_DNS",
+        "configure_for_dhcp": false,
+        "host": "ustlvcmsp2167.bur",
+        "ipv6addr": "2607:f220:202:91e:0:a:0:d"
+      }
+    ],
+    "name": "ustlvcmsp2167.bur",
+    "view": "Internal_DNS"
+  },
+  {
+    "_ref": "record:host/ZG5zLmhvc3QkLl9kZWZhdWx0LmNvbS5lZHMucmRjbXMudXN0bHZjbXNwMjE2Nw:ustlvcmsp2167.rdcms.eds.com/Internal_DNS",
+    "ipv4addrs": [
+      {
+        "_ref": "record:host_ipv4addr/ZG5zLmhvc3RfYWRkcmVzcyQuX2RlZmF1bHQuY29tLmVkcy5yZGNtcy51c3RsdmNtc3AyMTY3LjEwLjgxLjE5Mi4xMi4:10.81.192.12/ustlvcmsp2167.rdcms.eds.com/Internal_DNS",
+        "configure_for_dhcp": false,
+        "host": "ustlvcmsp2167.rdcms.eds.com",
+        "ipv4addr": "10.81.192.12"
+      }
+    ],
+    "name": "ustlvcmsp2167.rdcms.eds.com",
+    "view": "Internal_DNS"
+  },
+  {
+    "_ref": "record:host/ZG5zLmhvc3QkLl9kZWZhdWx0Lm5hdC51c3RsdmNtc3AyMTY3:ustlvcmsp2167.nat/Internal_DNS",
+    "ipv4addrs": [
+      {
+        "_ref": "record:host_ipv4addr/ZG5zLmhvc3RfYWRkcmVzcyQuX2RlZmF1bHQubmF0LnVzdGx2Y21zcDIxNjcuOC40My4zNC4yMTcu:8.43.34.217/ustlvcmsp2167.nat/Internal_DNS",
+        "configure_for_dhcp": false,
+        "host": "ustlvcmsp2167.nat",
+        "ipv4addr": "8.43.34.217"
+      }
+    ],
+    "name": "ustlvcmsp2167.nat",
+    "view": "Internal_DNS"
+  },
+  {
+    "_ref": "record:host/ZG5zLmhvc3QkLl9kZWZhdWx0LnByb2QudXN0bHZjbXNwMjE2Nw:ustlvcmsp2167.prod/Internal_DNS",
+    "ipv4addrs": [
+      {
+        "_ref": "record:host_ipv4addr/ZG5zLmhvc3RfYWRkcmVzcyQuX2RlZmF1bHQucHJvZC51c3RsdmNtc3AyMTY3LjEwLjgxLjAuNS4:10.81.0.5/ustlvcmsp2167.prod/Internal_DNS",
+        "configure_for_dhcp": false,
+        "host": "ustlvcmsp2167.prod",
+        "ipv4addr": "10.81.0.5"
+      }
+    ],
+    "name": "ustlvcmsp2167.prod",
+    "view": "Internal_DNS"
+  },
+  {
+    "_ref": "record:host/ZG5zLmhvc3QkLl9kZWZhdWx0LnNlYy51c3RsdmNtc3AyMTY3:ustlvcmsp2167.sec/Internal_DNS",
+    "ipv6addrs": [
+      {
+        "_ref": "record:host_ipv6addr/ZG5zLmhvc3RfYWRkcmVzcyQuX2RlZmF1bHQuc2VjLnVzdGx2Y21zcDIxNjcuMjYwNzpmMjIwOjIwMjozMTA6OjQzYy4:2607%3Af220%3A202%3A310%3A%3A43c/ustlvcmsp2167.sec/Internal_DNS",
+        "configure_for_dhcp": false,
+        "host": "ustlvcmsp2167.sec",
+        "ipv6addr": "2607:f220:202:310::43c"
+      }
+    ],
+    "name": "ustlvcmsp2167.sec",
+    "view": "Internal_DNS"
+  }
+]

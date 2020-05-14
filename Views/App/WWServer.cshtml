@@ -1,0 +1,317 @@
+﻿<style>
+	.typeahead-demo .custom-popup-wrapper {
+		position: absolute;
+		top: 100%;
+		left: 0;
+		z-index: 1000;
+		display: none;
+		background-color: #f9f9f9;
+	}
+
+		.typeahead-demo .custom-popup-wrapper > .message {
+			padding: 10px 20px;
+			border-bottom: 1px solid #ddd;
+			color: #868686;
+		}
+
+		.typeahead-demo .custom-popup-wrapper > .dropdown-menu {
+			position: static;
+			float: none;
+			display: block;
+			min-width: 160px;
+			background-color: transparent;
+			border: none;
+			border-radius: 0;
+			box-shadow: none;
+		}
+
+	.tabContainer {
+		max-height: 400px;
+		overflow: auto;
+		width: 80%;
+	}
+
+	.tableData {
+		border-left: solid 1px #000000;
+		border-top: solid 1px #000000;
+		width: 100%;
+	}
+
+		.tableData tr {
+		}
+
+			.tableData tr.success {
+				background-color: #554a4a;
+				border-left: solid 1px #000000;
+				border-top: solid 1px #000000;
+				padding-top: 0;
+				padding-bottom: 0;
+			}
+
+			.tableData tr.warning {
+				background-color: #ff6a00;
+				color: cornsilk;
+				border-left: solid 1px #000000;
+				border-top: solid 1px #000000;
+			}
+
+			.tableData tr.danger {
+				background-color: #e83108;
+				border-left: solid 1px #000000;
+				border-top: solid 1px #000000;
+			}
+
+
+		.tableData td, .tableData th {
+			border-right: solid 1px #000000;
+			border-bottom: solid 1px #000000;
+			text-align: left;
+			padding: 2px;
+		}
+
+		.tableData td {
+			border-left: solid 1px #000000;
+			border-top: solid 1px #000000;
+		}
+
+		.tableData th {
+			background-color: #808080;
+			padding: 2px 2px;
+			border-bottom-color: #ff6a00;
+			border-left: solid 1px #000000;
+			border-top: solid 1px #000000;
+		}
+
+	.odd {
+		background-color: #554a4a;
+	}
+
+	.even {
+		background-color: #00b9ff;
+	}
+
+	tr.sub {
+		display: none;
+	}
+
+	.CX {
+		width: 35px;
+	}
+
+		.CX span {
+			font-family: fantasy;
+			font-size: 15px;
+			display: block;
+			width: 100%;
+			cursor: pointer;
+			text-align: center;
+		}
+
+	.refreshdiv {
+		position: fixed;
+		top: 50%;
+		left: 50%;
+		margin-top: -9em; /*set to a negative number 1/2 of your height*/
+		margin-left: -15em; /*set to a negative number 1/2 of your width*/
+	}
+
+	.list-group-item sm {
+		padding: 3px 10px;
+	}
+</style>
+
+<div id="AngularTemplatePlaceHolder009"></div>
+
+<div id="AngularTemplateBody009">
+
+	<div class="container" style="width:98%" ng-app="MainApp">
+		<div class="bs-docs" ng-controller="VMServerController">
+
+			<div class="row">
+				<div class="col-sm-2">Server Name</div>
+				<div class="col-sm-3">Server Info:</div>
+				<div class="col-sm-3">UCMDB Elements:</div>
+				<div class="col-sm-1">Report Date:</div>
+				<div class="col-sm-2">Counts:</div>
+			</div>
+			<div class="row">
+				<div class="col-sm-2">
+					<input type="text" ng-model="selectedServer" placeholder="Type at least 3 characters" uib-typeahead="server for server in getServer($viewValue)" typeahead-no-results="noResults" typeahead-min-length="3" class="form-control" typeahead-on-select="afterSelectedServer()" typeahead-select-on-exact="true">
+					<i ng-show="loadingServers" class="glyphicon glyphicon-refresh"></i>
+					<div ng-show="noResults">
+						<i class="glyphicon glyphicon-remove"></i> No Results Found
+					</div>
+				</div>
+				<div class="col-sm-3">
+					<ul class="list-group">
+						<li class="list-group-item" ng-repeat="E in serverInfo">
+							{{E}}
+						</li>
+					</ul>
+				</div>
+				<div class="col-sm-3">
+					<ul class="list-group">
+						<li class="list-group-item" ng-repeat="E in UCMDBInfo">
+							{{E}}
+						</li>
+					</ul>
+				</div>
+				<div class="col-sm-1">
+					<ul class="list-group">
+						<li class="list-group-item sm" ng-hide="reportDate == null">
+							{{reportDate | date:'MM/dd/yyyy' }}
+						</li>
+					</ul>
+
+				</div>
+				<div class="col-sm-3">
+					Total:{{serverCount}} &nbsp; Remediated: {{remediatedCount}} <br /> Pending Action: {{actionCount}} &nbsp; Viewing :{{totalItems}}
+				</div>
+			</div>
+			<hr />
+
+			<div class="row">
+				<div style="float:left; padding:0px 10px 0px 0px">
+					<label>Owner:</label>
+				</div>
+				<div style="float:left; padding:0px 10px 0px 0px">
+					<select class="form-control input-sm" ng-model="recordOwner" ng-options="I for I in recordOwnerList" ng-change="changeOwner()">
+						<option value="">All</option>
+					</select>
+				</div>
+
+				<div style="float:left; padding:0px 10px 0px 0px">
+					<label>Filter on Detail:</label>
+				</div>
+				<div style="float:left; padding:0px 10px 0px 0px">
+					<input type="text" class="form-control input-sm" style="width:500px" ng-model="recordDetails" />
+				</div>
+				<div style="float:left; padding:0px 10px 0px 0px">
+					<label>Include Remediated (All Records):</label>
+				</div>
+				<div style="float:left; padding:0px 10px 0px 0px">
+					<input type="checkbox" ng-model="remediated" class="form-inline" style="width:30px;height:30px" />
+				</div>
+				<div style="float:left; padding:0px 10px 0px 0px">
+					<button class="btn btn-info btn-sm" ng-click="changeOwner()">Apply Filter</button>
+				</div>
+
+			</div>
+			<hr />
+			<div class="row">
+				<div class="col-sm12">
+					<table class="tableData" border="1" cellspacing="12" cellpadding="0">
+						<thead>
+							<tr style="">
+								<th>Owner</th>
+								<th>Details</th>
+								<th><span tooltip-popup-close-delay='500' uib-tooltip='Indicates that the record has been remediated'>R</span></th>
+								<th>Remediated By</th>
+								<th style="width:200px"><span tooltip-popup-close-delay='500' uib-tooltip='The Business or Client App'>Business App</span></th>
+								<th><span tooltip-popup-close-delay='500' uib-tooltip='The group that will handle remediation'>App Owner</span></th>
+								<th><span tooltip-popup-close-delay='500' uib-tooltip='The software related to the app. Java, Oracle, etc..'>Software App</span></th>
+								<th style="width:400px">Comments</th>
+								<th style="width:40px">Results</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr ng-repeat="record in recordList">
+								<td style="width:auto">{{record.recordOwner}}</td>
+								<td style="width:auto">{{record.recordDetails}}</td>
+								<td><input type="checkbox" ng-model="record.remediated" class="form-inline" style="width:18px;height:18px" /></td>
+								<td>{{record.remediatedBy}}</td>
+								<td><input type="text" class="form-control input-sm" style="height:20px" ng-model="record.businessApp" /></td>
+								<td>
+									<select class="form-control input-sm" ng-model="record.assignedTo" ng-options="I for I in SMGroups"></select>
+								</td>
+								<td><input type="text" class="form-control input-sm" style="height:20px" ng-model="record.programApp" /></td>
+								<td><input type="text" class="form-control input-sm" style="height:20px; white-space:normal" ng-model="record.notes" /></td>
+								<td>
+									<button type="button" class="btn btn-default btn-sm" style="height:20px; width:20px" ng-click="submitUpdate(record)" ng-hide="record.editable"><i class="fa fa-pencil"></i></button>
+									<span ng-show="record.working"><button type="button" style="height:20px; width:20px" class="btn btn-warning btn-sm"><i class="fa fa-refresh"></i></button></span>
+									<span ng-show="record.updated"><button type="button" style="height:20px; width:20px" class="btn btn-success btn-sm"><i class="fa fa-smile-o"></i></button></span>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+					<ul uib-pagination total-items="totalItems" ng-model="currentPage" items-per-page="30" ng-change="pageChanged()" max-size="maxSize" class="pagination-sm" boundary-link-numbers="true"></ul>
+				</div>
+			</div>
+			<div class="row">
+				Apply update to multiple records at once: <input type="checkbox" ng-model="massUpdate" ng-change="!massUpdate" class="form-inline" style="width:18px;height:18px" />
+			</div>
+
+			<div class="row" ng-show="massUpdate">
+				<div style="float:left; padding:0px 10px 0px 0px">
+					Server: <input type="text" class="form-control" ng-model="selectedServer" />
+				</div>
+				<div style="float:left; padding:0px 10px 0px 0px">
+					Owner: <input type="text" class="form-control" ng-model="recordOwner" />
+				</div>
+				<div style="float:left; padding:0px 10px 0px 0px">
+					Filter on Details: <input type="text" class="form-control" ng-model="recordDetails" />
+				</div>
+				<div style="float:left; padding:0px 10px 0px 0px">
+					Remediated: <input type="checkbox" ng-model="massRemediated" class="form-inline" style="width:18px;height:18px" />
+				</div>
+				<div style="float:left; padding:0px 10px 0px 0px">
+					Business App: <input type="text" class="form-control" ng-model="massUpdateBusinessApp" />
+				</div>
+				<div style="float:left; padding:0px 10px 0px 0px">
+					App Owner <select class="form-control input-sm" ng-model="massUpdateAppOwner" ng-options="I for I in SMGroups"></select>
+				</div>
+				<div style="float:left; padding:0px 10px 0px 0px">
+					Software App: <input type="text" class="form-control" ng-model="massUpdateProgramApp" />
+				</div>
+				<div style="float:left; padding:0px 10px 0px 0px">
+					Comments <input type="text" class="form-control" ng-model="massUpdateNotes" />
+
+					<button type="button" class="btn btn-danger" ng-click="ConfirmMassUpdate(selectedServer, recordOwner, recordDetails)"> Update Records</button>
+				</div>
+			</div>
+			<div class="row" ng-show="massUpdate">
+				<div style="float:left; padding:0px 10px 0px 0px" ng-show="massUpdateShowConfirm">
+					Warning:  You about to modify {{massUpdateRecordCount}} number of records.  Please click the Confirm button if you want to proceed.
+				</div>
+				<div style="float:left; padding:0px 10px 0px 0px" ng-show="massUpdateShowConfirm">
+					<button type="button" class="btn btn-danger" ng-click="ApplyMassUpdate(selectedServer, recordOwner, recordDetails, massRemediated, massUpdateBusinessApp,  massUpdateAppOwner, massUpdateProgramApp, massUpdateNotes)"> Confirm</button>
+				</div>
+				<div ng-show="massUpdateResults"> Updates have been applied.</div>
+			</div>
+			<div ng-show="loading" class="refreshdiv">
+				<h2>LOADING</h2><br /><center><i class="fa fa-refresh fa-spin fa-3x fa-fw margin-bottom"></i></center>
+			</div>
+		</div>
+	</div>
+
+
+</div>
+
+
+
+<script>
+	
+
+	var AngularTemplateBody = $("#AngularTemplateBody009").html();
+
+	$("#AngularTemplateBody009").remove();
+	$("#btnTriggerAngular009").click();
+
+	$(function () {
+		$('body').on('click', '.CX span', function () {
+			//When Click On + sign
+			var poolitem = document.getElementById("pooldata");
+			if ($(this).text() == '+') {
+				$(this).text('-');
+			}
+			else {
+				$(this).text('+');
+			}
+			$(this).closest('tr', 'pooldata') // row of + sign
+				.next('tr', 'pooldata') // next row of + sign
+				.toggle(); // if show then hide else show
+
+		});
+	});
+
+</script>

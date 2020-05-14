@@ -1,0 +1,2286 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="AppNetworkCafeModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="ACI">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="Switch" Type="varchar" MaxLength="50" />
+          <Property Name="Mgmt" Type="varchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="API_Commands">
+          <Key>
+            <PropertyRef Name="guid" />
+          </Key>
+          <Property Name="guid" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="DeviceType" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="Command" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="param" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ApplicationFeatureRequest">
+          <Key>
+            <PropertyRef Name="guid" />
+          </Key>
+          <Property Name="guid" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="requester" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="application" Type="varchar" MaxLength="50" />
+          <Property Name="description" Type="varchar" MaxLength="500" />
+          <Property Name="dateSubmitted" Type="date" Nullable="false" />
+          <Property Name="dueDate" Type="date" />
+          <Property Name="priority" Type="varchar" MaxLength="50" />
+          <Property Name="completed" Type="bit" />
+          <Property Name="dateCompleted" Type="date" />
+          <Property Name="completionComments" Type="varchar" MaxLength="500" />
+        </EntityType>
+        <EntityType Name="ApplicationUpdates">
+          <Key>
+            <PropertyRef Name="guid" />
+          </Key>
+          <Property Name="guid" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="date" Type="date" Nullable="false" />
+          <Property Name="application" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="description" Type="varchar" MaxLength="500" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ContactDB">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="Name" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="Number1" Type="varchar" MaxLength="50" />
+          <Property Name="Number2" Type="varchar" MaxLength="50" />
+          <Property Name="Email" Type="varchar" MaxLength="50" />
+          <Property Name="ENOTE" Type="varchar" MaxLength="50" />
+          <Property Name="EsscalationContact" Type="varchar" MaxLength="50" />
+          <Property Name="EsscalationNumber" Type="varchar" MaxLength="50" />
+          <Property Name="Notes" Type="varchar" MaxLength="500" />
+        </EntityType>
+        <EntityType Name="ContractV2">
+          <Key>
+            <PropertyRef Name="guid" />
+          </Key>
+          <Property Name="guid" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="deviceGuid" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="startDate" Type="smalldatetime" />
+          <Property Name="endDate" Type="smalldatetime" />
+          <Property Name="contractNumber" Type="varchar" MaxLength="10" />
+          <Property Name="poNumber" Type="varchar" MaxLength="50" />
+          <Property Name="hostname" Type="varchar" MaxLength="50" />
+          <Property Name="serialNumber" Type="varchar" MaxLength="50" />
+          <Property Name="licenses" Type="varchar" MaxLength="500" />
+          <Property Name="notes" Type="varchar" MaxLength="500" />
+        </EntityType>
+        <EntityType Name="CustomOption">
+          <Key>
+            <PropertyRef Name="CustomOptionId" />
+          </Key>
+          <Property Name="CustomOptionId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="ColumnDefId" Type="int" Nullable="false" />
+          <Property Name="OptionText" Type="varchar" MaxLength="500" />
+          <Property Name="OptionValue" Type="varchar" MaxLength="500" />
+        </EntityType>
+        <EntityType Name="DebugLog">
+          <Key>
+            <PropertyRef Name="LogId" />
+          </Key>
+          <Property Name="LogId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="LogDate" Type="datetime" Nullable="false" />
+          <Property Name="Source" Type="varchar" MaxLength="1000" Nullable="false" />
+          <Property Name="LogContent" Type="varchar(max)" Nullable="false" />
+        </EntityType>
+        <EntityType Name="DeviceGroup">
+          <Key>
+            <PropertyRef Name="guid" />
+          </Key>
+          <Property Name="guid" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="GroupID" Type="int" Nullable="false" />
+          <Property Name="GroupName" Type="nvarchar" MaxLength="200" Nullable="false" />
+          <Property Name="Comments" Type="nvarchar" MaxLength="500" />
+          <Property Name="ParentGroupID" Type="int" Nullable="false" />
+          <Property Name="AddMembers" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="DeviceGroupMember">
+          <Key>
+            <PropertyRef Name="guid" />
+          </Key>
+          <Property Name="guid" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="groupguid" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="DeviceName" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="DeviceGroupTask">
+          <Key>
+            <PropertyRef Name="guid" />
+          </Key>
+          <Property Name="guid" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="groupguid" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="taskname" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="taskstart" Type="smalldatetime" Nullable="false" />
+          <Property Name="taskend" Type="smalldatetime" Nullable="false" />
+          <Property Name="comments" Type="nvarchar" MaxLength="500" />
+        </EntityType>
+        <EntityType Name="Devices">
+          <Key>
+            <PropertyRef Name="DeviceName" />
+          </Key>
+          <Property Name="DeviceName" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Type" Type="nvarchar" MaxLength="50" />
+          <Property Name="Model" Type="nvarchar" MaxLength="50" />
+          <Property Name="SerialNum" Type="nvarchar" MaxLength="50" />
+          <Property Name="MGMTIP" Type="nvarchar" MaxLength="50" />
+          <Property Name="Comments" Type="nvarchar" MaxLength="50" />
+          <Property Name="FloorLoc" Type="nvarchar" MaxLength="50" />
+          <Property Name="DataCenter" Type="nvarchar" MaxLength="50" />
+          <Property Name="Module" Type="nvarchar" MaxLength="50" />
+          <Property Name="Zone" Type="nvarchar" MaxLength="50" />
+          <Property Name="Path" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="eVPN">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="Title" Type="varchar" MaxLength="100" />
+          <Property Name="mgt" Type="varchar" MaxLength="100" />
+          <Property Name="Lo0" Type="varchar" MaxLength="100" />
+          <Property Name="Lo1" Type="varchar" MaxLength="100" />
+          <Property Name="secondary" Type="varchar" MaxLength="100" />
+          <Property Name="E1a" Type="varchar" MaxLength="100" />
+          <Property Name="E1b" Type="varchar" MaxLength="100" />
+          <Property Name="ASN" Type="varchar" MaxLength="100" />
+          <Property Name="VPC" Type="varchar" MaxLength="100" />
+          <Property Name="router" Type="varchar" MaxLength="100" />
+          <Property Name="bgp" Type="varchar" MaxLength="100" />
+          <Property Name="SWS1_2" Type="varchar" MaxLength="100" />
+          <Property Name="SWS3_4" Type="varchar" MaxLength="100" />
+          <Property Name="Notes" Type="varchar" MaxLength="100" />
+        </EntityType>
+        <EntityType Name="FWNat">
+          <Key>
+            <PropertyRef Name="guid" />
+          </Key>
+          <Property Name="guid" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="FirewallName" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="type" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="source" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="destination" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="direction" Type="varchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="FWRoutes">
+          <Key>
+            <PropertyRef Name="guid" />
+          </Key>
+          <Property Name="guid" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Network" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="CMSFirewallIP" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="CMSFirewall" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="InternetFirewallIP" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="InternetFirewall" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="Environment" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="Notes" Type="varchar" MaxLength="500" />
+        </EntityType>
+        <EntityType Name="HPNA_DEVICE">
+          <Key>
+            <PropertyRef Name="DeviceID" />
+          </Key>
+          <Property Name="DeviceID" Type="float" Nullable="false" />
+          <Property Name="PrimaryIPAddress" Type="nvarchar" MaxLength="255" />
+          <Property Name="PrimaryFQDN" Type="nvarchar" MaxLength="255" />
+          <Property Name="HostName" Type="nvarchar" MaxLength="255" />
+          <Property Name="DeviceName" Type="nvarchar" MaxLength="255" />
+          <Property Name="SerialNumber" Type="nvarchar" MaxLength="255" />
+          <Property Name="AssetTag" Type="nvarchar" MaxLength="255" />
+          <Property Name="SoftwareVersion" Type="nvarchar" MaxLength="255" />
+          <Property Name="FirmwareVersion" Type="nvarchar" MaxLength="255" />
+          <Property Name="Vendor" Type="nvarchar" MaxLength="255" />
+          <Property Name="Model" Type="nvarchar" MaxLength="255" />
+          <Property Name="DeviceType" Type="nvarchar" MaxLength="255" />
+          <Property Name="GeographicalLocation" Type="nvarchar" MaxLength="255" />
+          <Property Name="CreateDate" Type="smalldatetime" />
+          <Property Name="LastAccessAttemptDate" Type="smalldatetime" />
+          <Property Name="LastAccessSuccessDate" Type="smalldatetime" />
+          <Property Name="LastSnapshotDate" Type="smalldatetime" />
+          <Property Name="LastAccessAttemptStatus" Type="nvarchar" MaxLength="255" />
+          <Property Name="LastModifiedUserID" Type="float" />
+          <Property Name="ExcludeFromPoll" Type="float" />
+          <Property Name="AccessMethods" Type="nvarchar" MaxLength="255" />
+          <Property Name="ModemNumber" Type="nvarchar" MaxLength="255" />
+          <Property Name="ManagementStatus" Type="float" />
+          <Property Name="FeedSource" Type="nvarchar" MaxLength="255" />
+          <Property Name="LastImportDate" Type="nvarchar" MaxLength="255" />
+          <Property Name="ChangeEventData" Type="nvarchar(max)" />
+          <Property Name="MostRecentConfigID" Type="float" />
+          <Property Name="LastConfigChangeUserID" Type="float" />
+          <Property Name="LastRecordModifiedDate" Type="smalldatetime" />
+          <Property Name="LatestStartupRunningDiffer" Type="float" />
+          <Property Name="DeviceCustom1" Type="nvarchar" MaxLength="255" />
+          <Property Name="DeviceCustom2" Type="nvarchar" MaxLength="255" />
+          <Property Name="DeviceCustom3" Type="nvarchar" MaxLength="255" />
+          <Property Name="DeviceCustom4" Type="nvarchar" MaxLength="255" />
+          <Property Name="DeviceCustom5" Type="nvarchar" MaxLength="255" />
+          <Property Name="DeviceCustom6" Type="nvarchar" MaxLength="255" />
+          <Property Name="Memory" Type="float" />
+          <Property Name="FlashMemory" Type="nvarchar" MaxLength="255" />
+          <Property Name="TotalPorts" Type="float" />
+          <Property Name="FreePorts" Type="float" />
+          <Property Name="PutInServiceDate" Type="nvarchar" MaxLength="255" />
+          <Property Name="UnmanagedDate" Type="nvarchar" MaxLength="255" />
+          <Property Name="ROMVersion" Type="nvarchar" MaxLength="255" />
+          <Property Name="Processor" Type="nvarchar" MaxLength="255" />
+          <Property Name="LatestSoftwareHistoryID" Type="float" />
+          <Property Name="LastConfigPolicyCheckedDate" Type="smalldatetime" />
+          <Property Name="LastUsedAuthenticationID" Type="float" />
+          <Property Name="LastSnapshotAttemptDate" Type="smalldatetime" />
+          <Property Name="LastSnapshotSuccessDate" Type="smalldatetime" />
+          <Property Name="LastSnapshotAttemptStatus" Type="nvarchar" MaxLength="255" />
+          <Property Name="TicketNumber" Type="nvarchar" MaxLength="255" />
+          <Property Name="PerformACLParsing" Type="float" />
+          <Property Name="Uptime" Type="float" />
+          <Property Name="UptimeStoredDate" Type="smalldatetime" />
+          <Property Name="PolicyInCompliance" Type="float" />
+          <Property Name="PolicyImportance" Type="nvarchar" MaxLength="255" />
+          <Property Name="SiteID" Type="float" />
+          <Property Name="HierarchyLayer" Type="nvarchar" MaxLength="255" />
+          <Property Name="DeviceGroup1ID" Type="float" />
+          <Property Name="DeviceGroup2ID" Type="nvarchar" MaxLength="255" />
+          <Property Name="DeviceGroup3ID" Type="nvarchar" MaxLength="255" />
+          <Property Name="LastTopologyDataUpdate" Type="smalldatetime" />
+          <Property Name="LastDuplexDataUpdate" Type="smalldatetime" />
+          <Property Name="Contact" Type="nvarchar" MaxLength="255" />
+          <Property Name="DuplexMismatchDetected" Type="float" />
+        </EntityType>
+        <EntityType Name="HPNA_DEVICE_MODULE">
+          <Key>
+            <PropertyRef Name="DeviceModuleID" />
+          </Key>
+          <Property Name="DeviceModuleID" Type="float" Nullable="false" />
+          <Property Name="DeviceID" Type="float" />
+          <Property Name="Slot" Type="nvarchar" MaxLength="255" />
+          <Property Name="ModuleModel" Type="nvarchar" MaxLength="255" />
+          <Property Name="ModuleDescription" Type="nvarchar" MaxLength="255" />
+          <Property Name="ModuleOS" Type="nvarchar" MaxLength="255" />
+          <Property Name="FirmwareVersion" Type="nvarchar" MaxLength="255" />
+          <Property Name="HardwareRevision" Type="nvarchar" MaxLength="255" />
+          <Property Name="Memory" Type="nvarchar" MaxLength="255" />
+          <Property Name="ModuleCustom1" Type="nvarchar" MaxLength="255" />
+          <Property Name="ModuleCustom2" Type="nvarchar" MaxLength="255" />
+          <Property Name="ModuleCustom3" Type="nvarchar" MaxLength="255" />
+          <Property Name="ModuleCustom4" Type="nvarchar" MaxLength="255" />
+          <Property Name="ModuleCustom5" Type="nvarchar" MaxLength="255" />
+          <Property Name="ModuleCustom6" Type="nvarchar" MaxLength="255" />
+          <Property Name="Comments" Type="nvarchar" MaxLength="255" />
+          <Property Name="SerialNumber" Type="nvarchar" MaxLength="255" />
+          <Property Name="LastModifiedDate" Type="smalldatetime" />
+          <Property Name="SlotNumber" Type="float" />
+          <Property Name="ChildDeviceID" Type="nvarchar" MaxLength="255" />
+          <Property Name="Status" Type="float" />
+          <Property Name="SlotType" Type="nvarchar" MaxLength="255" />
+          <Property Name="Parent" Type="nvarchar" MaxLength="255" />
+        </EntityType>
+        <EntityType Name="HPNA_DEVICE_PORT">
+          <Key>
+            <PropertyRef Name="DevicePortID" />
+          </Key>
+          <Property Name="DevicePortID" Type="float" Nullable="false" />
+          <Property Name="DeviceID" Type="float" />
+          <Property Name="PortCustom1" Type="nvarchar" MaxLength="255" />
+          <Property Name="PortCustom2" Type="nvarchar" MaxLength="255" />
+          <Property Name="PortCustom3" Type="nvarchar" MaxLength="255" />
+          <Property Name="PortCustom4" Type="nvarchar" MaxLength="255" />
+          <Property Name="PortCustom5" Type="nvarchar" MaxLength="255" />
+          <Property Name="PortCustom6" Type="nvarchar" MaxLength="255" />
+          <Property Name="Comments" Type="nvarchar" MaxLength="255" />
+          <Property Name="PortName" Type="nvarchar" MaxLength="255" />
+          <Property Name="PortAllows" Type="nvarchar" MaxLength="255" />
+          <Property Name="PortType" Type="nvarchar" MaxLength="255" />
+          <Property Name="PortStatus" Type="nvarchar" MaxLength="255" />
+          <Property Name="Description" Type="nvarchar" MaxLength="255" />
+          <Property Name="LastModifiedDate" Type="smalldatetime" />
+          <Property Name="MacAddress" Type="nvarchar" MaxLength="255" />
+          <Property Name="AssociatedVlanID" Type="nvarchar" MaxLength="255" />
+          <Property Name="ConfiguredDuplex" Type="nvarchar" MaxLength="255" />
+          <Property Name="ConfiguredSpeed" Type="nvarchar" MaxLength="255" />
+          <Property Name="NegotiatedDuplex" Type="nvarchar" MaxLength="255" />
+          <Property Name="NegotiatedSpeed" Type="nvarchar" MaxLength="255" />
+          <Property Name="SlotNumber" Type="float" />
+          <Property Name="PortState" Type="nvarchar" MaxLength="255" />
+          <Property Name="NativeVlan" Type="nvarchar" MaxLength="255" />
+          <Property Name="AssociatedChannelID" Type="nvarchar" MaxLength="255" />
+        </EntityType>
+        <EntityType Name="HPNA_DEVICE_VLAN_INFO">
+          <Key>
+            <PropertyRef Name="DeviceVlanInfoID" />
+          </Key>
+          <Property Name="DeviceVlanInfoID" Type="int" Nullable="false" />
+          <Property Name="DeviceID" Type="int" Nullable="false" />
+          <Property Name="VlanID" Type="int" Nullable="false" />
+          <Property Name="VlanName" Type="nvarchar" MaxLength="50" />
+          <Property Name="VlanType" Type="nvarchar" MaxLength="50" />
+          <Property Name="VlanPrivate" Type="nvarchar" MaxLength="50" />
+          <Property Name="Mtu" Type="nvarchar" MaxLength="50" />
+          <Property Name="VlanStatus" Type="nvarchar" MaxLength="50" />
+          <Property Name="Description" Type="nvarchar" MaxLength="50" />
+          <Property Name="LastModifiedUserID" Type="nvarchar" MaxLength="50" />
+          <Property Name="LastModifiedDate" Type="datetime" />
+        </EntityType>
+        <EntityType Name="InternalMailServers">
+          <Key>
+            <PropertyRef Name="guid" />
+          </Key>
+          <Property Name="guid" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="name" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="port" Type="int" Nullable="false" />
+          <Property Name="useAuth" Type="bit" Nullable="false" />
+          <Property Name="username" Type="varchar" MaxLength="50" />
+          <Property Name="password" Type="varchar" MaxLength="50" />
+          <Property Name="active" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="IPNetworks">
+          <Key>
+            <PropertyRef Name="guid" />
+          </Key>
+          <Property Name="guid" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Site" Type="nvarchar" MaxLength="255" />
+          <Property Name="ApplicationEnvironment" Type="nvarchar" MaxLength="255" />
+          <Property Name="Subnet" Type="nvarchar" MaxLength="255" />
+          <Property Name="IPv4DefaultGateway" Type="nvarchar" MaxLength="255" />
+          <Property Name="MASK" Type="nvarchar" MaxLength="255" />
+          <Property Name="IPv6" Type="nvarchar" MaxLength="255" />
+          <Property Name="IPv6DefaultGateway" Type="nvarchar" MaxLength="255" />
+          <Property Name="VLAN" Type="nvarchar" MaxLength="255" />
+          <Property Name="ASSIGNMENT" Type="nvarchar" MaxLength="255" />
+          <Property Name="VRF" Type="nvarchar" MaxLength="255" />
+          <Property Name="NetworkDevice" Type="nvarchar" MaxLength="255" />
+          <Property Name="MonitoringDevice" Type="nvarchar" MaxLength="255" />
+          <Property Name="Notes" Type="nvarchar" MaxLength="255" />
+          <Property Name="Color" Type="varchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="LBPoolMember">
+          <Key>
+            <PropertyRef Name="GUID" />
+          </Key>
+          <Property Name="GUID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="VIPGUID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="RequestNumber" Type="int" Nullable="false" />
+          <Property Name="ServerName" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="ServerIPv4" Type="nvarchar" MaxLength="15" />
+          <Property Name="ServerPort" Type="int" Nullable="false" />
+          <Property Name="ServerIPv6" Type="nvarchar" MaxLength="50" />
+          <Property Name="PoolName" Type="nvarchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="LBVIPRequests">
+          <Key>
+            <PropertyRef Name="GUID" />
+          </Key>
+          <Property Name="GUID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="RequestNumber" Type="int" Nullable="false" />
+          <Property Name="ApplicationName" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="VIPName" Type="nvarchar" MaxLength="100" Nullable="false" />
+          <Property Name="VIPIP" Type="nvarchar" MaxLength="50" />
+          <Property Name="VIPPort" Type="int" />
+          <Property Name="VIPIPv6" Type="nvarchar" MaxLength="50" />
+          <Property Name="ExternalIP" Type="nvarchar" MaxLength="50" />
+          <Property Name="ExternalPort" Type="int" />
+          <Property Name="ExternalURL" Type="nvarchar" MaxLength="100" />
+          <Property Name="ProfileType" Type="nvarchar" MaxLength="50" />
+          <Property Name="Persistence" Type="nvarchar" MaxLength="50" />
+          <Property Name="PoolName" Type="nvarchar" MaxLength="100" />
+          <Property Name="PoolMonitor" Type="nvarchar" MaxLength="50" />
+          <Property Name="SnatPoolName" Type="nvarchar" MaxLength="50" />
+          <Property Name="Environment" Type="nvarchar" MaxLength="50" />
+          <Property Name="DCLocation" Type="nvarchar" MaxLength="50" />
+          <Property Name="Notes" Type="nvarchar" MaxLength="500" />
+        </EntityType>
+        <EntityType Name="Links">
+          <Key>
+            <PropertyRef Name="LinkGuid" />
+          </Key>
+          <Property Name="LinkGuid" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="LinkName" Type="nvarchar" MaxLength="50" />
+          <Property Name="LinkURL" Type="nvarchar" MaxLength="500" />
+          <Property Name="Comments" Type="nvarchar" MaxLength="500" />
+        </EntityType>
+        <EntityType Name="MasterDevice">
+          <Key>
+            <PropertyRef Name="DeviceGUID" />
+          </Key>
+          <Property Name="HostName" Type="nvarchar" MaxLength="255" />
+          <Property Name="DeviceGUID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="DeviceIP" Type="nvarchar" MaxLength="255" />
+          <Property Name="DeviceVendor" Type="nvarchar" MaxLength="255" />
+          <Property Name="DeviceModel" Type="nvarchar" MaxLength="255" />
+          <Property Name="DeviceLocation" Type="nvarchar" MaxLength="255" />
+          <Property Name="RackUnit" Type="varchar" MaxLength="10" />
+          <Property Name="SerialNumber" Type="nvarchar" MaxLength="255" />
+          <Property Name="SRFU" Type="nvarchar" MaxLength="255" />
+          <Property Name="Site" Type="nvarchar" MaxLength="255" />
+          <Property Name="Checklist" Type="nvarchar" MaxLength="255" />
+          <Property Name="Zone" Type="nvarchar" MaxLength="255" />
+          <Property Name="Path" Type="nvarchar" MaxLength="255" />
+          <Property Name="DeviceType" Type="nvarchar" MaxLength="255" />
+          <Property Name="LastImport" Type="nvarchar" MaxLength="255" />
+          <Property Name="Comments" Type="nvarchar" MaxLength="255" />
+          <Property Name="API" Type="varchar" MaxLength="50" />
+          <Property Name="PortCountStat" Type="varchar" MaxLength="500" StoreGeneratedPattern="Computed" />
+        </EntityType>
+        <EntityType Name="ReportList">
+          <Key>
+            <PropertyRef Name="guid" />
+          </Key>
+          <Property Name="guid" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="ReportName" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="SecurityLevel" Type="varchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Requests">
+          <Key>
+            <PropertyRef Name="RequestNumber" />
+          </Key>
+          <Property Name="RequestNumber" Type="int" Nullable="false" />
+          <Property Name="RequestType" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="AMD" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="Requester" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="TicketNumber" Type="nvarchar" MaxLength="50" />
+          <Property Name="XOCArt" Type="nvarchar" MaxLength="50" />
+          <Property Name="EngineerOwner" Type="nvarchar" MaxLength="50" />
+          <Property Name="RequestedImpDate" Type="date" />
+          <Property Name="DateSubmitted" Type="smalldatetime" />
+          <Property Name="EngineerGroup" Type="nvarchar" MaxLength="50" />
+          <Property Name="RequestStatus" Type="nvarchar" MaxLength="50" />
+          <Property Name="RequestPhase" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="ApprovalStatus" Type="nvarchar" MaxLength="50" />
+          <Property Name="ApprovalDate" Type="smalldatetime" />
+          <Property Name="ImplementedDate" Type="smalldatetime" />
+          <Property Name="ResultsOfImp" Type="nvarchar" MaxLength="50" />
+          <Property Name="AdditionalDetail" Type="nvarchar" MaxLength="500" />
+        </EntityType>
+        <EntityType Name="SiteMap">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="int" Nullable="false" />
+          <Property Name="ParentID" Type="int" Nullable="false" />
+          <Property Name="Title" Type="nvarchar(max)" />
+          <Property Name="Description" Type="nvarchar(max)" />
+          <Property Name="Controller" Type="nvarchar(max)" />
+          <Property Name="Action" Type="nvarchar(max)" />
+          <Property Name="paramid" Type="nvarchar(max)" />
+          <Property Name="URL" Type="nvarchar(max)" />
+          <Property Name="Area" Type="nvarchar(max)" />
+          <Property Name="Parameter" Type="nvarchar(max)" />
+          <Property Name="Module" Type="nvarchar(max)" />
+          <Property Name="StatusCode" Type="nvarchar(max)" />
+          <Property Name="DisplayOrder" Type="nvarchar(max)" />
+          <Property Name="Roles" Type="nvarchar(max)" />
+        </EntityType>
+        <EntityType Name="SiteMapRole">
+          <Key>
+            <PropertyRef Name="guid" />
+          </Key>
+          <Property Name="guid" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="siteID" Type="int" Nullable="false" />
+          <Property Name="RoleName" Type="nvarchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="SiteSettings">
+          <Key>
+            <PropertyRef Name="guid" />
+          </Key>
+          <Property Name="guid" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="SettingName" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="SettingValue" Type="varchar" MaxLength="500" Nullable="false" />
+          <Property Name="SettingType" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="Password" Type="bit" Nullable="false" />
+          <Property Name="Notes" Type="varchar" MaxLength="100" />
+        </EntityType>
+        <EntityType Name="SMChanges">
+          <Key>
+            <PropertyRef Name="guid" />
+          </Key>
+          <Property Name="guid" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="jobguid" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="lastUpdated" Type="datetime" Nullable="false" />
+          <Property Name="ChangeID" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="ApprovalStatus" Type="varchar" MaxLength="50" />
+          <Property Name="Category" Type="varchar" MaxLength="50" />
+          <Property Name="ChangeCoordinator" Type="varchar" MaxLength="50" />
+          <Property Name="AssignedTo" Type="varchar" MaxLength="50" />
+          <Property Name="AssignmentGroup" Type="varchar" MaxLength="50" />
+          <Property Name="ChangeModel" Type="varchar" MaxLength="500" />
+          <Property Name="DateEntered" Type="datetime" />
+          <Property Name="InitiatedBy" Type="varchar" MaxLength="50" />
+          <Property Name="Open" Type="bit" />
+          <Property Name="Phase" Type="varchar" MaxLength="50" />
+          <Property Name="PlannedEnd" Type="datetime" />
+          <Property Name="PlannedStart" Type="datetime" />
+          <Property Name="Priority" Type="int" />
+          <Property Name="RiskAssessment" Type="int" />
+          <Property Name="Status" Type="varchar" MaxLength="50" />
+          <Property Name="Subcategory" Type="varchar" MaxLength="100" />
+          <Property Name="Title" Type="varchar" MaxLength="100" />
+          <Property Name="ImplementationEnd" Type="datetime" />
+          <Property Name="ImplementationStart" Type="datetime" />
+          <Property Name="ClosureCode" Type="int" />
+          <Property Name="Impact" Type="int" />
+          <Property Name="Reason" Type="varchar" MaxLength="500" />
+        </EntityType>
+        <EntityType Name="SMChangesTemp">
+          <Key>
+            <PropertyRef Name="guid" />
+          </Key>
+          <Property Name="guid" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="jobguid" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="lastUpdated" Type="datetime" Nullable="false" />
+          <Property Name="ChangeID" Type="varchar" MaxLength="10" Nullable="false" />
+          <Property Name="ApprovalStatus" Type="varchar" MaxLength="50" />
+          <Property Name="Category" Type="varchar" MaxLength="50" />
+          <Property Name="ChangeCoordinator" Type="varchar" MaxLength="50" />
+          <Property Name="AssignedTo" Type="varchar" MaxLength="50" />
+          <Property Name="AssignmentGroup" Type="varchar" MaxLength="50" />
+          <Property Name="ChangeModel" Type="varchar" MaxLength="500" />
+          <Property Name="DateEntered" Type="datetime" />
+          <Property Name="InitiatedBy" Type="varchar" MaxLength="50" />
+          <Property Name="Open" Type="bit" />
+          <Property Name="Phase" Type="varchar" MaxLength="50" />
+          <Property Name="PlannedEnd" Type="datetime" />
+          <Property Name="PlannedStart" Type="datetime" />
+          <Property Name="Priority" Type="int" />
+          <Property Name="RiskAssessment" Type="int" />
+          <Property Name="Status" Type="varchar" MaxLength="50" />
+          <Property Name="Subcategory" Type="varchar" MaxLength="100" />
+          <Property Name="Title" Type="varchar(max)" />
+          <Property Name="ImplementationEnd" Type="datetime" />
+          <Property Name="ImplementationStart" Type="datetime" />
+          <Property Name="ClosureCode" Type="int" />
+          <Property Name="Impact" Type="int" />
+          <Property Name="Reason" Type="varchar" MaxLength="500" />
+        </EntityType>
+        <EntityType Name="SMGroups">
+          <Key>
+            <PropertyRef Name="guid" />
+          </Key>
+          <Property Name="guid" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="AssignmentGroup" Type="varchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="SMJobLog">
+          <Key>
+            <PropertyRef Name="Guid" />
+          </Key>
+          <Property Name="Guid" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="startDateTime" Type="datetime" Nullable="false" />
+          <Property Name="endDateTime" Type="datetime" />
+          <Property Name="Successful" Type="bit" />
+          <Property Name="errorDetails" Type="varchar(max)" />
+          <Property Name="recordCount" Type="int" />
+          <Property Name="jobType" Type="varchar" MaxLength="50" />
+          <Property Name="updatedCount" Type="int" />
+          <Property Name="newRecordCount" Type="int" />
+        </EntityType>
+        <EntityType Name="SMTasks">
+          <Key>
+            <PropertyRef Name="guid" />
+          </Key>
+          <Property Name="guid" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="jobguid" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="lastUpdated" Type="datetime" Nullable="false" />
+          <Property Name="TaskID" Type="varchar" MaxLength="10" />
+          <Property Name="ClosureCode" Type="int" />
+          <Property Name="Assignee" Type="varchar" MaxLength="50" />
+          <Property Name="AssignmentGroup" Type="varchar" MaxLength="50" />
+          <Property Name="Category" Type="varchar" MaxLength="50" />
+          <Property Name="CloseTime" Type="datetime" />
+          <Property Name="DateEntered" Type="datetime" />
+          <Property Name="Open" Type="bit" />
+          <Property Name="Originator" Type="varchar" MaxLength="50" />
+          <Property Name="ParentChange" Type="nchar" MaxLength="10" />
+          <Property Name="Phase" Type="varchar" MaxLength="50" />
+          <Property Name="PlannedEnd" Type="datetime" />
+          <Property Name="PlannedStart" Type="datetime" />
+          <Property Name="Reason" Type="varchar" MaxLength="50" />
+          <Property Name="Status" Type="varchar" MaxLength="50" />
+          <Property Name="Title" Type="varchar" MaxLength="500" />
+          <Property Name="ScheduledDowntimeEnd" Type="datetime" />
+          <Property Name="ScheduledDowntimeStart" Type="datetime" />
+          <Property Name="ActualEnd" Type="datetime" />
+          <Property Name="ActualStart" Type="datetime" />
+          <Property Name="Impact" Type="int" />
+          <Property Name="Urgency" Type="int" />
+        </EntityType>
+        <EntityType Name="SMTasksTemp">
+          <Key>
+            <PropertyRef Name="guid" />
+          </Key>
+          <Property Name="guid" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="jobguid" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="lastUpdated" Type="datetime" Nullable="false" />
+          <Property Name="TaskID" Type="varchar" MaxLength="10" />
+          <Property Name="ClosureCode" Type="int" />
+          <Property Name="Assignee" Type="varchar" MaxLength="50" />
+          <Property Name="AssignmentGroup" Type="varchar" MaxLength="50" />
+          <Property Name="Category" Type="varchar" MaxLength="50" />
+          <Property Name="CloseTime" Type="datetime" />
+          <Property Name="DateEntered" Type="datetime" />
+          <Property Name="Open" Type="bit" />
+          <Property Name="Originator" Type="varchar" MaxLength="50" />
+          <Property Name="ParentChange" Type="nchar" MaxLength="10" />
+          <Property Name="Phase" Type="varchar" MaxLength="50" />
+          <Property Name="PlannedEnd" Type="datetime" />
+          <Property Name="PlannedStart" Type="nchar" MaxLength="10" />
+          <Property Name="Reason" Type="varchar" MaxLength="50" />
+          <Property Name="Status" Type="varchar" MaxLength="50" />
+          <Property Name="Title" Type="varchar" MaxLength="500" />
+          <Property Name="ScheduledDowntimeEnd" Type="datetime" />
+          <Property Name="ScheduledDowntimeStart" Type="datetime" />
+          <Property Name="ActualEnd" Type="datetime" />
+          <Property Name="ActualStart" Type="datetime" />
+          <Property Name="Impact" Type="int" />
+          <Property Name="Urgency" Type="int" />
+        </EntityType>
+        <EntityType Name="SMUserAssignments">
+          <Key>
+            <PropertyRef Name="Guid" />
+          </Key>
+          <Property Name="Guid" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="UserName" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="Group" Type="varchar" MaxLength="50" Nullable="false" />
+        </EntityType>
+        <EntityType Name="SwitchModules">
+          <Key>
+            <PropertyRef Name="ModuleGUID" />
+          </Key>
+          <Property Name="ModuleGUID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="DeviceGUID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="ModuleNum" Type="nvarchar" MaxLength="50" />
+          <Property Name="ModuleType" Type="nvarchar" MaxLength="50" />
+          <Property Name="SerialNum" Type="nvarchar" MaxLength="50" />
+          <Property Name="Comments" Type="nvarchar" MaxLength="500" />
+        </EntityType>
+        <EntityType Name="SwitchPorts">
+          <Key>
+            <PropertyRef Name="PortGUID" />
+          </Key>
+          <Property Name="DeviceName" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="PortGUID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="PortNum" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="PortType" Type="nvarchar" MaxLength="50" />
+          <Property Name="Connected" Type="bit" />
+          <Property Name="HostName" Type="nvarchar" MaxLength="50" />
+          <Property Name="Interface" Type="nvarchar" MaxLength="50" />
+          <Property Name="VLAN" Type="nvarchar" MaxLength="50" />
+          <Property Name="Comments" Type="nvarchar" MaxLength="500" />
+          <Property Name="SwitchLocation" Type="varchar" MaxLength="300" StoreGeneratedPattern="Computed" />
+          <Property Name="NetworkType" Type="varchar" MaxLength="300" StoreGeneratedPattern="Computed" />
+        </EntityType>
+        <EntityType Name="UserActivityLog">
+          <Key>
+            <PropertyRef Name="GUID" />
+          </Key>
+          <Property Name="GUID" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="UserName" Type="nvarchar" MaxLength="50" Nullable="false" />
+          <Property Name="URL" Type="nvarchar" MaxLength="150" Nullable="false" />
+          <Property Name="DataTime" Type="smalldatetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="UserReports">
+          <Key>
+            <PropertyRef Name="guid" />
+          </Key>
+          <Property Name="guid" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="username" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="reportName" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="frequency" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="cc" Type="varchar" MaxLength="500" Nullable="false" />
+          <Property Name="active" Type="bit" />
+        </EntityType>
+        <EntityType Name="VMPhoneBook">
+          <Key>
+            <PropertyRef Name="guid" />
+          </Key>
+          <Property Name="guid" Type="uniqueidentifier" Nullable="false" />
+          <Property Name="Environment" Type="nvarchar" MaxLength="255" />
+          <Property Name="ServerName" Type="nvarchar" MaxLength="255" />
+          <Property Name="Mgt_IP" Type="nvarchar" MaxLength="255" />
+          <Property Name="Prod_IP" Type="nvarchar" MaxLength="255" />
+          <Property Name="BUR_IP" Type="nvarchar" MaxLength="255" />
+          <Property Name="SEC_IP" Type="nvarchar" MaxLength="255" />
+          <Property Name="Comment" Type="nvarchar" MaxLength="255" />
+          <Property Name="CPU" Type="nvarchar" MaxLength="255" />
+          <Property Name="RAM" Type="nvarchar" MaxLength="255" />
+          <Property Name="DiskSize" Type="nvarchar" MaxLength="255" />
+          <Property Name="ESXi_Host" Type="nvarchar" MaxLength="255" />
+        </EntityType>
+        <EntityContainer Name="AppNetworkCafeModelStoreContainer">
+          <EntitySet Name="ACI" EntityType="Self.ACI" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="API_Commands" EntityType="Self.API_Commands" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ApplicationFeatureRequest" EntityType="Self.ApplicationFeatureRequest" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ApplicationUpdates" EntityType="Self.ApplicationUpdates" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ContactDB" EntityType="Self.ContactDB" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ContractV2" EntityType="Self.ContractV2" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="CustomOption" EntityType="Self.CustomOption" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="DebugLog" EntityType="Self.DebugLog" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="DeviceGroup" EntityType="Self.DeviceGroup" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="DeviceGroupMember" EntityType="Self.DeviceGroupMember" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="DeviceGroupTask" EntityType="Self.DeviceGroupTask" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Devices" EntityType="Self.Devices" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="eVPN" EntityType="Self.eVPN" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="FWNat" EntityType="Self.FWNat" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="FWRoutes" EntityType="Self.FWRoutes" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="HPNA_DEVICE" EntityType="Self.HPNA_DEVICE" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="HPNA_DEVICE_MODULE" EntityType="Self.HPNA_DEVICE_MODULE" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="HPNA_DEVICE_PORT" EntityType="Self.HPNA_DEVICE_PORT" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="HPNA_DEVICE_VLAN_INFO" EntityType="Self.HPNA_DEVICE_VLAN_INFO" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="InternalMailServers" EntityType="Self.InternalMailServers" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="IPNetworks" EntityType="Self.IPNetworks" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="LBPoolMember" EntityType="Self.LBPoolMember" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="LBVIPRequests" EntityType="Self.LBVIPRequests" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Links" EntityType="Self.Links" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="MasterDevice" EntityType="Self.MasterDevice" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ReportList" EntityType="Self.ReportList" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Requests" EntityType="Self.Requests" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SiteMap" EntityType="Self.SiteMap" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SiteMapRole" EntityType="Self.SiteMapRole" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SiteSettings" EntityType="Self.SiteSettings" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SMChanges" EntityType="Self.SMChanges" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SMChangesTemp" EntityType="Self.SMChangesTemp" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SMGroups" EntityType="Self.SMGroups" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SMJobLog" EntityType="Self.SMJobLog" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SMTasks" EntityType="Self.SMTasks" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SMTasksTemp" EntityType="Self.SMTasksTemp" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SMUserAssignments" EntityType="Self.SMUserAssignments" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SwitchModules" EntityType="Self.SwitchModules" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SwitchPorts" EntityType="Self.SwitchPorts" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UserActivityLog" EntityType="Self.UserActivityLog" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UserReports" EntityType="Self.UserReports" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="VMPhoneBook" EntityType="Self.VMPhoneBook" Schema="dbo" store:Type="Tables" />
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="AppNetworkCafeModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityContainer Name="AppNetworkCafeEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="ACIs" EntityType="AppNetworkCafeModel.ACI" />
+          <EntitySet Name="API_Commands" EntityType="AppNetworkCafeModel.API_Commands" />
+          <EntitySet Name="ApplicationFeatureRequests" EntityType="AppNetworkCafeModel.ApplicationFeatureRequest" />
+          <EntitySet Name="ApplicationUpdates" EntityType="AppNetworkCafeModel.ApplicationUpdate" />
+          <EntitySet Name="ContactDBs" EntityType="AppNetworkCafeModel.ContactDB" />
+          <EntitySet Name="ContractV2" EntityType="AppNetworkCafeModel.ContractV2" />
+          <EntitySet Name="CustomOptions" EntityType="AppNetworkCafeModel.CustomOption" />
+          <EntitySet Name="DeviceGroups" EntityType="AppNetworkCafeModel.DeviceGroup" />
+          <EntitySet Name="DeviceGroupMembers" EntityType="AppNetworkCafeModel.DeviceGroupMember" />
+          <EntitySet Name="DeviceGroupTasks" EntityType="AppNetworkCafeModel.DeviceGroupTask" />
+          <EntitySet Name="Devices" EntityType="AppNetworkCafeModel.Device" />
+          <EntitySet Name="eVPNs" EntityType="AppNetworkCafeModel.eVPN" />
+          <EntitySet Name="FWNats" EntityType="AppNetworkCafeModel.FWNat" />
+          <EntitySet Name="FWRoutes" EntityType="AppNetworkCafeModel.FWRoute" />
+          <EntitySet Name="HPNA_DEVICE" EntityType="AppNetworkCafeModel.HPNA_DEVICE" />
+          <EntitySet Name="HPNA_DEVICE_MODULE" EntityType="AppNetworkCafeModel.HPNA_DEVICE_MODULE" />
+          <EntitySet Name="HPNA_DEVICE_PORT" EntityType="AppNetworkCafeModel.HPNA_DEVICE_PORT" />
+          <EntitySet Name="HPNA_DEVICE_VLAN_INFO" EntityType="AppNetworkCafeModel.HPNA_DEVICE_VLAN_INFO" />
+          <EntitySet Name="InternalMailServers" EntityType="AppNetworkCafeModel.InternalMailServer" />
+          <EntitySet Name="IPNetworks" EntityType="AppNetworkCafeModel.IPNetwork" />
+          <EntitySet Name="LBPoolMembers" EntityType="AppNetworkCafeModel.LBPoolMember" />
+          <EntitySet Name="LBVIPRequests" EntityType="AppNetworkCafeModel.LBVIPRequest" />
+          <EntitySet Name="Links" EntityType="AppNetworkCafeModel.Link" />
+          <EntitySet Name="MasterDevices" EntityType="AppNetworkCafeModel.MasterDevice" />
+          <EntitySet Name="ReportLists" EntityType="AppNetworkCafeModel.ReportList" />
+          <EntitySet Name="Requests" EntityType="AppNetworkCafeModel.Request" />
+          <EntitySet Name="SiteMaps" EntityType="AppNetworkCafeModel.SiteMap" />
+          <EntitySet Name="SiteMapRoles" EntityType="AppNetworkCafeModel.SiteMapRole" />
+          <EntitySet Name="SiteSettings" EntityType="AppNetworkCafeModel.SiteSetting" />
+          <EntitySet Name="SMChanges" EntityType="AppNetworkCafeModel.SMChanx" />
+          <EntitySet Name="SMChangesTemps" EntityType="AppNetworkCafeModel.SMChangesTemp" />
+          <EntitySet Name="SMGroups" EntityType="AppNetworkCafeModel.SMGroup" />
+          <EntitySet Name="SMJobLogs" EntityType="AppNetworkCafeModel.SMJobLog" />
+          <EntitySet Name="SMTasks" EntityType="AppNetworkCafeModel.SMTask" />
+          <EntitySet Name="SMTasksTemps" EntityType="AppNetworkCafeModel.SMTasksTemp" />
+          <EntitySet Name="SMUserAssignments" EntityType="AppNetworkCafeModel.SMUserAssignment" />
+          <EntitySet Name="SwitchModules" EntityType="AppNetworkCafeModel.SwitchModule" />
+          <EntitySet Name="SwitchPorts" EntityType="AppNetworkCafeModel.SwitchPort" />
+          <EntitySet Name="UserActivityLogs" EntityType="AppNetworkCafeModel.UserActivityLog" />
+          <EntitySet Name="UserReports" EntityType="AppNetworkCafeModel.UserReport" />
+          <EntitySet Name="VMPhoneBooks" EntityType="AppNetworkCafeModel.VMPhoneBook" />
+          <EntitySet Name="DebugLogs" EntityType="AppNetworkCafeModel.DebugLog" />
+        </EntityContainer>
+        <EntityType Name="ACI">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="Switch" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Mgmt" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="API_Commands">
+          <Key>
+            <PropertyRef Name="guid" />
+          </Key>
+          <Property Name="guid" Type="Guid" Nullable="false" />
+          <Property Name="DeviceType" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Command" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="param" Type="Boolean" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ApplicationFeatureRequest">
+          <Key>
+            <PropertyRef Name="guid" />
+          </Key>
+          <Property Name="guid" Type="Guid" Nullable="false" />
+          <Property Name="requester" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="application" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="description" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="dateSubmitted" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="dueDate" Type="DateTime" Precision="0" />
+          <Property Name="priority" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="completed" Type="Boolean" />
+          <Property Name="dateCompleted" Type="DateTime" Precision="0" />
+          <Property Name="completionComments" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="ApplicationUpdate">
+          <Key>
+            <PropertyRef Name="guid" />
+          </Key>
+          <Property Name="guid" Type="Guid" Nullable="false" />
+          <Property Name="date" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="application" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="description" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="ContactDB">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="Name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Number1" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Number2" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Email" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="ENOTE" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="EsscalationContact" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="EsscalationNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Notes" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="ContractV2">
+          <Key>
+            <PropertyRef Name="guid" />
+          </Key>
+          <Property Name="guid" Type="Guid" Nullable="false" />
+          <Property Name="deviceGuid" Type="Guid" Nullable="false" />
+          <Property Name="startDate" Type="DateTime" Precision="0" />
+          <Property Name="endDate" Type="DateTime" Precision="0" />
+          <Property Name="contractNumber" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="poNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="hostname" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="serialNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="licenses" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="notes" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="CustomOption">
+          <Key>
+            <PropertyRef Name="CustomOptionId" />
+          </Key>
+          <Property Name="CustomOptionId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="ColumnDefId" Type="Int32" Nullable="false" />
+          <Property Name="OptionText" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="OptionValue" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="DeviceGroup">
+          <Key>
+            <PropertyRef Name="guid" />
+          </Key>
+          <Property Name="guid" Type="Guid" Nullable="false" />
+          <Property Name="GroupID" Type="Int32" Nullable="false" />
+          <Property Name="GroupName" Type="String" Nullable="false" MaxLength="200" FixedLength="false" Unicode="true" />
+          <Property Name="Comments" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="ParentGroupID" Type="Int32" Nullable="false" />
+          <Property Name="AddMembers" Type="Boolean" Nullable="false" />
+        </EntityType>
+        <EntityType Name="DeviceGroupMember">
+          <Key>
+            <PropertyRef Name="guid" />
+          </Key>
+          <Property Name="guid" Type="Guid" Nullable="false" />
+          <Property Name="groupguid" Type="Guid" Nullable="false" />
+          <Property Name="DeviceName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="DeviceGroupTask">
+          <Key>
+            <PropertyRef Name="guid" />
+          </Key>
+          <Property Name="guid" Type="Guid" Nullable="false" />
+          <Property Name="groupguid" Type="Guid" Nullable="false" />
+          <Property Name="taskname" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="taskstart" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="taskend" Type="DateTime" Nullable="false" Precision="0" />
+          <Property Name="comments" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="Device">
+          <Key>
+            <PropertyRef Name="DeviceName" />
+          </Key>
+          <Property Name="DeviceName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Type" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Model" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="SerialNum" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="MGMTIP" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Comments" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="FloorLoc" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="DataCenter" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Module" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Zone" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Path" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="eVPN">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="Title" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="mgt" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Lo0" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Lo1" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="secondary" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="E1a" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="E1b" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="ASN" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="VPC" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="router" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="bgp" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="SWS1_2" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="SWS3_4" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Notes" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="FWNat">
+          <Key>
+            <PropertyRef Name="guid" />
+          </Key>
+          <Property Name="guid" Type="Guid" Nullable="false" />
+          <Property Name="FirewallName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="type" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="source" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="destination" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="direction" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="FWRoute">
+          <Key>
+            <PropertyRef Name="guid" />
+          </Key>
+          <Property Name="guid" Type="Guid" Nullable="false" />
+          <Property Name="Network" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="CMSFirewallIP" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="CMSFirewall" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="InternetFirewallIP" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="InternetFirewall" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Environment" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Notes" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="HPNA_DEVICE">
+          <Key>
+            <PropertyRef Name="DeviceID" />
+          </Key>
+          <Property Name="DeviceID" Type="Double" Nullable="false" />
+          <Property Name="PrimaryIPAddress" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="PrimaryFQDN" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="HostName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="DeviceName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="SerialNumber" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="AssetTag" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="SoftwareVersion" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="FirmwareVersion" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Vendor" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Model" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="DeviceType" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="GeographicalLocation" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="CreateDate" Type="DateTime" Precision="0" />
+          <Property Name="LastAccessAttemptDate" Type="DateTime" Precision="0" />
+          <Property Name="LastAccessSuccessDate" Type="DateTime" Precision="0" />
+          <Property Name="LastSnapshotDate" Type="DateTime" Precision="0" />
+          <Property Name="LastAccessAttemptStatus" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="LastModifiedUserID" Type="Double" />
+          <Property Name="ExcludeFromPoll" Type="Double" />
+          <Property Name="AccessMethods" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="ModemNumber" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="ManagementStatus" Type="Double" />
+          <Property Name="FeedSource" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="LastImportDate" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="ChangeEventData" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="MostRecentConfigID" Type="Double" />
+          <Property Name="LastConfigChangeUserID" Type="Double" />
+          <Property Name="LastRecordModifiedDate" Type="DateTime" Precision="0" />
+          <Property Name="LatestStartupRunningDiffer" Type="Double" />
+          <Property Name="DeviceCustom1" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="DeviceCustom2" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="DeviceCustom3" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="DeviceCustom4" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="DeviceCustom5" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="DeviceCustom6" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Memory" Type="Double" />
+          <Property Name="FlashMemory" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="TotalPorts" Type="Double" />
+          <Property Name="FreePorts" Type="Double" />
+          <Property Name="PutInServiceDate" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="UnmanagedDate" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="ROMVersion" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Processor" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="LatestSoftwareHistoryID" Type="Double" />
+          <Property Name="LastConfigPolicyCheckedDate" Type="DateTime" Precision="0" />
+          <Property Name="LastUsedAuthenticationID" Type="Double" />
+          <Property Name="LastSnapshotAttemptDate" Type="DateTime" Precision="0" />
+          <Property Name="LastSnapshotSuccessDate" Type="DateTime" Precision="0" />
+          <Property Name="LastSnapshotAttemptStatus" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="TicketNumber" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="PerformACLParsing" Type="Double" />
+          <Property Name="Uptime" Type="Double" />
+          <Property Name="UptimeStoredDate" Type="DateTime" Precision="0" />
+          <Property Name="PolicyInCompliance" Type="Double" />
+          <Property Name="PolicyImportance" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="SiteID" Type="Double" />
+          <Property Name="HierarchyLayer" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="DeviceGroup1ID" Type="Double" />
+          <Property Name="DeviceGroup2ID" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="DeviceGroup3ID" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="LastTopologyDataUpdate" Type="DateTime" Precision="0" />
+          <Property Name="LastDuplexDataUpdate" Type="DateTime" Precision="0" />
+          <Property Name="Contact" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="DuplexMismatchDetected" Type="Double" />
+        </EntityType>
+        <EntityType Name="HPNA_DEVICE_MODULE">
+          <Key>
+            <PropertyRef Name="DeviceModuleID" />
+          </Key>
+          <Property Name="DeviceModuleID" Type="Double" Nullable="false" />
+          <Property Name="DeviceID" Type="Double" />
+          <Property Name="Slot" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="ModuleModel" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="ModuleDescription" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="ModuleOS" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="FirmwareVersion" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="HardwareRevision" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Memory" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="ModuleCustom1" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="ModuleCustom2" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="ModuleCustom3" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="ModuleCustom4" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="ModuleCustom5" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="ModuleCustom6" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Comments" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="SerialNumber" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="LastModifiedDate" Type="DateTime" Precision="0" />
+          <Property Name="SlotNumber" Type="Double" />
+          <Property Name="ChildDeviceID" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Status" Type="Double" />
+          <Property Name="SlotType" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Parent" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="HPNA_DEVICE_PORT">
+          <Key>
+            <PropertyRef Name="DevicePortID" />
+          </Key>
+          <Property Name="DevicePortID" Type="Double" Nullable="false" />
+          <Property Name="DeviceID" Type="Double" />
+          <Property Name="PortCustom1" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="PortCustom2" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="PortCustom3" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="PortCustom4" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="PortCustom5" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="PortCustom6" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Comments" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="PortName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="PortAllows" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="PortType" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="PortStatus" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Description" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="LastModifiedDate" Type="DateTime" Precision="0" />
+          <Property Name="MacAddress" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="AssociatedVlanID" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="ConfiguredDuplex" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="ConfiguredSpeed" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="NegotiatedDuplex" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="NegotiatedSpeed" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="SlotNumber" Type="Double" />
+          <Property Name="PortState" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="NativeVlan" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="AssociatedChannelID" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="HPNA_DEVICE_VLAN_INFO">
+          <Key>
+            <PropertyRef Name="DeviceVlanInfoID" />
+          </Key>
+          <Property Name="DeviceVlanInfoID" Type="Int32" Nullable="false" />
+          <Property Name="DeviceID" Type="Int32" Nullable="false" />
+          <Property Name="VlanID" Type="Int32" Nullable="false" />
+          <Property Name="VlanName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="VlanType" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="VlanPrivate" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Mtu" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="VlanStatus" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Description" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="LastModifiedUserID" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="LastModifiedDate" Type="DateTime" Precision="3" />
+        </EntityType>
+        <EntityType Name="InternalMailServer">
+          <Key>
+            <PropertyRef Name="guid" />
+          </Key>
+          <Property Name="guid" Type="Guid" Nullable="false" />
+          <Property Name="name" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="port" Type="Int32" Nullable="false" />
+          <Property Name="useAuth" Type="Boolean" Nullable="false" />
+          <Property Name="username" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="password" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="active" Type="Boolean" Nullable="false" />
+        </EntityType>
+        <EntityType Name="IPNetwork">
+          <Key>
+            <PropertyRef Name="guid" />
+          </Key>
+          <Property Name="guid" Type="Guid" Nullable="false" />
+          <Property Name="Site" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="ApplicationEnvironment" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Subnet" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="IPv4DefaultGateway" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="MASK" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="IPv6" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="IPv6DefaultGateway" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="VLAN" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="ASSIGNMENT" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="VRF" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="NetworkDevice" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="MonitoringDevice" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Notes" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Color" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="LBPoolMember">
+          <Key>
+            <PropertyRef Name="GUID" />
+          </Key>
+          <Property Name="GUID" Type="Guid" Nullable="false" />
+          <Property Name="VIPGUID" Type="Guid" Nullable="false" />
+          <Property Name="RequestNumber" Type="Int32" Nullable="false" />
+          <Property Name="ServerName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ServerIPv4" Type="String" MaxLength="15" FixedLength="false" Unicode="true" />
+          <Property Name="ServerPort" Type="Int32" Nullable="false" />
+          <Property Name="ServerIPv6" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="PoolName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="LBVIPRequest">
+          <Key>
+            <PropertyRef Name="GUID" />
+          </Key>
+          <Property Name="GUID" Type="Guid" Nullable="false" />
+          <Property Name="RequestNumber" Type="Int32" Nullable="false" />
+          <Property Name="ApplicationName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="VIPName" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="VIPIP" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="VIPPort" Type="Int32" />
+          <Property Name="VIPIPv6" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ExternalIP" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ExternalPort" Type="Int32" />
+          <Property Name="ExternalURL" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="ProfileType" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Persistence" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="PoolName" Type="String" MaxLength="100" FixedLength="false" Unicode="true" />
+          <Property Name="PoolMonitor" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="SnatPoolName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Environment" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="DCLocation" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Notes" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="Link">
+          <Key>
+            <PropertyRef Name="LinkGuid" />
+          </Key>
+          <Property Name="LinkGuid" Type="Guid" Nullable="false" />
+          <Property Name="LinkName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="LinkURL" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="Comments" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="MasterDevice">
+          <Key>
+            <PropertyRef Name="DeviceGUID" />
+          </Key>
+          <Property Name="HostName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="DeviceGUID" Type="Guid" Nullable="false" />
+          <Property Name="DeviceIP" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="DeviceVendor" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="DeviceModel" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="DeviceLocation" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="RackUnit" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="SerialNumber" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="SRFU" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Site" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Checklist" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Zone" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Path" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="DeviceType" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="LastImport" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Comments" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="API" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="PortCountStat" Type="String" MaxLength="500" FixedLength="false" Unicode="false" annotation:StoreGeneratedPattern="Computed" />
+        </EntityType>
+        <EntityType Name="ReportList">
+          <Key>
+            <PropertyRef Name="guid" />
+          </Key>
+          <Property Name="guid" Type="Guid" Nullable="false" />
+          <Property Name="ReportName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="SecurityLevel" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="Request">
+          <Key>
+            <PropertyRef Name="RequestNumber" />
+          </Key>
+          <Property Name="RequestNumber" Type="Int32" Nullable="false" />
+          <Property Name="RequestType" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="AMD" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Requester" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="TicketNumber" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="XOCArt" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="EngineerOwner" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="RequestedImpDate" Type="DateTime" Precision="0" />
+          <Property Name="DateSubmitted" Type="DateTime" Precision="0" />
+          <Property Name="EngineerGroup" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="RequestStatus" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="RequestPhase" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ApprovalStatus" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ApprovalDate" Type="DateTime" Precision="0" />
+          <Property Name="ImplementedDate" Type="DateTime" Precision="0" />
+          <Property Name="ResultsOfImp" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="AdditionalDetail" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="SiteMap">
+          <Key>
+            <PropertyRef Name="ID" />
+          </Key>
+          <Property Name="ID" Type="Int32" Nullable="false" />
+          <Property Name="ParentID" Type="Int32" Nullable="false" />
+          <Property Name="Title" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Description" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Controller" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Action" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="paramid" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="URL" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Area" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Parameter" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Module" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="StatusCode" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="DisplayOrder" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+          <Property Name="Roles" Type="String" MaxLength="Max" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="SiteMapRole">
+          <Key>
+            <PropertyRef Name="guid" />
+          </Key>
+          <Property Name="guid" Type="Guid" Nullable="false" />
+          <Property Name="siteID" Type="Int32" Nullable="false" />
+          <Property Name="RoleName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="SiteSetting">
+          <Key>
+            <PropertyRef Name="guid" />
+          </Key>
+          <Property Name="guid" Type="Guid" Nullable="false" />
+          <Property Name="SettingName" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="SettingValue" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="SettingType" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Password" Type="Boolean" Nullable="false" />
+          <Property Name="Notes" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="SMChanx">
+          <Key>
+            <PropertyRef Name="guid" />
+          </Key>
+          <Property Name="guid" Type="Guid" Nullable="false" />
+          <Property Name="jobguid" Type="Guid" Nullable="false" />
+          <Property Name="lastUpdated" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ChangeID" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="ApprovalStatus" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Category" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="ChangeCoordinator" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="AssignedTo" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="AssignmentGroup" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="ChangeModel" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="DateEntered" Type="DateTime" Precision="3" />
+          <Property Name="InitiatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Open" Type="Boolean" />
+          <Property Name="Phase" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="PlannedEnd" Type="DateTime" Precision="3" />
+          <Property Name="PlannedStart" Type="DateTime" Precision="3" />
+          <Property Name="Priority" Type="Int32" />
+          <Property Name="RiskAssessment" Type="Int32" />
+          <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Subcategory" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Title" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="ImplementationEnd" Type="DateTime" Precision="3" />
+          <Property Name="ImplementationStart" Type="DateTime" Precision="3" />
+          <Property Name="ClosureCode" Type="Int32" />
+          <Property Name="Impact" Type="Int32" />
+          <Property Name="Reason" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="SMChangesTemp">
+          <Key>
+            <PropertyRef Name="guid" />
+          </Key>
+          <Property Name="guid" Type="Guid" Nullable="false" />
+          <Property Name="jobguid" Type="Guid" Nullable="false" />
+          <Property Name="lastUpdated" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="ChangeID" Type="String" Nullable="false" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="ApprovalStatus" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Category" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="ChangeCoordinator" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="AssignedTo" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="AssignmentGroup" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="ChangeModel" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="DateEntered" Type="DateTime" Precision="3" />
+          <Property Name="InitiatedBy" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Open" Type="Boolean" />
+          <Property Name="Phase" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="PlannedEnd" Type="DateTime" Precision="3" />
+          <Property Name="PlannedStart" Type="DateTime" Precision="3" />
+          <Property Name="Priority" Type="Int32" />
+          <Property Name="RiskAssessment" Type="Int32" />
+          <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Subcategory" Type="String" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="Title" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="ImplementationEnd" Type="DateTime" Precision="3" />
+          <Property Name="ImplementationStart" Type="DateTime" Precision="3" />
+          <Property Name="ClosureCode" Type="Int32" />
+          <Property Name="Impact" Type="Int32" />
+          <Property Name="Reason" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="SMGroup">
+          <Key>
+            <PropertyRef Name="guid" />
+          </Key>
+          <Property Name="guid" Type="Guid" Nullable="false" />
+          <Property Name="AssignmentGroup" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="SMJobLog">
+          <Key>
+            <PropertyRef Name="Guid" />
+          </Key>
+          <Property Name="Guid" Type="Guid" Nullable="false" />
+          <Property Name="startDateTime" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="endDateTime" Type="DateTime" Precision="3" />
+          <Property Name="Successful" Type="Boolean" />
+          <Property Name="errorDetails" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="recordCount" Type="Int32" />
+          <Property Name="jobType" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="updatedCount" Type="Int32" />
+          <Property Name="newRecordCount" Type="Int32" />
+        </EntityType>
+        <EntityType Name="SMTask">
+          <Key>
+            <PropertyRef Name="guid" />
+          </Key>
+          <Property Name="guid" Type="Guid" Nullable="false" />
+          <Property Name="jobguid" Type="Guid" Nullable="false" />
+          <Property Name="lastUpdated" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="TaskID" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="ClosureCode" Type="Int32" />
+          <Property Name="Assignee" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="AssignmentGroup" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Category" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="CloseTime" Type="DateTime" Precision="3" />
+          <Property Name="DateEntered" Type="DateTime" Precision="3" />
+          <Property Name="Open" Type="Boolean" />
+          <Property Name="Originator" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="ParentChange" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
+          <Property Name="Phase" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="PlannedEnd" Type="DateTime" Precision="3" />
+          <Property Name="PlannedStart" Type="DateTime" Precision="3" />
+          <Property Name="Reason" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Title" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="ScheduledDowntimeEnd" Type="DateTime" Precision="3" />
+          <Property Name="ScheduledDowntimeStart" Type="DateTime" Precision="3" />
+          <Property Name="ActualEnd" Type="DateTime" Precision="3" />
+          <Property Name="ActualStart" Type="DateTime" Precision="3" />
+          <Property Name="Impact" Type="Int32" />
+          <Property Name="Urgency" Type="Int32" />
+        </EntityType>
+        <EntityType Name="SMTasksTemp">
+          <Key>
+            <PropertyRef Name="guid" />
+          </Key>
+          <Property Name="guid" Type="Guid" Nullable="false" />
+          <Property Name="jobguid" Type="Guid" Nullable="false" />
+          <Property Name="lastUpdated" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="TaskID" Type="String" MaxLength="10" FixedLength="false" Unicode="false" />
+          <Property Name="ClosureCode" Type="Int32" />
+          <Property Name="Assignee" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="AssignmentGroup" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Category" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="CloseTime" Type="DateTime" Precision="3" />
+          <Property Name="DateEntered" Type="DateTime" Precision="3" />
+          <Property Name="Open" Type="Boolean" />
+          <Property Name="Originator" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="ParentChange" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
+          <Property Name="Phase" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="PlannedEnd" Type="DateTime" Precision="3" />
+          <Property Name="PlannedStart" Type="String" MaxLength="10" FixedLength="true" Unicode="true" />
+          <Property Name="Reason" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Status" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Title" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="ScheduledDowntimeEnd" Type="DateTime" Precision="3" />
+          <Property Name="ScheduledDowntimeStart" Type="DateTime" Precision="3" />
+          <Property Name="ActualEnd" Type="DateTime" Precision="3" />
+          <Property Name="ActualStart" Type="DateTime" Precision="3" />
+          <Property Name="Impact" Type="Int32" />
+          <Property Name="Urgency" Type="Int32" />
+        </EntityType>
+        <EntityType Name="SMUserAssignment">
+          <Key>
+            <PropertyRef Name="Guid" />
+          </Key>
+          <Property Name="Guid" Type="Guid" Nullable="false" />
+          <Property Name="UserName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="Group" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="SwitchModule">
+          <Key>
+            <PropertyRef Name="ModuleGUID" />
+          </Key>
+          <Property Name="ModuleGUID" Type="Guid" Nullable="false" />
+          <Property Name="DeviceGUID" Type="Guid" Nullable="false" />
+          <Property Name="ModuleNum" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="ModuleType" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="SerialNum" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Comments" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="SwitchPort">
+          <Key>
+            <PropertyRef Name="PortGUID" />
+          </Key>
+          <Property Name="DeviceName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="PortGUID" Type="Guid" Nullable="false" />
+          <Property Name="PortNum" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="PortType" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Connected" Type="Boolean" />
+          <Property Name="HostName" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Interface" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="VLAN" Type="String" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="Comments" Type="String" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="SwitchLocation" Type="String" MaxLength="300" FixedLength="false" Unicode="false" annotation:StoreGeneratedPattern="Computed" />
+          <Property Name="NetworkType" Type="String" MaxLength="300" FixedLength="false" Unicode="false" annotation:StoreGeneratedPattern="Computed" />
+        </EntityType>
+        <EntityType Name="UserActivityLog">
+          <Key>
+            <PropertyRef Name="GUID" />
+          </Key>
+          <Property Name="GUID" Type="Guid" Nullable="false" />
+          <Property Name="UserName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="true" />
+          <Property Name="URL" Type="String" Nullable="false" MaxLength="150" FixedLength="false" Unicode="true" />
+          <Property Name="DataTime" Type="DateTime" Nullable="false" Precision="0" />
+        </EntityType>
+        <EntityType Name="UserReport">
+          <Key>
+            <PropertyRef Name="guid" />
+          </Key>
+          <Property Name="guid" Type="Guid" Nullable="false" />
+          <Property Name="username" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="reportName" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="frequency" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="cc" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="active" Type="Boolean" />
+        </EntityType>
+        <EntityType Name="VMPhoneBook">
+          <Key>
+            <PropertyRef Name="guid" />
+          </Key>
+          <Property Name="guid" Type="Guid" Nullable="false" />
+          <Property Name="Environment" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="ServerName" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Mgt_IP" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Prod_IP" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="BUR_IP" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="SEC_IP" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="Comment" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="CPU" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="RAM" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="DiskSize" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+          <Property Name="ESXi_Host" Type="String" MaxLength="255" FixedLength="false" Unicode="true" />
+        </EntityType>
+        <EntityType Name="DebugLog">
+          <Key>
+            <PropertyRef Name="LogId" />
+          </Key>
+          <Property Name="LogId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="LogDate" Type="DateTime" Nullable="false" Precision="3" />
+          <Property Name="Source" Type="String" Nullable="false" MaxLength="1000" FixedLength="false" Unicode="false" />
+          <Property Name="LogContent" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="false" />
+        </EntityType>
+        </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="AppNetworkCafeModelStoreContainer" CdmEntityContainer="AppNetworkCafeEntities">
+          <EntitySetMapping Name="ACIs">
+            <EntityTypeMapping TypeName="AppNetworkCafeModel.ACI">
+              <MappingFragment StoreEntitySet="ACI">
+                <ScalarProperty Name="Mgmt" ColumnName="Mgmt" />
+                <ScalarProperty Name="Switch" ColumnName="Switch" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="API_Commands">
+            <EntityTypeMapping TypeName="AppNetworkCafeModel.API_Commands">
+              <MappingFragment StoreEntitySet="API_Commands">
+                <ScalarProperty Name="param" ColumnName="param" />
+                <ScalarProperty Name="Command" ColumnName="Command" />
+                <ScalarProperty Name="DeviceType" ColumnName="DeviceType" />
+                <ScalarProperty Name="guid" ColumnName="guid" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ApplicationFeatureRequests">
+            <EntityTypeMapping TypeName="AppNetworkCafeModel.ApplicationFeatureRequest">
+              <MappingFragment StoreEntitySet="ApplicationFeatureRequest">
+                <ScalarProperty Name="completionComments" ColumnName="completionComments" />
+                <ScalarProperty Name="dateCompleted" ColumnName="dateCompleted" />
+                <ScalarProperty Name="completed" ColumnName="completed" />
+                <ScalarProperty Name="priority" ColumnName="priority" />
+                <ScalarProperty Name="dueDate" ColumnName="dueDate" />
+                <ScalarProperty Name="dateSubmitted" ColumnName="dateSubmitted" />
+                <ScalarProperty Name="description" ColumnName="description" />
+                <ScalarProperty Name="application" ColumnName="application" />
+                <ScalarProperty Name="requester" ColumnName="requester" />
+                <ScalarProperty Name="guid" ColumnName="guid" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ApplicationUpdates">
+            <EntityTypeMapping TypeName="AppNetworkCafeModel.ApplicationUpdate">
+              <MappingFragment StoreEntitySet="ApplicationUpdates">
+                <ScalarProperty Name="description" ColumnName="description" />
+                <ScalarProperty Name="application" ColumnName="application" />
+                <ScalarProperty Name="date" ColumnName="date" />
+                <ScalarProperty Name="guid" ColumnName="guid" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ContactDBs">
+            <EntityTypeMapping TypeName="AppNetworkCafeModel.ContactDB">
+              <MappingFragment StoreEntitySet="ContactDB">
+                <ScalarProperty Name="Notes" ColumnName="Notes" />
+                <ScalarProperty Name="EsscalationNumber" ColumnName="EsscalationNumber" />
+                <ScalarProperty Name="EsscalationContact" ColumnName="EsscalationContact" />
+                <ScalarProperty Name="ENOTE" ColumnName="ENOTE" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="Number2" ColumnName="Number2" />
+                <ScalarProperty Name="Number1" ColumnName="Number1" />
+                <ScalarProperty Name="Name" ColumnName="Name" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ContractV2">
+            <EntityTypeMapping TypeName="AppNetworkCafeModel.ContractV2">
+              <MappingFragment StoreEntitySet="ContractV2">
+                <ScalarProperty Name="notes" ColumnName="notes" />
+                <ScalarProperty Name="licenses" ColumnName="licenses" />
+                <ScalarProperty Name="serialNumber" ColumnName="serialNumber" />
+                <ScalarProperty Name="hostname" ColumnName="hostname" />
+                <ScalarProperty Name="poNumber" ColumnName="poNumber" />
+                <ScalarProperty Name="contractNumber" ColumnName="contractNumber" />
+                <ScalarProperty Name="endDate" ColumnName="endDate" />
+                <ScalarProperty Name="startDate" ColumnName="startDate" />
+                <ScalarProperty Name="deviceGuid" ColumnName="deviceGuid" />
+                <ScalarProperty Name="guid" ColumnName="guid" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CustomOptions">
+            <EntityTypeMapping TypeName="AppNetworkCafeModel.CustomOption">
+              <MappingFragment StoreEntitySet="CustomOption">
+                <ScalarProperty Name="OptionValue" ColumnName="OptionValue" />
+                <ScalarProperty Name="OptionText" ColumnName="OptionText" />
+                <ScalarProperty Name="ColumnDefId" ColumnName="ColumnDefId" />
+                <ScalarProperty Name="CustomOptionId" ColumnName="CustomOptionId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="DeviceGroups">
+            <EntityTypeMapping TypeName="AppNetworkCafeModel.DeviceGroup">
+              <MappingFragment StoreEntitySet="DeviceGroup">
+                <ScalarProperty Name="AddMembers" ColumnName="AddMembers" />
+                <ScalarProperty Name="ParentGroupID" ColumnName="ParentGroupID" />
+                <ScalarProperty Name="Comments" ColumnName="Comments" />
+                <ScalarProperty Name="GroupName" ColumnName="GroupName" />
+                <ScalarProperty Name="GroupID" ColumnName="GroupID" />
+                <ScalarProperty Name="guid" ColumnName="guid" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="DeviceGroupMembers">
+            <EntityTypeMapping TypeName="AppNetworkCafeModel.DeviceGroupMember">
+              <MappingFragment StoreEntitySet="DeviceGroupMember">
+                <ScalarProperty Name="DeviceName" ColumnName="DeviceName" />
+                <ScalarProperty Name="groupguid" ColumnName="groupguid" />
+                <ScalarProperty Name="guid" ColumnName="guid" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="DeviceGroupTasks">
+            <EntityTypeMapping TypeName="AppNetworkCafeModel.DeviceGroupTask">
+              <MappingFragment StoreEntitySet="DeviceGroupTask">
+                <ScalarProperty Name="comments" ColumnName="comments" />
+                <ScalarProperty Name="taskend" ColumnName="taskend" />
+                <ScalarProperty Name="taskstart" ColumnName="taskstart" />
+                <ScalarProperty Name="taskname" ColumnName="taskname" />
+                <ScalarProperty Name="groupguid" ColumnName="groupguid" />
+                <ScalarProperty Name="guid" ColumnName="guid" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Devices">
+            <EntityTypeMapping TypeName="AppNetworkCafeModel.Device">
+              <MappingFragment StoreEntitySet="Devices">
+                <ScalarProperty Name="Path" ColumnName="Path" />
+                <ScalarProperty Name="Zone" ColumnName="Zone" />
+                <ScalarProperty Name="Module" ColumnName="Module" />
+                <ScalarProperty Name="DataCenter" ColumnName="DataCenter" />
+                <ScalarProperty Name="FloorLoc" ColumnName="FloorLoc" />
+                <ScalarProperty Name="Comments" ColumnName="Comments" />
+                <ScalarProperty Name="MGMTIP" ColumnName="MGMTIP" />
+                <ScalarProperty Name="SerialNum" ColumnName="SerialNum" />
+                <ScalarProperty Name="Model" ColumnName="Model" />
+                <ScalarProperty Name="Type" ColumnName="Type" />
+                <ScalarProperty Name="DeviceName" ColumnName="DeviceName" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="eVPNs">
+            <EntityTypeMapping TypeName="AppNetworkCafeModel.eVPN">
+              <MappingFragment StoreEntitySet="eVPN">
+                <ScalarProperty Name="Notes" ColumnName="Notes" />
+                <ScalarProperty Name="SWS3_4" ColumnName="SWS3_4" />
+                <ScalarProperty Name="SWS1_2" ColumnName="SWS1_2" />
+                <ScalarProperty Name="bgp" ColumnName="bgp" />
+                <ScalarProperty Name="router" ColumnName="router" />
+                <ScalarProperty Name="VPC" ColumnName="VPC" />
+                <ScalarProperty Name="ASN" ColumnName="ASN" />
+                <ScalarProperty Name="E1b" ColumnName="E1b" />
+                <ScalarProperty Name="E1a" ColumnName="E1a" />
+                <ScalarProperty Name="secondary" ColumnName="secondary" />
+                <ScalarProperty Name="Lo1" ColumnName="Lo1" />
+                <ScalarProperty Name="Lo0" ColumnName="Lo0" />
+                <ScalarProperty Name="mgt" ColumnName="mgt" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="FWNats">
+            <EntityTypeMapping TypeName="AppNetworkCafeModel.FWNat">
+              <MappingFragment StoreEntitySet="FWNat">
+                <ScalarProperty Name="direction" ColumnName="direction" />
+                <ScalarProperty Name="destination" ColumnName="destination" />
+                <ScalarProperty Name="source" ColumnName="source" />
+                <ScalarProperty Name="type" ColumnName="type" />
+                <ScalarProperty Name="FirewallName" ColumnName="FirewallName" />
+                <ScalarProperty Name="guid" ColumnName="guid" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="FWRoutes">
+            <EntityTypeMapping TypeName="AppNetworkCafeModel.FWRoute">
+              <MappingFragment StoreEntitySet="FWRoutes">
+                <ScalarProperty Name="Notes" ColumnName="Notes" />
+                <ScalarProperty Name="Environment" ColumnName="Environment" />
+                <ScalarProperty Name="InternetFirewall" ColumnName="InternetFirewall" />
+                <ScalarProperty Name="InternetFirewallIP" ColumnName="InternetFirewallIP" />
+                <ScalarProperty Name="CMSFirewall" ColumnName="CMSFirewall" />
+                <ScalarProperty Name="CMSFirewallIP" ColumnName="CMSFirewallIP" />
+                <ScalarProperty Name="Network" ColumnName="Network" />
+                <ScalarProperty Name="guid" ColumnName="guid" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="HPNA_DEVICE">
+            <EntityTypeMapping TypeName="AppNetworkCafeModel.HPNA_DEVICE">
+              <MappingFragment StoreEntitySet="HPNA_DEVICE">
+                <ScalarProperty Name="DuplexMismatchDetected" ColumnName="DuplexMismatchDetected" />
+                <ScalarProperty Name="Contact" ColumnName="Contact" />
+                <ScalarProperty Name="LastDuplexDataUpdate" ColumnName="LastDuplexDataUpdate" />
+                <ScalarProperty Name="LastTopologyDataUpdate" ColumnName="LastTopologyDataUpdate" />
+                <ScalarProperty Name="DeviceGroup3ID" ColumnName="DeviceGroup3ID" />
+                <ScalarProperty Name="DeviceGroup2ID" ColumnName="DeviceGroup2ID" />
+                <ScalarProperty Name="DeviceGroup1ID" ColumnName="DeviceGroup1ID" />
+                <ScalarProperty Name="HierarchyLayer" ColumnName="HierarchyLayer" />
+                <ScalarProperty Name="SiteID" ColumnName="SiteID" />
+                <ScalarProperty Name="PolicyImportance" ColumnName="PolicyImportance" />
+                <ScalarProperty Name="PolicyInCompliance" ColumnName="PolicyInCompliance" />
+                <ScalarProperty Name="UptimeStoredDate" ColumnName="UptimeStoredDate" />
+                <ScalarProperty Name="Uptime" ColumnName="Uptime" />
+                <ScalarProperty Name="PerformACLParsing" ColumnName="PerformACLParsing" />
+                <ScalarProperty Name="TicketNumber" ColumnName="TicketNumber" />
+                <ScalarProperty Name="LastSnapshotAttemptStatus" ColumnName="LastSnapshotAttemptStatus" />
+                <ScalarProperty Name="LastSnapshotSuccessDate" ColumnName="LastSnapshotSuccessDate" />
+                <ScalarProperty Name="LastSnapshotAttemptDate" ColumnName="LastSnapshotAttemptDate" />
+                <ScalarProperty Name="LastUsedAuthenticationID" ColumnName="LastUsedAuthenticationID" />
+                <ScalarProperty Name="LastConfigPolicyCheckedDate" ColumnName="LastConfigPolicyCheckedDate" />
+                <ScalarProperty Name="LatestSoftwareHistoryID" ColumnName="LatestSoftwareHistoryID" />
+                <ScalarProperty Name="Processor" ColumnName="Processor" />
+                <ScalarProperty Name="ROMVersion" ColumnName="ROMVersion" />
+                <ScalarProperty Name="UnmanagedDate" ColumnName="UnmanagedDate" />
+                <ScalarProperty Name="PutInServiceDate" ColumnName="PutInServiceDate" />
+                <ScalarProperty Name="FreePorts" ColumnName="FreePorts" />
+                <ScalarProperty Name="TotalPorts" ColumnName="TotalPorts" />
+                <ScalarProperty Name="FlashMemory" ColumnName="FlashMemory" />
+                <ScalarProperty Name="Memory" ColumnName="Memory" />
+                <ScalarProperty Name="DeviceCustom6" ColumnName="DeviceCustom6" />
+                <ScalarProperty Name="DeviceCustom5" ColumnName="DeviceCustom5" />
+                <ScalarProperty Name="DeviceCustom4" ColumnName="DeviceCustom4" />
+                <ScalarProperty Name="DeviceCustom3" ColumnName="DeviceCustom3" />
+                <ScalarProperty Name="DeviceCustom2" ColumnName="DeviceCustom2" />
+                <ScalarProperty Name="DeviceCustom1" ColumnName="DeviceCustom1" />
+                <ScalarProperty Name="LatestStartupRunningDiffer" ColumnName="LatestStartupRunningDiffer" />
+                <ScalarProperty Name="LastRecordModifiedDate" ColumnName="LastRecordModifiedDate" />
+                <ScalarProperty Name="LastConfigChangeUserID" ColumnName="LastConfigChangeUserID" />
+                <ScalarProperty Name="MostRecentConfigID" ColumnName="MostRecentConfigID" />
+                <ScalarProperty Name="ChangeEventData" ColumnName="ChangeEventData" />
+                <ScalarProperty Name="LastImportDate" ColumnName="LastImportDate" />
+                <ScalarProperty Name="FeedSource" ColumnName="FeedSource" />
+                <ScalarProperty Name="ManagementStatus" ColumnName="ManagementStatus" />
+                <ScalarProperty Name="ModemNumber" ColumnName="ModemNumber" />
+                <ScalarProperty Name="AccessMethods" ColumnName="AccessMethods" />
+                <ScalarProperty Name="ExcludeFromPoll" ColumnName="ExcludeFromPoll" />
+                <ScalarProperty Name="LastModifiedUserID" ColumnName="LastModifiedUserID" />
+                <ScalarProperty Name="LastAccessAttemptStatus" ColumnName="LastAccessAttemptStatus" />
+                <ScalarProperty Name="LastSnapshotDate" ColumnName="LastSnapshotDate" />
+                <ScalarProperty Name="LastAccessSuccessDate" ColumnName="LastAccessSuccessDate" />
+                <ScalarProperty Name="LastAccessAttemptDate" ColumnName="LastAccessAttemptDate" />
+                <ScalarProperty Name="CreateDate" ColumnName="CreateDate" />
+                <ScalarProperty Name="GeographicalLocation" ColumnName="GeographicalLocation" />
+                <ScalarProperty Name="DeviceType" ColumnName="DeviceType" />
+                <ScalarProperty Name="Model" ColumnName="Model" />
+                <ScalarProperty Name="Vendor" ColumnName="Vendor" />
+                <ScalarProperty Name="FirmwareVersion" ColumnName="FirmwareVersion" />
+                <ScalarProperty Name="SoftwareVersion" ColumnName="SoftwareVersion" />
+                <ScalarProperty Name="AssetTag" ColumnName="AssetTag" />
+                <ScalarProperty Name="SerialNumber" ColumnName="SerialNumber" />
+                <ScalarProperty Name="DeviceName" ColumnName="DeviceName" />
+                <ScalarProperty Name="HostName" ColumnName="HostName" />
+                <ScalarProperty Name="PrimaryFQDN" ColumnName="PrimaryFQDN" />
+                <ScalarProperty Name="PrimaryIPAddress" ColumnName="PrimaryIPAddress" />
+                <ScalarProperty Name="DeviceID" ColumnName="DeviceID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="HPNA_DEVICE_MODULE">
+            <EntityTypeMapping TypeName="AppNetworkCafeModel.HPNA_DEVICE_MODULE">
+              <MappingFragment StoreEntitySet="HPNA_DEVICE_MODULE">
+                <ScalarProperty Name="Parent" ColumnName="Parent" />
+                <ScalarProperty Name="SlotType" ColumnName="SlotType" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="ChildDeviceID" ColumnName="ChildDeviceID" />
+                <ScalarProperty Name="SlotNumber" ColumnName="SlotNumber" />
+                <ScalarProperty Name="LastModifiedDate" ColumnName="LastModifiedDate" />
+                <ScalarProperty Name="SerialNumber" ColumnName="SerialNumber" />
+                <ScalarProperty Name="Comments" ColumnName="Comments" />
+                <ScalarProperty Name="ModuleCustom6" ColumnName="ModuleCustom6" />
+                <ScalarProperty Name="ModuleCustom5" ColumnName="ModuleCustom5" />
+                <ScalarProperty Name="ModuleCustom4" ColumnName="ModuleCustom4" />
+                <ScalarProperty Name="ModuleCustom3" ColumnName="ModuleCustom3" />
+                <ScalarProperty Name="ModuleCustom2" ColumnName="ModuleCustom2" />
+                <ScalarProperty Name="ModuleCustom1" ColumnName="ModuleCustom1" />
+                <ScalarProperty Name="Memory" ColumnName="Memory" />
+                <ScalarProperty Name="HardwareRevision" ColumnName="HardwareRevision" />
+                <ScalarProperty Name="FirmwareVersion" ColumnName="FirmwareVersion" />
+                <ScalarProperty Name="ModuleOS" ColumnName="ModuleOS" />
+                <ScalarProperty Name="ModuleDescription" ColumnName="ModuleDescription" />
+                <ScalarProperty Name="ModuleModel" ColumnName="ModuleModel" />
+                <ScalarProperty Name="Slot" ColumnName="Slot" />
+                <ScalarProperty Name="DeviceID" ColumnName="DeviceID" />
+                <ScalarProperty Name="DeviceModuleID" ColumnName="DeviceModuleID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="HPNA_DEVICE_PORT">
+            <EntityTypeMapping TypeName="AppNetworkCafeModel.HPNA_DEVICE_PORT">
+              <MappingFragment StoreEntitySet="HPNA_DEVICE_PORT">
+                <ScalarProperty Name="AssociatedChannelID" ColumnName="AssociatedChannelID" />
+                <ScalarProperty Name="NativeVlan" ColumnName="NativeVlan" />
+                <ScalarProperty Name="PortState" ColumnName="PortState" />
+                <ScalarProperty Name="SlotNumber" ColumnName="SlotNumber" />
+                <ScalarProperty Name="NegotiatedSpeed" ColumnName="NegotiatedSpeed" />
+                <ScalarProperty Name="NegotiatedDuplex" ColumnName="NegotiatedDuplex" />
+                <ScalarProperty Name="ConfiguredSpeed" ColumnName="ConfiguredSpeed" />
+                <ScalarProperty Name="ConfiguredDuplex" ColumnName="ConfiguredDuplex" />
+                <ScalarProperty Name="AssociatedVlanID" ColumnName="AssociatedVlanID" />
+                <ScalarProperty Name="MacAddress" ColumnName="MacAddress" />
+                <ScalarProperty Name="LastModifiedDate" ColumnName="LastModifiedDate" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="PortStatus" ColumnName="PortStatus" />
+                <ScalarProperty Name="PortType" ColumnName="PortType" />
+                <ScalarProperty Name="PortAllows" ColumnName="PortAllows" />
+                <ScalarProperty Name="PortName" ColumnName="PortName" />
+                <ScalarProperty Name="Comments" ColumnName="Comments" />
+                <ScalarProperty Name="PortCustom6" ColumnName="PortCustom6" />
+                <ScalarProperty Name="PortCustom5" ColumnName="PortCustom5" />
+                <ScalarProperty Name="PortCustom4" ColumnName="PortCustom4" />
+                <ScalarProperty Name="PortCustom3" ColumnName="PortCustom3" />
+                <ScalarProperty Name="PortCustom2" ColumnName="PortCustom2" />
+                <ScalarProperty Name="PortCustom1" ColumnName="PortCustom1" />
+                <ScalarProperty Name="DeviceID" ColumnName="DeviceID" />
+                <ScalarProperty Name="DevicePortID" ColumnName="DevicePortID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="HPNA_DEVICE_VLAN_INFO">
+            <EntityTypeMapping TypeName="AppNetworkCafeModel.HPNA_DEVICE_VLAN_INFO">
+              <MappingFragment StoreEntitySet="HPNA_DEVICE_VLAN_INFO">
+                <ScalarProperty Name="LastModifiedDate" ColumnName="LastModifiedDate" />
+                <ScalarProperty Name="LastModifiedUserID" ColumnName="LastModifiedUserID" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="VlanStatus" ColumnName="VlanStatus" />
+                <ScalarProperty Name="Mtu" ColumnName="Mtu" />
+                <ScalarProperty Name="VlanPrivate" ColumnName="VlanPrivate" />
+                <ScalarProperty Name="VlanType" ColumnName="VlanType" />
+                <ScalarProperty Name="VlanName" ColumnName="VlanName" />
+                <ScalarProperty Name="VlanID" ColumnName="VlanID" />
+                <ScalarProperty Name="DeviceID" ColumnName="DeviceID" />
+                <ScalarProperty Name="DeviceVlanInfoID" ColumnName="DeviceVlanInfoID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="InternalMailServers">
+            <EntityTypeMapping TypeName="AppNetworkCafeModel.InternalMailServer">
+              <MappingFragment StoreEntitySet="InternalMailServers">
+                <ScalarProperty Name="active" ColumnName="active" />
+                <ScalarProperty Name="password" ColumnName="password" />
+                <ScalarProperty Name="username" ColumnName="username" />
+                <ScalarProperty Name="useAuth" ColumnName="useAuth" />
+                <ScalarProperty Name="port" ColumnName="port" />
+                <ScalarProperty Name="name" ColumnName="name" />
+                <ScalarProperty Name="guid" ColumnName="guid" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="IPNetworks">
+            <EntityTypeMapping TypeName="AppNetworkCafeModel.IPNetwork">
+              <MappingFragment StoreEntitySet="IPNetworks">
+                <ScalarProperty Name="Color" ColumnName="Color" />
+                <ScalarProperty Name="Notes" ColumnName="Notes" />
+                <ScalarProperty Name="MonitoringDevice" ColumnName="MonitoringDevice" />
+                <ScalarProperty Name="NetworkDevice" ColumnName="NetworkDevice" />
+                <ScalarProperty Name="VRF" ColumnName="VRF" />
+                <ScalarProperty Name="ASSIGNMENT" ColumnName="ASSIGNMENT" />
+                <ScalarProperty Name="VLAN" ColumnName="VLAN" />
+                <ScalarProperty Name="IPv6DefaultGateway" ColumnName="IPv6DefaultGateway" />
+                <ScalarProperty Name="IPv6" ColumnName="IPv6" />
+                <ScalarProperty Name="MASK" ColumnName="MASK" />
+                <ScalarProperty Name="IPv4DefaultGateway" ColumnName="IPv4DefaultGateway" />
+                <ScalarProperty Name="Subnet" ColumnName="Subnet" />
+                <ScalarProperty Name="ApplicationEnvironment" ColumnName="ApplicationEnvironment" />
+                <ScalarProperty Name="Site" ColumnName="Site" />
+                <ScalarProperty Name="guid" ColumnName="guid" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="LBPoolMembers">
+            <EntityTypeMapping TypeName="AppNetworkCafeModel.LBPoolMember">
+              <MappingFragment StoreEntitySet="LBPoolMember">
+                <ScalarProperty Name="PoolName" ColumnName="PoolName" />
+                <ScalarProperty Name="ServerIPv6" ColumnName="ServerIPv6" />
+                <ScalarProperty Name="ServerPort" ColumnName="ServerPort" />
+                <ScalarProperty Name="ServerIPv4" ColumnName="ServerIPv4" />
+                <ScalarProperty Name="ServerName" ColumnName="ServerName" />
+                <ScalarProperty Name="RequestNumber" ColumnName="RequestNumber" />
+                <ScalarProperty Name="VIPGUID" ColumnName="VIPGUID" />
+                <ScalarProperty Name="GUID" ColumnName="GUID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="LBVIPRequests">
+            <EntityTypeMapping TypeName="AppNetworkCafeModel.LBVIPRequest">
+              <MappingFragment StoreEntitySet="LBVIPRequests">
+                <ScalarProperty Name="Notes" ColumnName="Notes" />
+                <ScalarProperty Name="DCLocation" ColumnName="DCLocation" />
+                <ScalarProperty Name="Environment" ColumnName="Environment" />
+                <ScalarProperty Name="SnatPoolName" ColumnName="SnatPoolName" />
+                <ScalarProperty Name="PoolMonitor" ColumnName="PoolMonitor" />
+                <ScalarProperty Name="PoolName" ColumnName="PoolName" />
+                <ScalarProperty Name="Persistence" ColumnName="Persistence" />
+                <ScalarProperty Name="ProfileType" ColumnName="ProfileType" />
+                <ScalarProperty Name="ExternalURL" ColumnName="ExternalURL" />
+                <ScalarProperty Name="ExternalPort" ColumnName="ExternalPort" />
+                <ScalarProperty Name="ExternalIP" ColumnName="ExternalIP" />
+                <ScalarProperty Name="VIPIPv6" ColumnName="VIPIPv6" />
+                <ScalarProperty Name="VIPPort" ColumnName="VIPPort" />
+                <ScalarProperty Name="VIPIP" ColumnName="VIPIP" />
+                <ScalarProperty Name="VIPName" ColumnName="VIPName" />
+                <ScalarProperty Name="ApplicationName" ColumnName="ApplicationName" />
+                <ScalarProperty Name="RequestNumber" ColumnName="RequestNumber" />
+                <ScalarProperty Name="GUID" ColumnName="GUID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Links">
+            <EntityTypeMapping TypeName="AppNetworkCafeModel.Link">
+              <MappingFragment StoreEntitySet="Links">
+                <ScalarProperty Name="Comments" ColumnName="Comments" />
+                <ScalarProperty Name="LinkURL" ColumnName="LinkURL" />
+                <ScalarProperty Name="LinkName" ColumnName="LinkName" />
+                <ScalarProperty Name="LinkGuid" ColumnName="LinkGuid" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="MasterDevices">
+            <EntityTypeMapping TypeName="AppNetworkCafeModel.MasterDevice">
+              <MappingFragment StoreEntitySet="MasterDevice">
+                <ScalarProperty Name="PortCountStat" ColumnName="PortCountStat" />
+                <ScalarProperty Name="API" ColumnName="API" />
+                <ScalarProperty Name="Comments" ColumnName="Comments" />
+                <ScalarProperty Name="LastImport" ColumnName="LastImport" />
+                <ScalarProperty Name="DeviceType" ColumnName="DeviceType" />
+                <ScalarProperty Name="Path" ColumnName="Path" />
+                <ScalarProperty Name="Zone" ColumnName="Zone" />
+                <ScalarProperty Name="Checklist" ColumnName="Checklist" />
+                <ScalarProperty Name="Site" ColumnName="Site" />
+                <ScalarProperty Name="SRFU" ColumnName="SRFU" />
+                <ScalarProperty Name="SerialNumber" ColumnName="SerialNumber" />
+                <ScalarProperty Name="RackUnit" ColumnName="RackUnit" />
+                <ScalarProperty Name="DeviceLocation" ColumnName="DeviceLocation" />
+                <ScalarProperty Name="DeviceModel" ColumnName="DeviceModel" />
+                <ScalarProperty Name="DeviceVendor" ColumnName="DeviceVendor" />
+                <ScalarProperty Name="DeviceIP" ColumnName="DeviceIP" />
+                <ScalarProperty Name="DeviceGUID" ColumnName="DeviceGUID" />
+                <ScalarProperty Name="HostName" ColumnName="HostName" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ReportLists">
+            <EntityTypeMapping TypeName="AppNetworkCafeModel.ReportList">
+              <MappingFragment StoreEntitySet="ReportList">
+                <ScalarProperty Name="SecurityLevel" ColumnName="SecurityLevel" />
+                <ScalarProperty Name="ReportName" ColumnName="ReportName" />
+                <ScalarProperty Name="guid" ColumnName="guid" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Requests">
+            <EntityTypeMapping TypeName="AppNetworkCafeModel.Request">
+              <MappingFragment StoreEntitySet="Requests">
+                <ScalarProperty Name="AdditionalDetail" ColumnName="AdditionalDetail" />
+                <ScalarProperty Name="ResultsOfImp" ColumnName="ResultsOfImp" />
+                <ScalarProperty Name="ImplementedDate" ColumnName="ImplementedDate" />
+                <ScalarProperty Name="ApprovalDate" ColumnName="ApprovalDate" />
+                <ScalarProperty Name="ApprovalStatus" ColumnName="ApprovalStatus" />
+                <ScalarProperty Name="RequestPhase" ColumnName="RequestPhase" />
+                <ScalarProperty Name="RequestStatus" ColumnName="RequestStatus" />
+                <ScalarProperty Name="EngineerGroup" ColumnName="EngineerGroup" />
+                <ScalarProperty Name="DateSubmitted" ColumnName="DateSubmitted" />
+                <ScalarProperty Name="RequestedImpDate" ColumnName="RequestedImpDate" />
+                <ScalarProperty Name="EngineerOwner" ColumnName="EngineerOwner" />
+                <ScalarProperty Name="XOCArt" ColumnName="XOCArt" />
+                <ScalarProperty Name="TicketNumber" ColumnName="TicketNumber" />
+                <ScalarProperty Name="Requester" ColumnName="Requester" />
+                <ScalarProperty Name="AMD" ColumnName="AMD" />
+                <ScalarProperty Name="RequestType" ColumnName="RequestType" />
+                <ScalarProperty Name="RequestNumber" ColumnName="RequestNumber" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SiteMaps">
+            <EntityTypeMapping TypeName="AppNetworkCafeModel.SiteMap">
+              <MappingFragment StoreEntitySet="SiteMap">
+                <ScalarProperty Name="Roles" ColumnName="Roles" />
+                <ScalarProperty Name="DisplayOrder" ColumnName="DisplayOrder" />
+                <ScalarProperty Name="StatusCode" ColumnName="StatusCode" />
+                <ScalarProperty Name="Module" ColumnName="Module" />
+                <ScalarProperty Name="Parameter" ColumnName="Parameter" />
+                <ScalarProperty Name="Area" ColumnName="Area" />
+                <ScalarProperty Name="URL" ColumnName="URL" />
+                <ScalarProperty Name="paramid" ColumnName="paramid" />
+                <ScalarProperty Name="Action" ColumnName="Action" />
+                <ScalarProperty Name="Controller" ColumnName="Controller" />
+                <ScalarProperty Name="Description" ColumnName="Description" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="ParentID" ColumnName="ParentID" />
+                <ScalarProperty Name="ID" ColumnName="ID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SiteMapRoles">
+            <EntityTypeMapping TypeName="AppNetworkCafeModel.SiteMapRole">
+              <MappingFragment StoreEntitySet="SiteMapRole">
+                <ScalarProperty Name="RoleName" ColumnName="RoleName" />
+                <ScalarProperty Name="siteID" ColumnName="siteID" />
+                <ScalarProperty Name="guid" ColumnName="guid" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SiteSettings">
+            <EntityTypeMapping TypeName="AppNetworkCafeModel.SiteSetting">
+              <MappingFragment StoreEntitySet="SiteSettings">
+                <ScalarProperty Name="Notes" ColumnName="Notes" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="SettingType" ColumnName="SettingType" />
+                <ScalarProperty Name="SettingValue" ColumnName="SettingValue" />
+                <ScalarProperty Name="SettingName" ColumnName="SettingName" />
+                <ScalarProperty Name="guid" ColumnName="guid" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SMChanges">
+            <EntityTypeMapping TypeName="AppNetworkCafeModel.SMChanx">
+              <MappingFragment StoreEntitySet="SMChanges">
+                <ScalarProperty Name="Reason" ColumnName="Reason" />
+                <ScalarProperty Name="Impact" ColumnName="Impact" />
+                <ScalarProperty Name="ClosureCode" ColumnName="ClosureCode" />
+                <ScalarProperty Name="ImplementationStart" ColumnName="ImplementationStart" />
+                <ScalarProperty Name="ImplementationEnd" ColumnName="ImplementationEnd" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="Subcategory" ColumnName="Subcategory" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="RiskAssessment" ColumnName="RiskAssessment" />
+                <ScalarProperty Name="Priority" ColumnName="Priority" />
+                <ScalarProperty Name="PlannedStart" ColumnName="PlannedStart" />
+                <ScalarProperty Name="PlannedEnd" ColumnName="PlannedEnd" />
+                <ScalarProperty Name="Phase" ColumnName="Phase" />
+                <ScalarProperty Name="Open" ColumnName="Open" />
+                <ScalarProperty Name="InitiatedBy" ColumnName="InitiatedBy" />
+                <ScalarProperty Name="DateEntered" ColumnName="DateEntered" />
+                <ScalarProperty Name="ChangeModel" ColumnName="ChangeModel" />
+                <ScalarProperty Name="AssignmentGroup" ColumnName="AssignmentGroup" />
+                <ScalarProperty Name="AssignedTo" ColumnName="AssignedTo" />
+                <ScalarProperty Name="ChangeCoordinator" ColumnName="ChangeCoordinator" />
+                <ScalarProperty Name="Category" ColumnName="Category" />
+                <ScalarProperty Name="ApprovalStatus" ColumnName="ApprovalStatus" />
+                <ScalarProperty Name="ChangeID" ColumnName="ChangeID" />
+                <ScalarProperty Name="lastUpdated" ColumnName="lastUpdated" />
+                <ScalarProperty Name="jobguid" ColumnName="jobguid" />
+                <ScalarProperty Name="guid" ColumnName="guid" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SMChangesTemps">
+            <EntityTypeMapping TypeName="AppNetworkCafeModel.SMChangesTemp">
+              <MappingFragment StoreEntitySet="SMChangesTemp">
+                <ScalarProperty Name="Reason" ColumnName="Reason" />
+                <ScalarProperty Name="Impact" ColumnName="Impact" />
+                <ScalarProperty Name="ClosureCode" ColumnName="ClosureCode" />
+                <ScalarProperty Name="ImplementationStart" ColumnName="ImplementationStart" />
+                <ScalarProperty Name="ImplementationEnd" ColumnName="ImplementationEnd" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="Subcategory" ColumnName="Subcategory" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="RiskAssessment" ColumnName="RiskAssessment" />
+                <ScalarProperty Name="Priority" ColumnName="Priority" />
+                <ScalarProperty Name="PlannedStart" ColumnName="PlannedStart" />
+                <ScalarProperty Name="PlannedEnd" ColumnName="PlannedEnd" />
+                <ScalarProperty Name="Phase" ColumnName="Phase" />
+                <ScalarProperty Name="Open" ColumnName="Open" />
+                <ScalarProperty Name="InitiatedBy" ColumnName="InitiatedBy" />
+                <ScalarProperty Name="DateEntered" ColumnName="DateEntered" />
+                <ScalarProperty Name="ChangeModel" ColumnName="ChangeModel" />
+                <ScalarProperty Name="AssignmentGroup" ColumnName="AssignmentGroup" />
+                <ScalarProperty Name="AssignedTo" ColumnName="AssignedTo" />
+                <ScalarProperty Name="ChangeCoordinator" ColumnName="ChangeCoordinator" />
+                <ScalarProperty Name="Category" ColumnName="Category" />
+                <ScalarProperty Name="ApprovalStatus" ColumnName="ApprovalStatus" />
+                <ScalarProperty Name="ChangeID" ColumnName="ChangeID" />
+                <ScalarProperty Name="lastUpdated" ColumnName="lastUpdated" />
+                <ScalarProperty Name="jobguid" ColumnName="jobguid" />
+                <ScalarProperty Name="guid" ColumnName="guid" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SMGroups">
+            <EntityTypeMapping TypeName="AppNetworkCafeModel.SMGroup">
+              <MappingFragment StoreEntitySet="SMGroups">
+                <ScalarProperty Name="AssignmentGroup" ColumnName="AssignmentGroup" />
+                <ScalarProperty Name="guid" ColumnName="guid" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SMJobLogs">
+            <EntityTypeMapping TypeName="AppNetworkCafeModel.SMJobLog">
+              <MappingFragment StoreEntitySet="SMJobLog">
+                <ScalarProperty Name="newRecordCount" ColumnName="newRecordCount" />
+                <ScalarProperty Name="updatedCount" ColumnName="updatedCount" />
+                <ScalarProperty Name="jobType" ColumnName="jobType" />
+                <ScalarProperty Name="recordCount" ColumnName="recordCount" />
+                <ScalarProperty Name="errorDetails" ColumnName="errorDetails" />
+                <ScalarProperty Name="Successful" ColumnName="Successful" />
+                <ScalarProperty Name="endDateTime" ColumnName="endDateTime" />
+                <ScalarProperty Name="startDateTime" ColumnName="startDateTime" />
+                <ScalarProperty Name="Guid" ColumnName="Guid" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SMTasks">
+            <EntityTypeMapping TypeName="AppNetworkCafeModel.SMTask">
+              <MappingFragment StoreEntitySet="SMTasks">
+                <ScalarProperty Name="Urgency" ColumnName="Urgency" />
+                <ScalarProperty Name="Impact" ColumnName="Impact" />
+                <ScalarProperty Name="ActualStart" ColumnName="ActualStart" />
+                <ScalarProperty Name="ActualEnd" ColumnName="ActualEnd" />
+                <ScalarProperty Name="ScheduledDowntimeStart" ColumnName="ScheduledDowntimeStart" />
+                <ScalarProperty Name="ScheduledDowntimeEnd" ColumnName="ScheduledDowntimeEnd" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Reason" ColumnName="Reason" />
+                <ScalarProperty Name="PlannedStart" ColumnName="PlannedStart" />
+                <ScalarProperty Name="PlannedEnd" ColumnName="PlannedEnd" />
+                <ScalarProperty Name="Phase" ColumnName="Phase" />
+                <ScalarProperty Name="ParentChange" ColumnName="ParentChange" />
+                <ScalarProperty Name="Originator" ColumnName="Originator" />
+                <ScalarProperty Name="Open" ColumnName="Open" />
+                <ScalarProperty Name="DateEntered" ColumnName="DateEntered" />
+                <ScalarProperty Name="CloseTime" ColumnName="CloseTime" />
+                <ScalarProperty Name="Category" ColumnName="Category" />
+                <ScalarProperty Name="AssignmentGroup" ColumnName="AssignmentGroup" />
+                <ScalarProperty Name="Assignee" ColumnName="Assignee" />
+                <ScalarProperty Name="ClosureCode" ColumnName="ClosureCode" />
+                <ScalarProperty Name="TaskID" ColumnName="TaskID" />
+                <ScalarProperty Name="lastUpdated" ColumnName="lastUpdated" />
+                <ScalarProperty Name="jobguid" ColumnName="jobguid" />
+                <ScalarProperty Name="guid" ColumnName="guid" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SMTasksTemps">
+            <EntityTypeMapping TypeName="AppNetworkCafeModel.SMTasksTemp">
+              <MappingFragment StoreEntitySet="SMTasksTemp">
+                <ScalarProperty Name="Urgency" ColumnName="Urgency" />
+                <ScalarProperty Name="Impact" ColumnName="Impact" />
+                <ScalarProperty Name="ActualStart" ColumnName="ActualStart" />
+                <ScalarProperty Name="ActualEnd" ColumnName="ActualEnd" />
+                <ScalarProperty Name="ScheduledDowntimeStart" ColumnName="ScheduledDowntimeStart" />
+                <ScalarProperty Name="ScheduledDowntimeEnd" ColumnName="ScheduledDowntimeEnd" />
+                <ScalarProperty Name="Title" ColumnName="Title" />
+                <ScalarProperty Name="Status" ColumnName="Status" />
+                <ScalarProperty Name="Reason" ColumnName="Reason" />
+                <ScalarProperty Name="PlannedStart" ColumnName="PlannedStart" />
+                <ScalarProperty Name="PlannedEnd" ColumnName="PlannedEnd" />
+                <ScalarProperty Name="Phase" ColumnName="Phase" />
+                <ScalarProperty Name="ParentChange" ColumnName="ParentChange" />
+                <ScalarProperty Name="Originator" ColumnName="Originator" />
+                <ScalarProperty Name="Open" ColumnName="Open" />
+                <ScalarProperty Name="DateEntered" ColumnName="DateEntered" />
+                <ScalarProperty Name="CloseTime" ColumnName="CloseTime" />
+                <ScalarProperty Name="Category" ColumnName="Category" />
+                <ScalarProperty Name="AssignmentGroup" ColumnName="AssignmentGroup" />
+                <ScalarProperty Name="Assignee" ColumnName="Assignee" />
+                <ScalarProperty Name="ClosureCode" ColumnName="ClosureCode" />
+                <ScalarProperty Name="TaskID" ColumnName="TaskID" />
+                <ScalarProperty Name="lastUpdated" ColumnName="lastUpdated" />
+                <ScalarProperty Name="jobguid" ColumnName="jobguid" />
+                <ScalarProperty Name="guid" ColumnName="guid" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SMUserAssignments">
+            <EntityTypeMapping TypeName="AppNetworkCafeModel.SMUserAssignment">
+              <MappingFragment StoreEntitySet="SMUserAssignments">
+                <ScalarProperty Name="Group" ColumnName="Group" />
+                <ScalarProperty Name="UserName" ColumnName="UserName" />
+                <ScalarProperty Name="Guid" ColumnName="Guid" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SwitchModules">
+            <EntityTypeMapping TypeName="AppNetworkCafeModel.SwitchModule">
+              <MappingFragment StoreEntitySet="SwitchModules">
+                <ScalarProperty Name="Comments" ColumnName="Comments" />
+                <ScalarProperty Name="SerialNum" ColumnName="SerialNum" />
+                <ScalarProperty Name="ModuleType" ColumnName="ModuleType" />
+                <ScalarProperty Name="ModuleNum" ColumnName="ModuleNum" />
+                <ScalarProperty Name="DeviceGUID" ColumnName="DeviceGUID" />
+                <ScalarProperty Name="ModuleGUID" ColumnName="ModuleGUID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SwitchPorts">
+            <EntityTypeMapping TypeName="AppNetworkCafeModel.SwitchPort">
+              <MappingFragment StoreEntitySet="SwitchPorts">
+                <ScalarProperty Name="NetworkType" ColumnName="NetworkType" />
+                <ScalarProperty Name="SwitchLocation" ColumnName="SwitchLocation" />
+                <ScalarProperty Name="Comments" ColumnName="Comments" />
+                <ScalarProperty Name="VLAN" ColumnName="VLAN" />
+                <ScalarProperty Name="Interface" ColumnName="Interface" />
+                <ScalarProperty Name="HostName" ColumnName="HostName" />
+                <ScalarProperty Name="Connected" ColumnName="Connected" />
+                <ScalarProperty Name="PortType" ColumnName="PortType" />
+                <ScalarProperty Name="PortNum" ColumnName="PortNum" />
+                <ScalarProperty Name="PortGUID" ColumnName="PortGUID" />
+                <ScalarProperty Name="DeviceName" ColumnName="DeviceName" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UserActivityLogs">
+            <EntityTypeMapping TypeName="AppNetworkCafeModel.UserActivityLog">
+              <MappingFragment StoreEntitySet="UserActivityLog">
+                <ScalarProperty Name="DataTime" ColumnName="DataTime" />
+                <ScalarProperty Name="URL" ColumnName="URL" />
+                <ScalarProperty Name="UserName" ColumnName="UserName" />
+                <ScalarProperty Name="GUID" ColumnName="GUID" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UserReports">
+            <EntityTypeMapping TypeName="AppNetworkCafeModel.UserReport">
+              <MappingFragment StoreEntitySet="UserReports">
+                <ScalarProperty Name="active" ColumnName="active" />
+                <ScalarProperty Name="cc" ColumnName="cc" />
+                <ScalarProperty Name="frequency" ColumnName="frequency" />
+                <ScalarProperty Name="reportName" ColumnName="reportName" />
+                <ScalarProperty Name="username" ColumnName="username" />
+                <ScalarProperty Name="guid" ColumnName="guid" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="VMPhoneBooks">
+            <EntityTypeMapping TypeName="AppNetworkCafeModel.VMPhoneBook">
+              <MappingFragment StoreEntitySet="VMPhoneBook">
+                <ScalarProperty Name="ESXi_Host" ColumnName="ESXi_Host" />
+                <ScalarProperty Name="DiskSize" ColumnName="DiskSize" />
+                <ScalarProperty Name="RAM" ColumnName="RAM" />
+                <ScalarProperty Name="CPU" ColumnName="CPU" />
+                <ScalarProperty Name="Comment" ColumnName="Comment" />
+                <ScalarProperty Name="SEC_IP" ColumnName="SEC_IP" />
+                <ScalarProperty Name="BUR_IP" ColumnName="BUR_IP" />
+                <ScalarProperty Name="Prod_IP" ColumnName="Prod_IP" />
+                <ScalarProperty Name="Mgt_IP" ColumnName="Mgt_IP" />
+                <ScalarProperty Name="ServerName" ColumnName="ServerName" />
+                <ScalarProperty Name="Environment" ColumnName="Environment" />
+                <ScalarProperty Name="guid" ColumnName="guid" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="DebugLogs">
+            <EntityTypeMapping TypeName="AppNetworkCafeModel.DebugLog">
+              <MappingFragment StoreEntitySet="DebugLog">
+                <ScalarProperty Name="LogContent" ColumnName="LogContent" />
+                <ScalarProperty Name="Source" ColumnName="Source" />
+                <ScalarProperty Name="LogDate" ColumnName="LogDate" />
+                <ScalarProperty Name="LogId" ColumnName="LogId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+        </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="false" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

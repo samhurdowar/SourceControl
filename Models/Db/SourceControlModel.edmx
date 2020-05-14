@@ -1,0 +1,747 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+  <!-- EF Runtime content -->
+  <edmx:Runtime>
+    <!-- SSDL content -->
+    <edmx:StorageModels>
+    <Schema Namespace="SourceControlModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+        <EntityType Name="AppUser">
+          <Key>
+            <PropertyRef Name="UserId" />
+          </Key>
+          <Property Name="UserId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="IsActive" Type="bit" Nullable="false" />
+          <Property Name="FirstName" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="LastName" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="FullName" Type="varchar" MaxLength="201" StoreGeneratedPattern="Computed" Nullable="false" />
+          <Property Name="Email" Type="varchar" MaxLength="500" Nullable="false" />
+          <Property Name="PrimaryPhone" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="AdName" Type="varchar" MaxLength="250" Nullable="false" />
+          <Property Name="Password" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="ProfileIsComplete" Type="bit" Nullable="false" />
+          <Property Name="LogonCount" Type="int" Nullable="false" />
+          <Property Name="RoleNames" Type="varchar" MaxLength="500" StoreGeneratedPattern="Computed" />
+          <Property Name="RoleIds" Type="varchar" MaxLength="500" StoreGeneratedPattern="Computed" />
+          <Property Name="RoleMenuIds" Type="varchar" MaxLength="500" StoreGeneratedPattern="Computed" />
+          <Property Name="AddDate" Type="datetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="ColumnDef">
+          <Key>
+            <PropertyRef Name="ColumnDefId" />
+          </Key>
+          <Property Name="ColumnDefId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="PageTemplateId" Type="int" Nullable="false" />
+          <Property Name="ColumnName" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="OverideValue" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="DisplayName" Type="varchar" MaxLength="300" Nullable="false" />
+          <Property Name="ChildTemplateId" Type="int" Nullable="false" />
+          <Property Name="LookupTable" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="LookupFilter" Type="varchar" MaxLength="250" Nullable="false" />
+          <Property Name="ValueField" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="TextField" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="OrderField" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="ElementType" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="ElementWidth" Type="int" Nullable="false" />
+          <Property Name="ElementHeight" Type="int" Nullable="false" />
+          <Property Name="ElementObject" Type="varchar" MaxLength="500" Nullable="false" />
+          <Property Name="ElementDocReady" Type="varchar" MaxLength="1000" Nullable="false" />
+          <Property Name="ElementFunction" Type="varchar" MaxLength="1000" Nullable="false" />
+          <Property Name="ElementLabelLink" Type="varchar" MaxLength="1000" Nullable="false" />
+          <Property Name="AddBlankOption" Type="bit" Nullable="false" />
+          <Property Name="DatePickerOption" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="NumberMin" Type="int" Nullable="false" />
+          <Property Name="NumberMax" Type="int" Nullable="false" />
+          <Property Name="NumberOfDecimal" Type="int" Nullable="false" />
+          <Property Name="ShowInGrid" Type="bit" Nullable="false" />
+          <Property Name="GridWidth" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="IsMultiSelect" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="DbEntity">
+          <Key>
+            <PropertyRef Name="DbEntityId" />
+          </Key>
+          <Property Name="DbEntityId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="EntityName" Type="varchar" MaxLength="250" />
+          <Property Name="DisplayName" Type="varchar" MaxLength="250" />
+          <Property Name="ConnectionString" Type="varchar" MaxLength="1000" />
+        </EntityType>
+        <EntityType Name="DebugLog">
+          <Key>
+            <PropertyRef Name="LogId" />
+          </Key>
+          <Property Name="LogId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="Source" Type="nvarchar" MaxLength="1000" />
+          <Property Name="LogContent" Type="varchar(max)" />
+          <Property Name="LogDate" Type="datetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Help">
+          <Key>
+            <PropertyRef Name="HelpId" />
+          </Key>
+          <Property Name="HelpId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="HelpTitle" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="HelpContent" Type="varchar(max)" Nullable="false" />
+          <Property Name="HelpOrder" Type="int" Nullable="false" />
+          <Property Name="IsDoc" Type="bit" Nullable="false" />
+          <Property Name="ParentId" Type="int" Nullable="false" />
+          <Property Name="HasChildren" Type="bit" StoreGeneratedPattern="Computed" />
+        </EntityType>
+        <EntityType Name="HelpDocLog">
+          <Key>
+            <PropertyRef Name="HelpDocLogId" />
+          </Key>
+          <Property Name="HelpDocLogId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="HelpDocId" Type="int" Nullable="false" />
+          <Property Name="HelpContent" Type="varchar(max)" Nullable="false" />
+          <Property Name="UpdateDate" Type="datetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="Menu">
+          <Key>
+            <PropertyRef Name="MenuId" />
+          </Key>
+          <Property Name="MenuId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="MenuTitle" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="MenuOrder" Type="int" Nullable="false" />
+          <Property Name="ParentId" Type="int" Nullable="false" />
+          <Property Name="PageFile" Type="nvarchar" MaxLength="500" Nullable="false" />
+          <Property Name="MenuPageTemplateId" Type="int" Nullable="false" />
+          <Property Name="HelpId" Type="int" Nullable="false" />
+          <Property Name="HasSubMenu" Type="bit" StoreGeneratedPattern="Computed" />
+          <Property Name="IsSystem" Type="bit" Nullable="false" />
+          <Property Name="IsLastSubmenu" Type="bit" StoreGeneratedPattern="Computed" />
+          <Property Name="TemplateName" Type="varchar" MaxLength="500" StoreGeneratedPattern="Computed" />
+          <Property Name="PageType" Type="varchar" MaxLength="50" />
+          <Property Name="PageUrl" Type="varchar" MaxLength="800" />
+          <Property Name="PageTarget" Type="varchar" MaxLength="50" />
+        </EntityType>
+        <EntityType Name="PageTemplate">
+          <Key>
+            <PropertyRef Name="PageTemplateId" />
+          </Key>
+          <Property Name="PageTemplateId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="DbEntityId" Type="int" Nullable="false" />
+          <Property Name="TemplateName" Type="varchar" MaxLength="250" Nullable="false" />
+          <Property Name="TableName" Type="varchar" MaxLength="250" Nullable="false" />
+          <Property Name="PrimaryKey" Type="varchar" MaxLength="250" Nullable="false" />
+          <Property Name="GridColumns" Type="varchar" MaxLength="500" Nullable="false" />
+          <Property Name="SortColumns" Type="varchar" MaxLength="500" Nullable="false" />
+          <Property Name="AddTabLabel" Type="varchar" MaxLength="250" Nullable="false" />
+          <Property Name="ViewTabLabel" Type="varchar" MaxLength="250" />
+          <Property Name="EditTabLabel" Type="varchar" MaxLength="250" Nullable="false" />
+          <Property Name="EditLayout" Type="varchar(max)" Nullable="false" />
+          <Property Name="ViewLayout" Type="varchar(max)" />
+          <Property Name="PageType" Type="varchar" MaxLength="50" Nullable="false" />
+          <Property Name="FilterClause" Type="varchar" MaxLength="500" Nullable="false" />
+          <Property Name="HelpId" Type="int" Nullable="false" />
+          <Property Name="OnLoadScript" Type="varchar(max)" Nullable="false" />
+          <Property Name="BodyScript" Type="varchar(max)" Nullable="false" />
+          <Property Name="OnSaveScript" Type="varchar(max)" Nullable="false" />
+          <Property Name="PageTemplateId2" Type="int" Nullable="false" />
+          <Property Name="RefKey2" Type="int" Nullable="false" />
+          <Property Name="PrimaryKey2" Type="int" Nullable="false" />
+          <Property Name="GridStyle" Type="varchar(max)" Nullable="false" />
+          <Property Name="GridCommand" Type="varchar(max)" Nullable="false" />
+          <Property Name="GridBody" Type="varchar(max)" Nullable="false" />
+          <Property Name="GridScript" Type="varchar(max)" Nullable="false" />
+          <Property Name="GridOnDataBound" Type="varchar(max)" Nullable="false" />
+          <Property Name="CustomEditForm" Type="varchar" MaxLength="100" Nullable="false" />
+          <Property Name="GroupByColumns" Type="varchar" MaxLength="500" Nullable="false" />
+          <Property Name="GridAutoBind" Type="bit" Nullable="false" />
+          <Property Name="RefKey2Name" Type="varchar" MaxLength="250" StoreGeneratedPattern="Computed" />
+          <Property Name="PrimaryKey2Name" Type="varchar" MaxLength="250" StoreGeneratedPattern="Computed" />
+          <Property Name="PrimaryKeyType" Type="varchar" MaxLength="250" Nullable="false" />
+          <Property Name="SearchLayout" Type="varchar(max)" />
+          <Property Name="ViewFormStyle" Type="varchar(max)" />
+          <Property Name="ViewFormCommand" Type="varchar(max)" />
+          <Property Name="ViewFormBody" Type="varchar(max)" />
+          <Property Name="ViewFormScript" Type="varchar(max)" />
+          <Property Name="EditFormStyle" Type="varchar(max)" />
+          <Property Name="EditFormCommand" Type="varchar(max)" />
+          <Property Name="EditFormBody" Type="varchar(max)" />
+          <Property Name="EditFormScript" Type="varchar(max)" />
+          <Property Name="SearchFormStyle" Type="varchar(max)" />
+          <Property Name="SearchFormCommand" Type="varchar(max)" />
+          <Property Name="SearchFormBody" Type="varchar(max)" />
+          <Property Name="SearchFormScript" Type="varchar(max)" />
+        </EntityType>
+        <EntityType Name="Role">
+          <Key>
+            <PropertyRef Name="RoleId" />
+          </Key>
+          <Property Name="RoleId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="RoleName" Type="varchar" MaxLength="250" />
+        </EntityType>
+        <EntityType Name="RoleMenuAccess">
+          <Key>
+            <PropertyRef Name="RoleMenuAccessId" />
+          </Key>
+          <Property Name="RoleMenuAccessId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="RoleId" Type="int" Nullable="false" />
+          <Property Name="MenuId" Type="int" Nullable="false" />
+          <Property Name="CanAdd" Type="bit" Nullable="false" />
+          <Property Name="CanEdit" Type="bit" Nullable="false" />
+          <Property Name="CanDelete" Type="bit" Nullable="false" />
+          <Property Name="CanDownload" Type="bit" Nullable="false" />
+          <Property Name="MenuTitle" Type="varchar" MaxLength="500" StoreGeneratedPattern="Computed" />
+          <Property Name="RoleName" Type="varchar" MaxLength="300" StoreGeneratedPattern="Computed" />
+        </EntityType>
+        <EntityType Name="UserMenuAccess">
+          <Key>
+            <PropertyRef Name="UserMenuAccessId" />
+          </Key>
+          <Property Name="UserMenuAccessId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UserId" Type="int" Nullable="false" />
+          <Property Name="MenuId" Type="int" Nullable="false" />
+          <Property Name="CanAdd" Type="bit" Nullable="false" />
+          <Property Name="CanEdit" Type="bit" Nullable="false" />
+          <Property Name="CanDelete" Type="bit" Nullable="false" />
+          <Property Name="CanDownload" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="UserQuery">
+          <Key>
+            <PropertyRef Name="UserQueryId" />
+          </Key>
+          <Property Name="UserQueryId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UserId" Type="int" Nullable="false" />
+          <Property Name="PageTemplateId" Type="int" Nullable="false" />
+          <Property Name="CurrentQuery" Type="varchar(max)" Nullable="false" />
+          <Property Name="IsGrid" Type="bit" Nullable="false" />
+        </EntityType>
+        <EntityType Name="UserRole">
+          <Key>
+            <PropertyRef Name="UserRoleId" />
+          </Key>
+          <Property Name="UserRoleId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="UserId" Type="int" Nullable="false" />
+          <Property Name="RoleId" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="WebSiteSetting">
+          <Key>
+            <PropertyRef Name="WebSiteSettingId" />
+          </Key>
+          <Property Name="WebSiteSettingId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="WelcomeMessage" Type="varchar" MaxLength="500" />
+          <Property Name="BannerLogo" Type="varchar" MaxLength="500" />
+          <Property Name="HomePageLogo" Type="varchar" MaxLength="500" />
+          <Property Name="CompanyName" Type="varchar" MaxLength="500" />
+        </EntityType>
+        <EntityContainer Name="SourceControlModelStoreContainer">
+          <EntitySet Name="AppUser" EntityType="Self.AppUser" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="ColumnDef" EntityType="Self.ColumnDef" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="DbEntity" EntityType="Self.DbEntity" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="DebugLog" EntityType="Self.DebugLog" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Help" EntityType="Self.Help" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="HelpDocLog" EntityType="Self.HelpDocLog" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Menu" EntityType="Self.Menu" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="PageTemplate" EntityType="Self.PageTemplate" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="Role" EntityType="Self.Role" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="RoleMenuAccess" EntityType="Self.RoleMenuAccess" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UserMenuAccess" EntityType="Self.UserMenuAccess" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UserQuery" EntityType="Self.UserQuery" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="UserRole" EntityType="Self.UserRole" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="WebSiteSetting" EntityType="Self.WebSiteSetting" Schema="dbo" store:Type="Tables" />
+        </EntityContainer>
+      </Schema></edmx:StorageModels>
+    <!-- CSDL content -->
+    <edmx:ConceptualModels>
+      <Schema Namespace="SourceControlModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+        <EntityContainer Name="SourceControlEntities" annotation:LazyLoadingEnabled="true">
+          <EntitySet Name="AppUsers" EntityType="SourceControlModel.AppUser" />
+          <EntitySet Name="Helps" EntityType="SourceControlModel.Help" />
+          <EntitySet Name="HelpDocLogs" EntityType="SourceControlModel.HelpDocLog" />
+          <EntitySet Name="Menus" EntityType="SourceControlModel.Menu" />
+          <EntitySet Name="Roles" EntityType="SourceControlModel.Role" />
+          <EntitySet Name="RoleMenuAccesses" EntityType="SourceControlModel.RoleMenuAccess" />
+          <EntitySet Name="UserMenuAccesses" EntityType="SourceControlModel.UserMenuAccess" />
+          <EntitySet Name="UserQueries" EntityType="SourceControlModel.UserQuery" />
+          <EntitySet Name="UserRoles" EntityType="SourceControlModel.UserRole" />
+          <EntitySet Name="WebSiteSettings" EntityType="SourceControlModel.WebSiteSetting" />
+          <EntitySet Name="DebugLogs" EntityType="SourceControlModel.DebugLog" />
+          <EntitySet Name="DbEntities" EntityType="SourceControlModel.DbEntity" />
+          <EntitySet Name="ColumnDefs" EntityType="SourceControlModel.ColumnDef" />
+          <EntitySet Name="PageTemplates" EntityType="SourceControlModel.PageTemplate" />
+        </EntityContainer>
+        <EntityType Name="AppUser">
+          <Key>
+            <PropertyRef Name="UserId" />
+          </Key>
+          <Property Name="UserId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="IsActive" Type="Boolean" Nullable="false" />
+          <Property Name="FirstName" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="LastName" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="FullName" Type="String" Nullable="false" MaxLength="201" FixedLength="false" Unicode="false" annotation:StoreGeneratedPattern="Computed" />
+          <Property Name="Email" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="PrimaryPhone" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="AdName" Type="String" Nullable="false" MaxLength="250" FixedLength="false" Unicode="false" />
+          <Property Name="Password" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="ProfileIsComplete" Type="Boolean" Nullable="false" />
+          <Property Name="LogonCount" Type="Int32" Nullable="false" />
+          <Property Name="RoleNames" Type="String" MaxLength="500" FixedLength="false" Unicode="false" annotation:StoreGeneratedPattern="Computed" />
+          <Property Name="RoleIds" Type="String" MaxLength="500" FixedLength="false" Unicode="false" annotation:StoreGeneratedPattern="Computed" />
+          <Property Name="RoleMenuIds" Type="String" MaxLength="500" FixedLength="false" Unicode="false" annotation:StoreGeneratedPattern="Computed" />
+          <Property Name="AddDate" Type="DateTime" Nullable="false" Precision="3" />
+        </EntityType>
+        <EntityType Name="Help">
+          <Key>
+            <PropertyRef Name="HelpId" />
+          </Key>
+          <Property Name="HelpId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="HelpTitle" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="HelpContent" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="HelpOrder" Type="Int32" Nullable="false" />
+          <Property Name="IsDoc" Type="Boolean" Nullable="false" />
+          <Property Name="ParentId" Type="Int32" Nullable="false" />
+          <Property Name="HasChildren" Type="Boolean" annotation:StoreGeneratedPattern="Computed" />
+        </EntityType>
+        <EntityType Name="HelpDocLog">
+          <Key>
+            <PropertyRef Name="HelpDocLogId" />
+          </Key>
+          <Property Name="HelpDocLogId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="HelpDocId" Type="Int32" Nullable="false" />
+          <Property Name="HelpContent" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="UpdateDate" Type="DateTime" Nullable="false" Precision="3" />
+        </EntityType>
+        <EntityType Name="Menu">
+          <Key>
+            <PropertyRef Name="MenuId" />
+          </Key>
+          <Property Name="MenuId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="MenuTitle" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="MenuOrder" Type="Int32" Nullable="false" />
+          <Property Name="ParentId" Type="Int32" Nullable="false" />
+          <Property Name="PageFile" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="true" />
+          <Property Name="MenuPageTemplateId" Type="Int32" Nullable="false" />
+          <Property Name="HelpId" Type="Int32" Nullable="false" />
+          <Property Name="HasSubMenu" Type="Boolean" annotation:StoreGeneratedPattern="Computed" />
+          <Property Name="IsSystem" Type="Boolean" Nullable="false" />
+          <Property Name="IsLastSubmenu" Type="Boolean" annotation:StoreGeneratedPattern="Computed" />
+          <Property Name="TemplateName" Type="String" MaxLength="500" FixedLength="false" Unicode="false" annotation:StoreGeneratedPattern="Computed" />
+          <Property Name="PageType" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="PageUrl" Type="String" MaxLength="800" FixedLength="false" Unicode="false" />
+          <Property Name="PageTarget" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="Role">
+          <Key>
+            <PropertyRef Name="RoleId" />
+          </Key>
+          <Property Name="RoleId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="RoleName" Type="String" MaxLength="250" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="RoleMenuAccess">
+          <Key>
+            <PropertyRef Name="RoleMenuAccessId" />
+          </Key>
+          <Property Name="RoleMenuAccessId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="RoleId" Type="Int32" Nullable="false" />
+          <Property Name="MenuId" Type="Int32" Nullable="false" />
+          <Property Name="CanAdd" Type="Boolean" Nullable="false" />
+          <Property Name="CanEdit" Type="Boolean" Nullable="false" />
+          <Property Name="CanDelete" Type="Boolean" Nullable="false" />
+          <Property Name="CanDownload" Type="Boolean" Nullable="false" />
+          <Property Name="MenuTitle" Type="String" MaxLength="500" FixedLength="false" Unicode="false" annotation:StoreGeneratedPattern="Computed" />
+          <Property Name="RoleName" Type="String" MaxLength="300" FixedLength="false" Unicode="false" annotation:StoreGeneratedPattern="Computed" />
+        </EntityType>
+        <EntityType Name="UserMenuAccess">
+          <Key>
+            <PropertyRef Name="UserMenuAccessId" />
+          </Key>
+          <Property Name="UserMenuAccessId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserId" Type="Int32" Nullable="false" />
+          <Property Name="MenuId" Type="Int32" Nullable="false" />
+          <Property Name="CanAdd" Type="Boolean" Nullable="false" />
+          <Property Name="CanEdit" Type="Boolean" Nullable="false" />
+          <Property Name="CanDelete" Type="Boolean" Nullable="false" />
+          <Property Name="CanDownload" Type="Boolean" Nullable="false" />
+        </EntityType>
+        <EntityType Name="UserQuery">
+          <Key>
+            <PropertyRef Name="UserQueryId" />
+          </Key>
+          <Property Name="UserQueryId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserId" Type="Int32" Nullable="false" />
+          <Property Name="PageTemplateId" Type="Int32" Nullable="false" />
+          <Property Name="CurrentQuery" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="IsGrid" Type="Boolean" Nullable="false" />
+        </EntityType>
+        <EntityType Name="UserRole">
+          <Key>
+            <PropertyRef Name="UserRoleId" />
+          </Key>
+          <Property Name="UserRoleId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="UserId" Type="Int32" Nullable="false" />
+          <Property Name="RoleId" Type="Int32" Nullable="false" />
+        </EntityType>
+        <EntityType Name="WebSiteSetting">
+          <Key>
+            <PropertyRef Name="WebSiteSettingId" />
+          </Key>
+          <Property Name="WebSiteSettingId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="WelcomeMessage" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="BannerLogo" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="HomePageLogo" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="CompanyName" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="DebugLog">
+          <Key>
+            <PropertyRef Name="LogId" />
+          </Key>
+          <Property Name="LogId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="Source" Type="String" MaxLength="1000" FixedLength="false" Unicode="true" />
+          <Property Name="LogContent" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="LogDate" Type="DateTime" Nullable="false" Precision="3" />
+        </EntityType>
+        <EntityType Name="DbEntity">
+          <Key>
+            <PropertyRef Name="DbEntityId" />
+          </Key>
+          <Property Name="DbEntityId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="EntityName" Type="String" MaxLength="250" FixedLength="false" Unicode="false" />
+          <Property Name="DisplayName" Type="String" MaxLength="250" FixedLength="false" Unicode="false" />
+          <Property Name="ConnectionString" Type="String" MaxLength="1000" FixedLength="false" Unicode="false" />
+        </EntityType>
+        <EntityType Name="ColumnDef">
+          <Key>
+            <PropertyRef Name="ColumnDefId" />
+          </Key>
+          <Property Name="ColumnDefId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PageTemplateId" Type="Int32" Nullable="false" />
+          <Property Name="ColumnName" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="OverideValue" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="DisplayName" Type="String" Nullable="false" MaxLength="300" FixedLength="false" Unicode="false" />
+          <Property Name="ChildTemplateId" Type="Int32" Nullable="false" />
+          <Property Name="LookupTable" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="LookupFilter" Type="String" Nullable="false" MaxLength="250" FixedLength="false" Unicode="false" />
+          <Property Name="ValueField" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="TextField" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="OrderField" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="ElementType" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="ElementWidth" Type="Int32" Nullable="false" />
+          <Property Name="ElementHeight" Type="Int32" Nullable="false" />
+          <Property Name="ElementObject" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="ElementDocReady" Type="String" Nullable="false" MaxLength="1000" FixedLength="false" Unicode="false" />
+          <Property Name="ElementFunction" Type="String" Nullable="false" MaxLength="1000" FixedLength="false" Unicode="false" />
+          <Property Name="ElementLabelLink" Type="String" Nullable="false" MaxLength="1000" FixedLength="false" Unicode="false" />
+          <Property Name="AddBlankOption" Type="Boolean" Nullable="false" />
+          <Property Name="DatePickerOption" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="NumberMin" Type="Int32" Nullable="false" />
+          <Property Name="NumberMax" Type="Int32" Nullable="false" />
+          <Property Name="NumberOfDecimal" Type="Int32" Nullable="false" />
+          <Property Name="ShowInGrid" Type="Boolean" Nullable="false" />
+          <Property Name="GridWidth" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="IsMultiSelect" Type="Boolean" Nullable="false" />
+        </EntityType>
+        <EntityType Name="PageTemplate">
+          <Key>
+            <PropertyRef Name="PageTemplateId" />
+          </Key>
+          <Property Name="PageTemplateId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="DbEntityId" Type="Int32" Nullable="false" />
+          <Property Name="TemplateName" Type="String" Nullable="false" MaxLength="250" FixedLength="false" Unicode="false" />
+          <Property Name="TableName" Type="String" Nullable="false" MaxLength="250" FixedLength="false" Unicode="false" />
+          <Property Name="PrimaryKey" Type="String" Nullable="false" MaxLength="250" FixedLength="false" Unicode="false" />
+          <Property Name="GridColumns" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="SortColumns" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="AddTabLabel" Type="String" Nullable="false" MaxLength="250" FixedLength="false" Unicode="false" />
+          <Property Name="ViewTabLabel" Type="String" MaxLength="250" FixedLength="false" Unicode="false" />
+          <Property Name="EditTabLabel" Type="String" Nullable="false" MaxLength="250" FixedLength="false" Unicode="false" />
+          <Property Name="EditLayout" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="ViewLayout" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="PageType" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="FilterClause" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="HelpId" Type="Int32" Nullable="false" />
+          <Property Name="OnLoadScript" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="BodyScript" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="OnSaveScript" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="PageTemplateId2" Type="Int32" Nullable="false" />
+          <Property Name="RefKey2" Type="Int32" Nullable="false" />
+          <Property Name="PrimaryKey2" Type="Int32" Nullable="false" />
+          <Property Name="GridStyle" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="GridCommand" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="GridBody" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="GridScript" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="GridOnDataBound" Type="String" Nullable="false" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="CustomEditForm" Type="String" Nullable="false" MaxLength="100" FixedLength="false" Unicode="false" />
+          <Property Name="GroupByColumns" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="false" />
+          <Property Name="GridAutoBind" Type="Boolean" Nullable="false" />
+          <Property Name="RefKey2Name" Type="String" MaxLength="250" FixedLength="false" Unicode="false" annotation:StoreGeneratedPattern="Computed" />
+          <Property Name="PrimaryKey2Name" Type="String" MaxLength="250" FixedLength="false" Unicode="false" annotation:StoreGeneratedPattern="Computed" />
+          <Property Name="PrimaryKeyType" Type="String" Nullable="false" MaxLength="250" FixedLength="false" Unicode="false" />
+          <Property Name="SearchLayout" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="ViewFormStyle" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="ViewFormCommand" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="ViewFormBody" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="ViewFormScript" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="EditFormStyle" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="EditFormCommand" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="EditFormBody" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="EditFormScript" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="SearchFormStyle" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="SearchFormCommand" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="SearchFormBody" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="SearchFormScript" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+        </EntityType>
+        </Schema>
+    </edmx:ConceptualModels>
+    <!-- C-S mapping content -->
+    <edmx:Mappings>
+      <Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+        <EntityContainerMapping StorageEntityContainer="SourceControlModelStoreContainer" CdmEntityContainer="SourceControlEntities">
+          <EntitySetMapping Name="AppUsers">
+            <EntityTypeMapping TypeName="SourceControlModel.AppUser">
+              <MappingFragment StoreEntitySet="AppUser">
+                <ScalarProperty Name="AddDate" ColumnName="AddDate" />
+                <ScalarProperty Name="RoleMenuIds" ColumnName="RoleMenuIds" />
+                <ScalarProperty Name="RoleIds" ColumnName="RoleIds" />
+                <ScalarProperty Name="RoleNames" ColumnName="RoleNames" />
+                <ScalarProperty Name="LogonCount" ColumnName="LogonCount" />
+                <ScalarProperty Name="ProfileIsComplete" ColumnName="ProfileIsComplete" />
+                <ScalarProperty Name="Password" ColumnName="Password" />
+                <ScalarProperty Name="AdName" ColumnName="AdName" />
+                <ScalarProperty Name="PrimaryPhone" ColumnName="PrimaryPhone" />
+                <ScalarProperty Name="Email" ColumnName="Email" />
+                <ScalarProperty Name="FullName" ColumnName="FullName" />
+                <ScalarProperty Name="LastName" ColumnName="LastName" />
+                <ScalarProperty Name="FirstName" ColumnName="FirstName" />
+                <ScalarProperty Name="IsActive" ColumnName="IsActive" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Helps">
+            <EntityTypeMapping TypeName="SourceControlModel.Help">
+              <MappingFragment StoreEntitySet="Help">
+                <ScalarProperty Name="HasChildren" ColumnName="HasChildren" />
+                <ScalarProperty Name="ParentId" ColumnName="ParentId" />
+                <ScalarProperty Name="IsDoc" ColumnName="IsDoc" />
+                <ScalarProperty Name="HelpOrder" ColumnName="HelpOrder" />
+                <ScalarProperty Name="HelpContent" ColumnName="HelpContent" />
+                <ScalarProperty Name="HelpTitle" ColumnName="HelpTitle" />
+                <ScalarProperty Name="HelpId" ColumnName="HelpId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="HelpDocLogs">
+            <EntityTypeMapping TypeName="SourceControlModel.HelpDocLog">
+              <MappingFragment StoreEntitySet="HelpDocLog">
+                <ScalarProperty Name="UpdateDate" ColumnName="UpdateDate" />
+                <ScalarProperty Name="HelpContent" ColumnName="HelpContent" />
+                <ScalarProperty Name="HelpDocId" ColumnName="HelpDocId" />
+                <ScalarProperty Name="HelpDocLogId" ColumnName="HelpDocLogId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Menus">
+            <EntityTypeMapping TypeName="SourceControlModel.Menu">
+              <MappingFragment StoreEntitySet="Menu">
+                <ScalarProperty Name="PageTarget" ColumnName="PageTarget" />
+                <ScalarProperty Name="PageUrl" ColumnName="PageUrl" />
+                <ScalarProperty Name="PageType" ColumnName="PageType" />
+                <ScalarProperty Name="TemplateName" ColumnName="TemplateName" />
+                <ScalarProperty Name="IsLastSubmenu" ColumnName="IsLastSubmenu" />
+                <ScalarProperty Name="IsSystem" ColumnName="IsSystem" />
+                <ScalarProperty Name="HasSubMenu" ColumnName="HasSubMenu" />
+                <ScalarProperty Name="HelpId" ColumnName="HelpId" />
+                <ScalarProperty Name="MenuPageTemplateId" ColumnName="MenuPageTemplateId" />
+                <ScalarProperty Name="PageFile" ColumnName="PageFile" />
+                <ScalarProperty Name="ParentId" ColumnName="ParentId" />
+                <ScalarProperty Name="MenuOrder" ColumnName="MenuOrder" />
+                <ScalarProperty Name="MenuTitle" ColumnName="MenuTitle" />
+                <ScalarProperty Name="MenuId" ColumnName="MenuId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="Roles">
+            <EntityTypeMapping TypeName="SourceControlModel.Role">
+              <MappingFragment StoreEntitySet="Role">
+                <ScalarProperty Name="RoleName" ColumnName="RoleName" />
+                <ScalarProperty Name="RoleId" ColumnName="RoleId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="RoleMenuAccesses">
+            <EntityTypeMapping TypeName="SourceControlModel.RoleMenuAccess">
+              <MappingFragment StoreEntitySet="RoleMenuAccess">
+                <ScalarProperty Name="RoleName" ColumnName="RoleName" />
+                <ScalarProperty Name="MenuTitle" ColumnName="MenuTitle" />
+                <ScalarProperty Name="CanDownload" ColumnName="CanDownload" />
+                <ScalarProperty Name="CanDelete" ColumnName="CanDelete" />
+                <ScalarProperty Name="CanEdit" ColumnName="CanEdit" />
+                <ScalarProperty Name="CanAdd" ColumnName="CanAdd" />
+                <ScalarProperty Name="MenuId" ColumnName="MenuId" />
+                <ScalarProperty Name="RoleId" ColumnName="RoleId" />
+                <ScalarProperty Name="RoleMenuAccessId" ColumnName="RoleMenuAccessId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UserMenuAccesses">
+            <EntityTypeMapping TypeName="SourceControlModel.UserMenuAccess">
+              <MappingFragment StoreEntitySet="UserMenuAccess">
+                <ScalarProperty Name="CanDownload" ColumnName="CanDownload" />
+                <ScalarProperty Name="CanDelete" ColumnName="CanDelete" />
+                <ScalarProperty Name="CanEdit" ColumnName="CanEdit" />
+                <ScalarProperty Name="CanAdd" ColumnName="CanAdd" />
+                <ScalarProperty Name="MenuId" ColumnName="MenuId" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="UserMenuAccessId" ColumnName="UserMenuAccessId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UserQueries">
+            <EntityTypeMapping TypeName="SourceControlModel.UserQuery">
+              <MappingFragment StoreEntitySet="UserQuery">
+                <ScalarProperty Name="IsGrid" ColumnName="IsGrid" />
+                <ScalarProperty Name="CurrentQuery" ColumnName="CurrentQuery" />
+                <ScalarProperty Name="PageTemplateId" ColumnName="PageTemplateId" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="UserQueryId" ColumnName="UserQueryId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="UserRoles">
+            <EntityTypeMapping TypeName="SourceControlModel.UserRole">
+              <MappingFragment StoreEntitySet="UserRole">
+                <ScalarProperty Name="RoleId" ColumnName="RoleId" />
+                <ScalarProperty Name="UserId" ColumnName="UserId" />
+                <ScalarProperty Name="UserRoleId" ColumnName="UserRoleId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="WebSiteSettings">
+            <EntityTypeMapping TypeName="SourceControlModel.WebSiteSetting">
+              <MappingFragment StoreEntitySet="WebSiteSetting">
+                <ScalarProperty Name="CompanyName" ColumnName="CompanyName" />
+                <ScalarProperty Name="HomePageLogo" ColumnName="HomePageLogo" />
+                <ScalarProperty Name="BannerLogo" ColumnName="BannerLogo" />
+                <ScalarProperty Name="WelcomeMessage" ColumnName="WelcomeMessage" />
+                <ScalarProperty Name="WebSiteSettingId" ColumnName="WebSiteSettingId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="DebugLogs">
+            <EntityTypeMapping TypeName="SourceControlModel.DebugLog">
+              <MappingFragment StoreEntitySet="DebugLog">
+                <ScalarProperty Name="LogDate" ColumnName="LogDate" />
+                <ScalarProperty Name="LogContent" ColumnName="LogContent" />
+                <ScalarProperty Name="Source" ColumnName="Source" />
+                <ScalarProperty Name="LogId" ColumnName="LogId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="DbEntities">
+            <EntityTypeMapping TypeName="SourceControlModel.DbEntity">
+              <MappingFragment StoreEntitySet="DbEntity">
+                <ScalarProperty Name="ConnectionString" ColumnName="ConnectionString" />
+                <ScalarProperty Name="DisplayName" ColumnName="DisplayName" />
+                <ScalarProperty Name="EntityName" ColumnName="EntityName" />
+                <ScalarProperty Name="DbEntityId" ColumnName="DbEntityId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ColumnDefs">
+            <EntityTypeMapping TypeName="SourceControlModel.ColumnDef">
+              <MappingFragment StoreEntitySet="ColumnDef">
+                <ScalarProperty Name="IsMultiSelect" ColumnName="IsMultiSelect" />
+                <ScalarProperty Name="GridWidth" ColumnName="GridWidth" />
+                <ScalarProperty Name="ShowInGrid" ColumnName="ShowInGrid" />
+                <ScalarProperty Name="NumberOfDecimal" ColumnName="NumberOfDecimal" />
+                <ScalarProperty Name="NumberMax" ColumnName="NumberMax" />
+                <ScalarProperty Name="NumberMin" ColumnName="NumberMin" />
+                <ScalarProperty Name="DatePickerOption" ColumnName="DatePickerOption" />
+                <ScalarProperty Name="AddBlankOption" ColumnName="AddBlankOption" />
+                <ScalarProperty Name="ElementLabelLink" ColumnName="ElementLabelLink" />
+                <ScalarProperty Name="ElementFunction" ColumnName="ElementFunction" />
+                <ScalarProperty Name="ElementDocReady" ColumnName="ElementDocReady" />
+                <ScalarProperty Name="ElementObject" ColumnName="ElementObject" />
+                <ScalarProperty Name="ElementHeight" ColumnName="ElementHeight" />
+                <ScalarProperty Name="ElementWidth" ColumnName="ElementWidth" />
+                <ScalarProperty Name="ElementType" ColumnName="ElementType" />
+                <ScalarProperty Name="OrderField" ColumnName="OrderField" />
+                <ScalarProperty Name="TextField" ColumnName="TextField" />
+                <ScalarProperty Name="ValueField" ColumnName="ValueField" />
+                <ScalarProperty Name="LookupFilter" ColumnName="LookupFilter" />
+                <ScalarProperty Name="LookupTable" ColumnName="LookupTable" />
+                <ScalarProperty Name="ChildTemplateId" ColumnName="ChildTemplateId" />
+                <ScalarProperty Name="DisplayName" ColumnName="DisplayName" />
+                <ScalarProperty Name="OverideValue" ColumnName="OverideValue" />
+                <ScalarProperty Name="ColumnName" ColumnName="ColumnName" />
+                <ScalarProperty Name="PageTemplateId" ColumnName="PageTemplateId" />
+                <ScalarProperty Name="ColumnDefId" ColumnName="ColumnDefId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="PageTemplates">
+            <EntityTypeMapping TypeName="SourceControlModel.PageTemplate">
+              <MappingFragment StoreEntitySet="PageTemplate">
+                <ScalarProperty Name="SearchFormScript" ColumnName="SearchFormScript" />
+                <ScalarProperty Name="SearchFormBody" ColumnName="SearchFormBody" />
+                <ScalarProperty Name="SearchFormCommand" ColumnName="SearchFormCommand" />
+                <ScalarProperty Name="SearchFormStyle" ColumnName="SearchFormStyle" />
+                <ScalarProperty Name="EditFormScript" ColumnName="EditFormScript" />
+                <ScalarProperty Name="EditFormBody" ColumnName="EditFormBody" />
+                <ScalarProperty Name="EditFormCommand" ColumnName="EditFormCommand" />
+                <ScalarProperty Name="EditFormStyle" ColumnName="EditFormStyle" />
+                <ScalarProperty Name="ViewFormScript" ColumnName="ViewFormScript" />
+                <ScalarProperty Name="ViewFormBody" ColumnName="ViewFormBody" />
+                <ScalarProperty Name="ViewFormCommand" ColumnName="ViewFormCommand" />
+                <ScalarProperty Name="ViewFormStyle" ColumnName="ViewFormStyle" />
+                <ScalarProperty Name="SearchLayout" ColumnName="SearchLayout" />
+                <ScalarProperty Name="PrimaryKeyType" ColumnName="PrimaryKeyType" />
+                <ScalarProperty Name="PrimaryKey2Name" ColumnName="PrimaryKey2Name" />
+                <ScalarProperty Name="RefKey2Name" ColumnName="RefKey2Name" />
+                <ScalarProperty Name="GridAutoBind" ColumnName="GridAutoBind" />
+                <ScalarProperty Name="GroupByColumns" ColumnName="GroupByColumns" />
+                <ScalarProperty Name="CustomEditForm" ColumnName="CustomEditForm" />
+                <ScalarProperty Name="GridOnDataBound" ColumnName="GridOnDataBound" />
+                <ScalarProperty Name="GridScript" ColumnName="GridScript" />
+                <ScalarProperty Name="GridBody" ColumnName="GridBody" />
+                <ScalarProperty Name="GridCommand" ColumnName="GridCommand" />
+                <ScalarProperty Name="GridStyle" ColumnName="GridStyle" />
+                <ScalarProperty Name="PrimaryKey2" ColumnName="PrimaryKey2" />
+                <ScalarProperty Name="RefKey2" ColumnName="RefKey2" />
+                <ScalarProperty Name="PageTemplateId2" ColumnName="PageTemplateId2" />
+                <ScalarProperty Name="OnSaveScript" ColumnName="OnSaveScript" />
+                <ScalarProperty Name="BodyScript" ColumnName="BodyScript" />
+                <ScalarProperty Name="OnLoadScript" ColumnName="OnLoadScript" />
+                <ScalarProperty Name="HelpId" ColumnName="HelpId" />
+                <ScalarProperty Name="FilterClause" ColumnName="FilterClause" />
+                <ScalarProperty Name="PageType" ColumnName="PageType" />
+                <ScalarProperty Name="ViewLayout" ColumnName="ViewLayout" />
+                <ScalarProperty Name="EditLayout" ColumnName="EditLayout" />
+                <ScalarProperty Name="EditTabLabel" ColumnName="EditTabLabel" />
+                <ScalarProperty Name="ViewTabLabel" ColumnName="ViewTabLabel" />
+                <ScalarProperty Name="AddTabLabel" ColumnName="AddTabLabel" />
+                <ScalarProperty Name="SortColumns" ColumnName="SortColumns" />
+                <ScalarProperty Name="GridColumns" ColumnName="GridColumns" />
+                <ScalarProperty Name="PrimaryKey" ColumnName="PrimaryKey" />
+                <ScalarProperty Name="TableName" ColumnName="TableName" />
+                <ScalarProperty Name="TemplateName" ColumnName="TemplateName" />
+                <ScalarProperty Name="DbEntityId" ColumnName="DbEntityId" />
+                <ScalarProperty Name="PageTemplateId" ColumnName="PageTemplateId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          </EntityContainerMapping>
+      </Mapping>
+    </edmx:Mappings>
+  </edmx:Runtime>
+  <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <Connection>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="MetadataArtifactProcessing" Value="EmbedInOutputAssembly" />
+      </DesignerInfoPropertySet>
+    </Connection>
+    <Options>
+      <DesignerInfoPropertySet>
+        <DesignerProperty Name="ValidateOnBuild" Value="true" />
+        <DesignerProperty Name="EnablePluralization" Value="true" />
+        <DesignerProperty Name="IncludeForeignKeysInModel" Value="False" />
+        <DesignerProperty Name="UseLegacyProvider" Value="false" />
+        <DesignerProperty Name="CodeGenerationStrategy" Value="None" />
+      </DesignerInfoPropertySet>
+    </Options>
+    <!-- Diagram content (shape and connector positions) -->
+    <Diagrams></Diagrams>
+  </Designer>
+</edmx:Edmx>

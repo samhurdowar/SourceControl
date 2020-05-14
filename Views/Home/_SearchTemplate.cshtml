@@ -1,0 +1,74 @@
+﻿
+@{
+    var pageTemplate = (SourceControl.Models.Db.PageTemplate)ViewData["PageTemplate"];
+    var pageTemplateId = pageTemplate.PageTemplateId;
+    var obj = "obj" + pageTemplateId;
+    var objCommand = obj + "divGrid";
+}
+
+<div id="@Html.Raw(obj)_Search">
+
+    <div class="command-bar">
+        <span class="command-active-span" onclick="@Html.Raw(obj)_Search(@pageTemplateId)"><span class="command-icon fas fa-search">&nbsp;</span> Search</span>
+    </div>
+
+    <br />
+
+    @Html.Raw(SourceControl.Services.SessionService.FormLayout(pageTemplateId, "Search"))
+</div>
+
+<div id="@Html.Raw(obj)_SearchResult">
+</div>
+<script>
+
+    $(document).ready(function () {
+
+    });
+
+
+    function @Html.Raw(obj)_Search(pageTemplateId) {
+        var json = ToJsonString("FormSearch_" + pageTemplateId);
+        //console.log("json=" + json);
+
+        // go to search engine and replace current tab with grid
+        AppSpinner(true);
+
+        setTimeout(
+            function() {
+                $.ajax({
+                    url: "/Search/Index",
+                    data: {
+                        pageTemplateId: pageTemplateId,
+                        json: json
+                    },
+                    dataType: "text",
+                    success: function (data) {
+
+
+                        $("#@Html.Raw(obj)_Search").hide();
+
+                        $("#@Html.Raw(obj)_SearchResult").html(data);
+
+                        $("#@Html.Raw(objCommand)").append("<span class='command-active-span' onclick='obj" + pageTemplateId + "_GoToSearch()'><span class='command-icon fas fa-search'>&nbsp;</span> Search</span>");
+
+                        $("#@Html.Raw(obj)_SearchResult").show();
+                        //var tabStrip = $("#tabstrip").data("kendoTabStrip");
+                        //var editIndex = tabStrip.select().index();
+                        //var item = tabStrip.contentElement(editIndex);
+
+                        //$(item).html(data);  
+
+                        AppSpinner(false);
+                    }
+                });
+            }, 500
+        );
+    }
+
+    function @Html.Raw(obj)_GoToSearch() {
+        $("#@Html.Raw(obj)_SearchResult").hide();
+        $("#@Html.Raw(obj)_Search").show();
+    }
+
+</script>
+

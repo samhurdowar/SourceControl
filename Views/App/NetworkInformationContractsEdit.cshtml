@@ -1,0 +1,108 @@
+﻿
+@using SourceControl.Services;
+
+@{
+    var pageTemplateId = 645126;
+    var recordId = ViewData["RecordId"].ToString();
+    var obj = "obj" + pageTemplateId;
+    string tabStrip_GoToListTab = "GoToListTab(" + pageTemplateId + ");";
+}
+<div class="app-command-bar">
+    <a href="javascript:@Html.Raw(obj)Save('default')" class="app-command-item"><img src="/Images/ToolBar/save.png" width="25" height="25" /> <span>Save</span></a>
+    <a href="javascript:@Html.Raw(obj)Cancel()" class="app-command-item"><img src="/Images/ToolBar/cancel.png" width="25" height="25" /> <span>Cancel</span></a>
+</div>
+
+
+<br />
+<input type="hidden" id="InternalId_@pageTemplateId" value="@Html.Raw(recordId)" />
+
+<form id="FormContract" name="FormContract">
+
+    <table>
+        <tr>
+            <td>deviceGuid</td>
+            <td><input type="text" id="deviceGuid" name="deviceGuid" style="width:300px;" /></td>
+        </tr>
+        <tr>
+            <td>startDate</td>
+            <td><input type="text" id="startDate" name="startDate" style="width:300px;" /></td>
+        </tr>
+        <tr>
+            <td>endDate</td>
+            <td><input type="text" id="endDate" name="endDate" style="width:300px;" /></td>
+        </tr>
+        <tr>
+            <td>xxx</td>
+            <td><input type="text" id="xxx" name="xxx" style="width:300px;" /></td>
+        </tr>
+        <tr>
+            <td>xxx</td>
+            <td><input type="text" id="xxx" name="xxx" style="width:300px;" /></td>
+        </tr>
+        <tr>
+            <td>xxx</td>
+            <td><input type="text" id="xxx" name="xxx" style="width:300px;" /></td>
+        </tr>
+        <tr>
+            <td>xxx</td>
+            <td><input type="text" id="xxx" name="xxx" style="width:300px;" /></td>
+        </tr>
+        <tr>
+            <td>xxx</td>
+            <td><input type="text" id="xxx" name="xxx" style="width:300px;" /></td>
+        </tr>
+        <tr>
+            <td>xxx</td>
+            <td><input type="text" id="xxx" name="xxx" style="width:300px;" /></td>
+        </tr>
+        <tr>
+            <td>xxx</td>
+            <td><input type="text" id="xxx" name="xxx" style="width:300px;" /></td>
+        </tr>
+        <tr>
+            <td>xxx</td>
+            <td><input type="text" id="xxx" name="xxx" style="width:300px;" /></td>
+        </tr>
+        <tr>
+            <td>xxx</td>
+            <td><input type="text" id="xxx" name="xxx" style="width:300px;" /></td>
+        </tr>
+
+        <tr>
+            <td>Contract Number</td>
+            <td><input type="text" id="contractNumber" name="contractNumber" style="width:300px;" /></td>
+        </tr>
+    </table>
+
+
+</form>
+
+
+
+
+
+contractNumber
+poNumber
+hostname
+serialNumber
+licenses
+notes
+
+<script>
+
+$(document).ready(function () {
+
+	$.ajax({
+		url: "/App/GetContract",
+		data: { guid: "@recordId" },
+		dataType: "json",
+		success: function (data) {
+            BindForm("FormContract", data);
+		}
+	});
+});
+
+function @Html.Raw(obj)Cancel() {
+	@Html.Raw(tabStrip_GoToListTab)
+}
+</script>

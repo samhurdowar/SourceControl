@@ -1,0 +1,319 @@
+﻿<style>
+	/*Here I will add some css for looks good*/
+	.tabContainer {
+		max-height: 400px;
+		overflow: auto;
+		width: 80%;
+	}
+
+	.tableData {
+		border-left: solid 1px #000000;
+		border-top: solid 1px #000000;
+		width: 100%;
+	}
+
+		.tableData tr {
+		}
+
+			.tableData tr.success {
+				background-color: #554a4a;
+				border-left: solid 1px #000000;
+				border-top: solid 1px #000000;
+			}
+
+			.tableData tr.warning {
+				background-color: #ff6a00;
+				color: cornsilk;
+				border-left: solid 1px #000000;
+				border-top: solid 1px #000000;
+			}
+
+			.tableData tr.danger {
+				background-color: #e83108;
+				border-left: solid 1px #000000;
+				border-top: solid 1px #000000;
+			}
+
+
+		.tableData td, .tableData th {
+			border-right: solid 1px #000000;
+			border-bottom: solid 1px #000000;
+			text-align: left;
+			padding: 5px;
+		}
+
+		.tableData td {
+			border-left: solid 1px #000000;
+			border-top: solid 1px #000000;
+		}
+
+		.tableData th {
+			background-color: #808080;
+			padding: 7px 5px;
+			border-bottom-color: #ff6a00;
+			border-left: solid 1px #000000;
+			border-top: solid 1px #000000;
+		}
+
+	.odd {
+		background-color: #554a4a;
+	}
+
+	.even {
+		background-color: #808080;
+	}
+
+	tr.sub {
+		display: none;
+	}
+
+	.CX {
+		width: 35px;
+	}
+
+		.CX span {
+			font-family: fantasy;
+			font-size: 15px;
+			display: block;
+			width: 100%;
+			cursor: pointer;
+			text-align: center;
+		}
+
+	.refreshdiv {
+		position: fixed;
+		top: 50%;
+		left: 50%;
+		margin-top: -9em; /*set to a negative number 1/2 of your height*/
+		margin-left: -15em; /*set to a negative number 1/2 of your width*/
+	}
+
+	.datepickerdemoBasicUsage {
+		/** Demo styles for mdCalendar. */
+	}
+
+		.datepickerdemoBasicUsage md-content {
+			padding-bottom: 200px;
+		}
+
+		.datepickerdemoBasicUsage .validation-messages {
+			font-size: 12px;
+			color: #dd2c00;
+			margin: 10px 0 0 25px;
+		}
+
+	.full button span {
+		background-color: limegreen;
+		border-radius: 32px;
+		color: black;
+	}
+
+	.partially button span {
+		background-color: orange;
+		border-radius: 32px;
+		color: black;
+	}
+
+	.nav,
+	.pagination,
+	.carousel,
+	.panel-title a {
+		cursor: pointer;
+	}
+</style>
+
+<div id="AngularTemplatePlaceHolder004"></div>
+
+<div id="AngularTemplateBody004">
+	
+
+	<div class="container" style="width:97%" ng-app="MainApp">
+		<div class="bs-docs" ng-controller="VMSummaryController">
+
+			<div class="row">
+				<div class="col-lg-2">
+					Total number of Servers<br />
+					Solaris Server Count <br />
+					Solaris Record Count <br />
+					Solaris Resolved Record Count <br />
+					Linux Server Count <br />
+					Linux Record Count<br />
+					Linux Resolved Record Count
+				</div>
+				<div class="col-lg-3">
+					{{TotalServerCount}}<br />
+					{{SolarisServerCount}}<br />
+					{{SolarisRecordCount}}<br />
+					{{SolarisResolvedRecordCount}}<br />
+					{{LinuxServerCount}}<br />
+					{{LinuxRecordCount}}<br />
+					{{LinuxResolvedRecordCount}}
+				</div>
+				<div class="col-lg-3">
+				</div>
+			</div>
+			<div class="row">&nbsp;</div>
+			<div class="row">&nbsp;</div>
+			<ul class="nav nav-tabs">
+				<li class="active"><a href="#server" data-toggle="tab">server</a></li>
+				<li><a href="#app" data-toggle="tab">Business App</a></li>
+			</ul>
+			<div id="myTabContent" class="tab-content">
+				<div class="tab-pane fade active in" id="server">
+					<hr style="padding:0px 0px 0px 0px" />
+					<div class="row">
+						<div class="col-lg-3">
+							<button type="button" class="btn btn-info" ng-click="loadServerList()">Load Server Data</button>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-lg-3">
+							<form>
+								<div class="form-group">
+									<div class="input-group">
+										<div class="input-group-addon"><i class="fa fa-search"></i></div>
+
+										<input type="text" class="form-control" placeholder="Search in List Below" ng-model="searchTerm">
+
+									</div>
+								</div>
+							</form>
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-lg-6">
+							<table class="tableData">
+								<thead>
+									<tr>
+										<th>
+											<a href="#" ng-click="sortType = 'server'; sortReverse = !sortReverse">
+												Server
+												<span ng-show="sortType == 'server' && !sortReverse" class="fa fa-caret-down"></span>
+												<span ng-show="sortType == 'server' && sortReverse" class="fa fa-caret-up"></span>
+											</a>
+										</th>
+										<th>
+											<a href="#" ng-click="sortType = 'remediatedCount'; sortReverse = !sortReverse">
+												Remediated Count
+												<span ng-show="sortType == 'remediatedCount' && !sortReverse" class="fa fa-caret-down"></span>
+												<span ng-show="sortType == 'remediatedCount' && sortReverse" class="fa fa-caret-up"></span>
+											</a>
+										</th>
+										<th>
+											<a href="#" ng-click="sortType = 'pendingCount'; sortReverse = !sortReverse">
+												pending Count
+												<span ng-show="sortType == 'pendingCount' && !sortReverse" class="fa fa-caret-down"></span>
+												<span ng-show="sortType == 'pendingCount' && sortReverse" class="fa fa-caret-up"></span>
+											</a>
+										</th>
+									</tr>
+								</thead>
+								<tr ng-class-even="'even'" ng-class-odd="'odd'" ng-repeat="I in serverList | orderBy:sortType:sortReverse  | filter:searchTerm">
+									<td><a ng-click="shareMyData(I.server)"> {{I.server}}</a></td>
+									<td>{{I.remediatedCount}}</td>
+									<td>{{I.pendingCount}}</td>
+								</tr>
+							</table>
+						</div>
+					</div>
+
+				</div>
+
+				<div class="tab-pane fade" id="app">
+					<div class="row">
+						<hr style="padding:0px 0px 0px 0px" />
+						<div class="col-lg-3">
+							<div class="row">
+								<div class="col-lg-3">
+									<button type="button" class="btn btn-info" ng-click="loadAppList()">Load Data By Apps</button>
+								</div>
+							</div>
+							<form>
+								<div class="form-group">
+									<div class="input-group">
+										<div class="input-group-addon"><i class="fa fa-search"></i></div>
+
+										<input type="text" class="form-control" placeholder="Search in List Below" ng-model="searchTerm">
+
+									</div>
+								</div>
+							</form>
+
+						</div>
+					</div>
+					<div class="row">
+						<div class="col-lg-6">
+							<table class="tableData">
+								<thead>
+									<tr>
+										<th>
+											<a href="#" ng-click="sortType = 'server'; sortReverse = !sortReverse">
+												Business App
+												<span ng-show="sortType == 'server' && !sortReverse" class="fa fa-caret-down"></span>
+												<span ng-show="sortType == 'server' && sortReverse" class="fa fa-caret-up"></span>
+											</a>
+										</th>
+										<th>
+											<a href="#" ng-click="sortType = 'remediatedCount'; sortReverse = !sortReverse">
+												Remediated Count
+												<span ng-show="sortType == 'remediatedCount' && !sortReverse" class="fa fa-caret-down"></span>
+												<span ng-show="sortType == 'remediatedCount' && sortReverse" class="fa fa-caret-up"></span>
+											</a>
+										</th>
+										<th>
+											<a href="#" ng-click="sortType = 'pendingCount'; sortReverse = !sortReverse">
+												pending Count
+												<span ng-show="sortType == 'pendingCount' && !sortReverse" class="fa fa-caret-down"></span>
+												<span ng-show="sortType == 'pendingCount' && sortReverse" class="fa fa-caret-up"></span>
+											</a>
+										</th>
+									</tr>
+								</thead>
+								<tr ng-class-even="'even'" ng-class-odd="'odd'" ng-repeat="I in appList | orderBy:sortType:sortReverse  | filter:searchTerm">
+									<td><a ng-click="shareMyData2(I.server)"> {{I.server}}</a></td>
+									<td>{{I.remediatedCount}}</td>
+									<td>{{I.pendingCount}}</td>
+								</tr>
+							</table>
+						</div>
+					</div>
+				</div>
+
+			</div>
+			<div ng-show="loading" class="refreshdiv">
+				<h2>LOADING</h2><br /><center><i class="fa fa-refresh fa-spin fa-3x fa-fw margin-bottom"></i></center>
+			</div>
+		</div>
+	</div>
+
+
+</div>
+
+
+<script>
+	
+
+	var AngularTemplateBody = $("#AngularTemplateBody004").html();
+
+	$("#AngularTemplateBody004").remove();
+	$("#btnTriggerAngular004").click();
+
+	$(function () {
+
+		$('body').on('click', '.CX span', function () {
+			//When Click On + sign
+			var poolitem = document.getElementById("pooldata");
+			if ($(this).text() == '+') {
+				$(this).text('-');
+			}
+			else {
+				$(this).text('+');
+			}
+			$(this).closest('tr', 'pooldata') // row of + sign
+				.next('tr', 'pooldata') // next row of + sign
+				.toggle(); // if show then hide else show
+
+		});
+	});
+
+</script>

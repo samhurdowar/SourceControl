@@ -1,0 +1,1264 @@
+﻿@using SourceControl.Services;
+
+@{
+    var defaultPage = "tsMain.append({\r\n text: \"xxxxxxxx\", \r\n contentUrl: \"/Home/RoutePage?pageTemplateId=11\" \r\n });  \r\n tsMain.select(1); \r\n ";
+    defaultPage = "tsMain.select(0);";
+
+    // set default menu tree items
+    var userId = SessionService.UserId;
+    var user = SessionService.CurrentUser;
+    var completeProfile = "";
+
+    if (!user.ProfileIsComplete)
+    {
+        completeProfile = "AddTab(\"Complete Profile\", 2091, \"\");";
+    }
+}
+
+<div id="tabstrip"></div>
+
+<script>
+    // Global variables
+    //var CurrentRowId = "";
+    var LookupPageTemplateId = 0;
+var LookupTableName = "";
+var LookupTargetColumn = "";
+var LookupSelectColumns;
+var HeaderNames;
+var ArrTabNames = {};
+var ArrIndexes = {};
+var RunSelect_Main = true;
+var RandomGridNumber = 0;
+var OldJson = "";
+var SelectedIndex = 0;
+var CurrentColumnName = "";
+
+function onSelect_Main(e) {
+    try {
+        if (!RunSelect_Main) return;
+
+        var selectedIndex = $(e.item).index();
+
+        if (selectedIndex == 0) {
+            StartInterval();
+        } else {
+            StopInterval();
+        }
+
+        SelectedIndex = selectedIndex;
+        var tabStrip = $("#tabstrip").data("kendoTabStrip");
+        var activeTab = tabStrip.tabGroup.find("li:eq(" + selectedIndex + ") .k-link span").attr("id").replace('closeX', '');
+        for (var tabName in ArrTabNames) {
+            if (ArrTabNames[tabName] != null) {
+                var closeX = "#closeX" + ArrTabNames[tabName];
+                if ($(closeX)) {
+                    if (activeTab != ArrTabNames[tabName]) {
+                        $(closeX).removeClass('tab-close-x-active').addClass('tab-close-x');
+                    }
+                }
+            }
+        }
+
+        $("#closeX" + activeTab).removeClass('tab-close-x').addClass("tab-close-x-active");
+    } catch (ex) {}
+}
+
+function OpenChangeHistoryWindow(pageTemplateId) {
+    var recordId = $('#InternalId_' + pageTemplateId).val();
+
+    $("#ChangeHistoryWindow" + pageTemplateId).load('/ChangeHistory/ChangeHistoryWindow', {
+        pageTemplateId: pageTemplateId,
+        recordId: recordId
+    }, function(response, status, xhr) {
+        if (status == "error") {
+            alert("Error OpenChangeHistoryWindow in index.cshtml\r\n" + response);
+        } else {
+            $("#ChangeHistoryWindow" + pageTemplateId).data("kendoWindow").open().center();
+        }
+    });
+}
+
+function OpenLookupWindow(pageTemplateId, columnDefId) {
+
+    $("#LookupWindow_" + columnDefId).load('/Home/LookupWindow', {
+        pageTemplateId: pageTemplateId,
+        columnDefId: columnDefId
+    }, function(response, status, xhr) {
+        if (status == "error") {
+
+            alert("Error OpenLookupWindow in index.cshtml\r\n" + response);
+        } else {
+            $("#LookupWindow_" + columnDefId).data("kendoWindow").open().center();
+        }
+    });
+}
+
+$(document).ready(function() {
+
+    $("#tabstrip").kendoTabStrip({
+        select: onSelect_Main
+    });
+
+    var tsMain = $("#tabstrip").data("kendoTabStrip");
+
+    tsMain.append({
+        text: "Home",
+        contentUrl: "/Home/HomePage"
+    });
+
+    @Html.Raw(defaultPage)
+
+
+    // set up lookup dialog
+    $("#windowLookup").kendoWindow({
+        height: "700px",
+        width: "800px",
+        modal: true,
+        scrollable: false,
+        title: "Lookup",
+        animation: {
+            open: {
+                duration: 100
+            }
+        },
+        visible: false,
+        actions: ["Minimize", "Maximize", "Close"]
+    });
+
+    //NoteWindow
+    $("#NoteWindow").kendoWindow({
+        height: "600px",
+        width: "800px",
+        modal: true,
+        scrollable: true,
+        title: "Notes",
+        animation: {
+            open: {
+                duration: 100
+            }
+        },
+        visible: false,
+        actions: ["Minimize", "Maximize", "Close"]
+    });
+
+
+    //AddNoteWindow
+    $("#AddNoteWindow").kendoWindow({
+        height: "400px",
+        width: "800px",
+        modal: true,
+        scrollable: true,
+        title: "Notes",
+        animation: {
+            open: {
+                duration: 100
+            }
+        },
+        visible: false,
+        actions: ["Close"],
+        activate: function() {
+            $("#NoteInput").focus();
+        }
+    });
+
+    @Html.Raw(completeProfile)
+
+    //AddTab("Welcome - Request Access", 0, "RequestAccess");
+
+});
+
+
+function ReloadTab() {
+    var tabStrip = $("#tabstrip").data("kendoTabStrip");
+    var tIndex = tabStrip.tabGroup.children("li").length - 1;
+    for (var i = 1; i <= tIndex + 1; i++) {
+        if (SelectedIndex == i) {
+            var yourTab = $('#tabstrip .k-item:nth-child(' + (SelectedIndex + 1) + ')');
+            $('#tabstrip').data().kendoTabStrip.reload(yourTab);
+        }
+    }
+}
+
+
+
+//*******************************************************************  ADD TAB  *****************************************************
+function AddTab(tabTitle, pageTemplateId, pageFile) {
+
+
+    if (tabTitle == "Logout") {
+        location.href = "Home/Logout";
+    }
+
+    var tabStrip = $("#tabstrip").data("kendoTabStrip");
+
+    var tabName = pageFile;
+    if (pageFile.indexOf("/") > -1) {
+        var ray = pageFile.split("/");
+        tabName = ray[ray.length - 1].replace(".", "");
+    }
+    if (pageTemplateId > 0) {
+        tabName = "PageTemplate" + pageTemplateId;
+    } else if (pageTemplateId < 0) {
+        pageTemplateId = (pageTemplateId * -1);
+        tabName = "PageTemplate" + pageTemplateId;
+    }
+
+
+    // already opened
+    if (ArrTabNames[tabName] != null) {
+        var tIndex = tabStrip.tabGroup.children("li").length - 1;
+        for (var i = 1; i <= tIndex; i++) {
+            var tName = tabStrip.tabGroup.find("li:eq(" + i + ") .k-link span").attr("id").replace("closeX", "");
+            if (tName == tabName) {
+                tabStrip.select(i);
+                return;
+            }
+        }
+        return;
+    }
+
+
+
+    tabStrip.append({
+        text: tabTitle,
+        contentUrl: "/Home/RoutePage?pageTemplateId=" + pageTemplateId + "&pageFile=" + pageFile
+    });
+
+
+    $("body").append("<div style='display:none;'><ul id='contextMenu" + tabName + "' class='context-menu'><li onclick=\"CloseSpecificTab('" + tabName + "')\">Close</li><li onclick=\"CloseAllButThis('ALL')\">Close All Pages</li><li onclick=\"CloseAllButThis('" + tabName + "')\">Close All But This</li></ul></div>");
+
+    // set index of tab opened
+    var tIndex = tabStrip.tabGroup.children("li").length - 1;
+    ArrTabNames[tabName] = tabName;
+
+
+    // give tab a name
+    tabStrip.tabGroup.children().last().attr("id", tabName);
+
+    $("#contextMenu" + tabName).kendoContextMenu({
+        target: "#" + tabName
+    });
+
+    $("#tabstrip .k-last .k-link:first").append("<span id='closeX" + tabName + "' class='tab-close-x-active' onclick=\"CloseSpecificTab('" + tabName + "')\"><span class='x-close-tab'>x</span></span>");
+
+
+    // select tab
+    tabStrip.select(tIndex);
+}
+
+
+function CloseSpecificTab(tabName) {
+    RunSelect_Main = false;
+    var tabStrip = $("#tabstrip").data("kendoTabStrip");
+
+    var tIndex = tabStrip.tabGroup.children("li").length - 1;
+    for (var i = 1; i <= tIndex; i++) {
+        var tName = tabStrip.tabGroup.find("li:eq(" + i + ") .k-link span").attr("id").replace("closeX", "");
+        if (tName == tabName) {
+            RunSelect_Main = true;
+            tabStrip.select(i);
+        }
+    }
+
+    setTimeout(CloseMainTab(tabName), 500);
+}
+
+function CloseAllButThis(keepName) {
+
+    var tabStrip = $("#tabstrip").data("kendoTabStrip");
+    var tIndex = tabStrip.tabGroup.children("li").length;
+
+    try {
+        for (var i = 1; i <= tIndex; i++) {
+            var tabName = tabStrip.tabGroup.find("li:eq(" + i + ") .k-link span").attr("id").replace("closeX", "");
+
+            if (tabName == keepName) {} else {
+                try {
+                    CloseMainTab(tabName);
+                } catch (e) {
+
+                }
+
+            }
+        }
+    } catch (e) {
+
+    }
+
+
+    if (keepName == "ALL") {
+        if (tabStrip.tabGroup.children("li").length > 1) {
+            //alert("Again");
+            CloseAllButThis(keepName);
+        }
+    } else {
+        if (tabStrip.tabGroup.children("li").length > 2) {
+            //alert("Again");
+            CloseAllButThis(keepName);
+        }
+    }
+}
+
+
+
+function CloseMainTab(tabName) {
+    var tabStrip = $("#tabstrip").data("kendoTabStrip");
+    if (tabStrip.select().text() == "Home") {
+        return;
+    };
+
+    // get index to remove
+    var nextIndex = 0;
+    var removeIndex = 0;
+    var removeGridIndex = 0;
+    var gridTabName = "";
+
+    //remove from dictionary
+    if (ArrTabNames[tabName] != null) {
+        ArrTabNames[tabName] = null;
+    }
+
+    // remove grid too if closing editForm
+    if (tabName.indexOf("FormTemplate") > -1) {
+        gridTabName = "PageTemplate" + tabName.replace("FormTemplate", "");
+        if (ArrTabNames[gridTabName] != null) {
+            ArrTabNames[gridTabName] = null;
+        }
+    }
+
+    var tIndex = tabStrip.tabGroup.children("li").length - 1;
+    for (var i = 1; i <= tIndex; i++) {
+        var tName = tabStrip.tabGroup.find("li:eq(" + i + ") .k-link span").attr("id").replace("closeX", "");
+        if (tName == gridTabName) {
+            removeGridIndex = i;
+            nextIndex = i;
+        }
+
+        if (tName == tabName) {
+            removeIndex = i;
+            if (nextIndex == 0) {
+                nextIndex = i;
+            }
+        }
+    }
+
+    // remove tab
+    try {
+        tabStrip.remove(removeIndex);
+        if (removeGridIndex > 0) {
+            tabStrip.remove(removeGridIndex);
+        }
+    } catch (e) {
+        alert(e);
+    }
+
+
+    RunSelect_Main = true;
+
+    var tabCount = tabStrip.tabGroup.children("li").length - 1;
+    if (nextIndex > tabCount) {
+        nextIndex = tabCount;
+    }
+
+    tabStrip.select(nextIndex);
+
+}
+
+
+
+function AddHelpTab(helpDocId) {
+
+    var tabStrip = $("#tabstrip").data("kendoTabStrip");
+
+
+    // already opened
+    var tabName = "HelpTab" + helpDocId;
+    if (ArrTabNames[tabName] != null) {
+        var tIndex = tabStrip.tabGroup.children("li").length - 1;
+        for (var i = 1; i <= tIndex; i++) {
+            var tName = tabStrip.tabGroup.find("li:eq(" + i + ") .k-link span").attr("id").replace("closeX", "");
+            if (tName == tabName) {
+                tabStrip.select(i);
+
+                return;
+            }
+        }
+        return;
+    }
+
+    tabStrip.append({
+        text: "Help ",
+        contentUrl: "/Home/GetHelpDoc?helpDocId=" + helpDocId
+    });
+
+    ArrTabNames[tabName] = tabName;
+
+    // set index of tab opened
+    var tIndex = tabStrip.tabGroup.children("li").length - 1;
+
+    // add close
+    $("#tabstrip .k-last .k-link:first").append("<span id='HelpTab" + helpDocId + "' class='tab-close-x-active' onclick=\"CloseSpecificTab('HelpTab" + helpDocId + "')\"><span class='x-close-tab'>x</span></span>");
+    tabStrip.select(tIndex);
+}
+
+function GetBooleanYesNo(bigB) {
+    if (bigB.toString() == "1") {
+        return "Yes";
+    }
+    return "No";
+}
+
+function GetBooleanTrueFalse(bigB) {
+    if (bigB.toString() == "1") {
+        return "True";
+    }
+    return "False";
+}
+
+function GetComment(comment) {
+    if (comment.length > 30) {
+        return "<span onclick=\"ShowComment('" + comment.replace("'", "''") + "')\" style='text-decoration:underline;'>" + comment.substring(0, 30) + "...</span>";
+    } else {
+        return comment;
+    }
+}
+
+function ShowComment(comment) {
+    MessageBox("Comment", comment, false);
+}
+
+function GetHyperLink(link) {
+    return "<a href='" + link + "' target='blank'>" + link + "</a>";
+}
+
+
+function ReportGridClick(pageTemplateId) {
+    $("#reportPageTemplateId").val(pageTemplateId);
+    $("#formReport").submit();
+}
+
+
+function ReplaceCurrentTab(parentPageTemplateId, pageTemplateId, recordId, refKeyColumnName, refKeyValue, title) {
+    AppSpinner(true);
+
+    setTimeout(
+        function() {
+            $.ajax({
+                url: "/Home/RoutePage?parentPageTemplateId=" + parentPageTemplateId + "&pageTemplateId=" + pageTemplateId + "&recordId=" + recordId + "&refKeyColumnName=" + refKeyColumnName + "&refKeyValue=" + refKeyValue + "&pageFile=_FormTemplate",
+                data: {
+                    pageTemplateId: pageTemplateId,
+                    recordId: recordId
+                },
+                dataType: "text",
+                success: function(data) {
+                    var tabStrip = $("#tabstrip").data("kendoTabStrip");
+                    var editIndex = tabStrip.select().index();
+                    var item = tabStrip.contentElement(editIndex);
+
+                    $(item).html(data);
+
+                    $("#FormTemplate" + pageTemplateId + " span.k-link").html(title);
+                    AppSpinner(false);
+                }
+            });
+        }, 500
+    );
+
+}
+
+function GoToEditTab(parentPageTemplateId, pageTemplateId, recordId, refKeyColumnName, refKeyValue, title, layoutType) {
+
+    var tabStrip = $("#tabstrip").data("kendoTabStrip");
+
+
+    // insert new add/edit tab
+    //var title = addTitle;
+    //if (recordId != "0") title = editTitle;
+
+    var editIndex = tabStrip.select().index() + 1;
+
+    tabStrip.insertAfter({
+        text: title,
+        contentUrl: "/Home/RoutePage?parentPageTemplateId=" + parentPageTemplateId + "&pageTemplateId=" + pageTemplateId + "&recordId=" + recordId + "&refKeyColumnName=" + refKeyColumnName + "&refKeyValue=" + refKeyValue + "&pageFile=_FormTemplate&layoutType=" + layoutType
+    }, tabStrip.select());
+
+
+    // hide listing page
+    var selectTab = tabStrip.select();
+    var nextTab = selectTab.next();
+    tabStrip.select(nextTab);
+    selectTab.hide();
+
+
+    //// add close link
+    var tabName = "FormTemplate" + pageTemplateId;
+    var tIndex = nextTab.index();
+    tabStrip.tabGroup.find("li:eq(" + tIndex + ") .k-link").append("<span id='closeX" + tabName + "' class='tab-close-x-active' onclick=\"CloseSpecificTab('" + tabName + "')\"><span class='x-close-tab'>x</span></span>");
+
+
+    // give tab a name
+    tabStrip.tabGroup.find("li:eq(" + tIndex + ")").attr("id", tabName);
+}
+
+function GoToListTab(pageTemplateId) {
+
+    var tabStrip = $("#tabstrip").data("kendoTabStrip");
+    ArrTabNames["FormTemplate" + pageTemplateId] = null;
+    var selectTab = tabStrip.select();
+    var prevTab = selectTab.prev();
+    prevTab.show();
+    tabStrip.select(prevTab);
+    tabStrip.remove(selectTab);
+
+}
+
+function SetkendoDropDownList(objName, url) {
+    $("#" + objName + "").data("kendoDropDownList").dataSource.transport.options.read.url = url;
+    $("#" + objName + "").data("kendoDropDownList").dataSource.read();
+}
+
+function SetkendoMultiSelect(objName, url) {
+    $("#" + objName + "").data("kendoMultiSelect").dataSource.transport.options.read.url = url;
+    $("#" + objName + "").data("kendoMultiSelect").dataSource.read();
+}
+
+function SetkendoGrid(objName, url) {
+    $("#" + objName + "").data("kendoGrid").dataSource.transport.options.read.url = url;
+    $("#" + objName + "").data("kendoGrid").dataSource.read();
+}
+
+function SetkendoListView(objName, url) {
+    $("#" + objName + "").data("kendoListView").dataSource.transport.options.read.url = url;
+    $("#" + objName + "").data("kendoListView").dataSource.read();
+}
+
+function BindFormData(pageTemplateId, recordId, layoutType) {
+    $.ajax({
+        async: false,
+        url: "/Page/GetFormData",
+        data: { pageTemplateId: pageTemplateId, recordId: recordId, layoutType: layoutType },
+        dataType: "json",
+        type: "POST",
+        success: function(data) {
+            BindForm("Form" + layoutType + "_" + pageTemplateId, data);
+        }
+    });
+}
+
+function BindForm(formName, data) {
+    try {
+
+        // set display spans
+        $("#" + formName + " span").each(function() {
+            try {
+                var id = $(this).attr("name");
+                if (!id) id = $(this).attr("id");
+
+
+                id = (id != null) ? id.replace("display_","") : null;
+                if (id != null && data[id] != null) {
+                    var value_ = data[id].toString().replace("&gt;",">").replace("&lt;","<");
+
+                    $(this).html(value_);
+                }
+            } catch (e) {
+                console.log("Error BindForm " + e);
+            }
+        });
+
+        // loop thru form elements
+        $("#" + formName + " :input").each(function() {
+
+            // if data exists for element, set the value
+            try {
+                var id = $(this).attr("id");
+                if (id == null || id == undefined) id = $(this).attr("name");
+                console.log("BindData id=" + id);
+
+                if ($(this).attr("type") == "checkbox" && data[id] == null) {
+                    $(this).prop('checked', false);
+                }
+                if (data[id] != undefined || data[id] == null) {
+                    var val = (data[id] != null) ? data[id] : "";
+
+                    console.log("BindData id=" + id + "   val=" + val);
+
+                    var kendoDropDown = $(this).data("kendoDropDownList");
+                    var kendoMultiSelect = $(this).data("kendoMultiSelect");
+                    var kendoNumericTextBox = $(this).data("kendoNumericTextBox");
+                    var kendoDatePicker = $(this).data("kendoDatePicker");
+                    var kendoDateTimePicker = $(this).data("kendoDateTimePicker");
+                    var kendoEditor = $(this).data("kendoEditor");
+
+                    if (kendoDropDown != null) {
+                        $(this).data("kendoDropDownList").value(val);
+                        try {
+                            eval("Set" + id + " = val;");
+                        } catch (e) {}
+                    } else if (kendoMultiSelect != null) {
+                        if (val != null && val.length > 0) {
+                            var ray = val.split(",");
+                            $(this).getKendoMultiSelect().value(ray);
+                            try {
+                                eval("Set" + id + " = val;");
+                            } catch (e) {}
+                        }
+                    } else if (kendoEditor != null) {
+                        if (val != null && val.length > 0) {
+                            val = val.split('&gt;').join('>');
+                            val = val.split('&lt;').join('<');
+                            $("#" + id).data("kendoEditor").value(val);
+                        }
+                    } else if (kendoNumericTextBox != null) {
+                        $(this).data("kendoNumericTextBox").value(val);
+                    } else if (kendoDatePicker != null) {
+
+                        try {
+                            var formattedDate = new Date(val);
+                            var offSet = formattedDate.getTimezoneOffset();
+                            formattedDate.setMinutes(formattedDate.getMinutes() + offSet);
+
+                            $(this).data("kendoDatePicker").value(formattedDate);
+                        } catch (e) {}
+
+                    } else if (kendoDateTimePicker != null) {
+
+                        try {
+
+                            var dateStr = val;
+                            dateStr = dateStr.replace("  ", " ").replace("  ", " ").replace("  ", " ");
+                            var a = dateStr.split(" ");
+                            var mmm = a[0];
+                            var dd = a[1];
+                            var yyyy = a[2];
+                            var am = "AM";
+                            if (a[3].indexOf("PM") > -1) {
+                                am = "PM";
+                            }
+
+                            var t = a[3].replace("AM", "").replace("PM", "");
+
+                            var formattedDate = new Date(mmm + " " + dd + " " + yyyy + " " + t + " " + am);
+                            var offSet = formattedDate.getTimezoneOffset();
+                            formattedDate.setMinutes(formattedDate.getMinutes() + offSet);
+
+                            $(this).data("kendoDateTimePicker").value(formattedDate);
+                        } catch (e) {}
+
+                    } else if ($(this).attr("type") == "checkbox") {
+
+                        if (val != null) {
+
+                            if (val.toString() == "true" || val.toString() == "1") {
+                                $(this).prop('checked', true);
+                            } else if (val.toString() == "false" || val.toString() == "" || val.toString() == "0") {
+                                $(this).prop('checked', false);
+                            } else if (val != "False" && val != "True") {
+                                var chkId = ":" + val.replace(new RegExp(",", 'g'), ":") + ":";
+
+                                if (chkId.indexOf(":" + $(this).attr("value") + ":") > -1) {
+                                    $(this).prop('checked', true);
+                                } else {
+                                    $(this).prop('checked', false);
+                                }
+
+                            } else {
+                                if (val) {
+                                    $(this).prop('checked', true);
+                                } else {
+                                    $(this).prop('checked', false);
+                                }
+                            }
+
+                        } else {
+                            $(this).prop('checked', false);
+                        }
+                    } else if ($(this).attr("type") == "radio") {
+                        if (val != null) {
+                            if (val == $(this).val()) {
+                                $(this).prop('checked', true);
+                            } else {
+                                $(this).prop('checked', false);
+                            }
+                        } else {
+                            $(this).prop('checked', false);
+                        }
+                    } else {
+                        var type_ = $(this).attr("type");
+                        //console.log("id=" + id + "   type_=" + type_ + "   val=" + val);
+                        if (type_) {
+                            if (val != null) {
+                                $("#" + formName + " input[id=" + id + "]").val(val);
+                            } else {
+                                $("#" + formName + " input[id=" + id + "]").val("");
+                            }
+                        } else {
+                            if (val != null) {
+                                if (val.indexOf("[LT]") > -1) {
+                                    val = val.split('[LT]').join('<');
+                                }
+                                if (val.indexOf("[GT]") > -1) {
+                                    val = val.split('[GT]').join('>');
+                                }
+                                if (val.indexOf("[CL]") > -1) {
+                                    val = val.split('[CL]').join(';');
+                                }
+                                $("#" + formName + " textarea[id=" + id + "]").val(val);
+                            } else {
+                                $("#" + formName + " textarea[id=" + id + "]").val("");
+                            }
+                        }
+                    }
+                }
+            } catch (e) {
+                console.log("BindForm error=" + e);
+            }
+        });
+    } catch (e) {
+        console.log("BindForm error=" + e);
+    }
+}
+
+
+    function BindButtonToForm(buttonName) {
+        try {
+            var formName = $("#" + buttonName).attr("formname");
+            //console.log("BindButtonToForm_ formName=" + formName + "  buttonName=" + buttonName);
+            $("#" + formName + " :input").keyup(function() {
+                EnableButton(buttonName);
+            });
+            $("#" + formName + " :input").change(function() {
+                EnableButton(buttonName);
+            });
+
+            // kendo types
+            var frm = document.getElementById(formName);
+            for (var i = 0; i < frm.length; i++) {
+
+                try {
+
+                    var id = frm.elements[i].name;
+                    if (id.length < 2) {
+                        id = frm.elements[i].id;
+                    }
+
+                    if (id.length < 2) continue;
+
+                    if (frm.elements[i].type == "textarea") {
+
+                        var kendoEditor = $("#" + id).data("kendoEditor");
+                        var kendoDropDown = $("#" + id).data("kendoDropDownList");
+                        var kendoMultiSelect = $("#" + id).data("kendoMultiSelect");
+
+                        if (kendoDropDown != null || kendoMultiSelect != null) {
+
+                            $("#" + id).change(function() {
+                                EnableButton(buttonName);
+                            });
+                        } else if (kendoEditor != null) {
+                            $(kendoEditor.body).on("keyup", function(e) {
+                                EnableButton(buttonName);
+                            });
+                        } 
+                    }
+                } catch (e) {
+
+                }
+            }
+        } catch (e) {
+            console.log("Error BindButtonToForm " + e.message);
+        }
+
+    }
+
+    function EnableButton(id) {
+        console.log("EnableButton id=" + id);
+        try {
+            $("#" + id).unbind("click");
+        } catch (e) {}
+
+        $("#" + id).click(function () {
+            var cmd = id.replace("cmd_", "").replace("cmd", "") + "()";
+            //console.log("EnableButton cmd=" + cmd + "  id=" + id);
+            eval(cmd);
+        });
+
+        $("#" + id).removeClass("command-disabled-span").addClass("command-active-span");
+    }
+
+    function DisableButtonClass(className) {
+        $("." + className).unbind("click");
+        $("." + className).removeClass("command-active-span").addClass("command-disabled-span");
+    }
+
+    function DisableButton(id) {
+        $("#" + id).unbind("click");
+        $("#" + id).removeClass("command-active-span").addClass("command-disabled-span");
+    }
+
+    function InjectPrimaryKey(json, primaryKey, primaryValue) {
+        var str = json + "    ";
+        str = str.substring(1, str.length - 1);
+        str = "{ \"" + primaryKey + "\": \"" + primaryValue + "\", " + str;
+
+        return str;
+    }
+
+function ToJsonString(formName) {
+    // loop thru form elements
+    var doneCheckboxNames = ":"; // Checkboxes have same names
+    var doneRadioNames = ":"; // radios have same names
+    var o = {};
+
+    $("#" + formName + " :input").each(function() {
+        var id = $(this).attr("name");
+        if (!id) id = $(this).attr("id");
+        var validObj = true;
+
+        var val = null;
+        try {
+
+            var kendoDropDown = $(this).data("kendoDropDownList");
+            var kendoMultiSelect = $(this).data("kendoMultiSelect");
+            var kendoNumericTextBox = $(this).data("kendoNumericTextBox");
+            var kendoDatePicker = $(this).data("kendoDatePicker");
+            var kendoDateTimePicker = $(this).data("kendoDateTimePicker");
+
+            if (kendoDropDown != null) {
+                val = $(this).data("kendoDropDownList").value();
+            } else if (kendoMultiSelect != null) {
+                val = $(this).data("kendoMultiSelect").value().toString();
+
+                // kendoMultiSelect puts comma in beginning of string
+                if (val != null && val.length > 0) {
+                    if (val.substring(0, 1) == ",") {
+                        val = val.substring(1, val.length);
+                    }
+                }
+            } else if (kendoNumericTextBox != null) {
+                val = $(this).data("kendoNumericTextBox").value().toString();
+            } else if (kendoDatePicker != null) {
+                val = $(this).data("kendoDatePicker").value().toString();
+            } else if (kendoDateTimePicker != null) {
+                val = $(this).data("kendoDateTimePicker").value().toString();
+            } else if ($(this).attr("type") == "checkbox") {
+                if ($(this).attr("value") != "False" && $(this).attr("value") != "True" && $(this).attr("value").length > 0) {
+                    if (doneCheckboxNames.indexOf(":" + id + ":") == -1) {
+                        doneCheckboxNames += id + ":";
+
+                        $("#" + formName + " input[name='" + id + "']").each(function() {
+
+                            if ($(this).is(":checked")) {
+                                if (val == null) {
+                                    val = $(this).val().toString();
+                                } else {
+                                    val = val + "," + $(this).val().toString();
+                                }
+                            }
+
+                        });
+                        o[id] = val;
+
+                    }
+
+                    validObj = false;
+                } else {
+                    val = ($(this).is(":checked")) ? "true" : "false";
+                }
+
+
+            } else if ($(this).attr("type") == "radio") {
+                if (doneRadioNames.indexOf(":" + id + ":") == -1) {
+                    if (!$("#" + formName + " input[name='" + id + "']:checked").val()) {
+                        validObj = false;
+                    } else {
+                        doneRadioNames += id + ":";
+                        val = $("#" + formName + " input[name='" + id + "']:checked").val();
+                    }
+                } else {
+                    validObj = false;
+                }
+            } else {
+                var type_ = $(this).attr("type");
+
+                if (type_) {
+                    val = $("#" + formName + " input[id=" + id + "]").val();
+                } else {
+                    val = $("#" + formName + " textarea[id=" + id + "]").val();
+                }
+            }
+
+            if (validObj == true) {
+                val = val.replace(new RegExp('<', 'g'), '[LT]').replace(new RegExp('>', 'g'), '[GT]');
+                o[id] = val;
+            }
+        } catch (e) {
+        }
+
+    });
+
+
+    //$("#" + formName + "  div").each(function() {
+    //    var id = $(this).attr("name");
+    //    if (!id) id = $(this).attr("id");
+    //    try {
+    //        o[id] = $(this).html();
+    //    } catch (e) {
+
+    //    }
+
+    //});
+
+    var json = JSON.stringify(o);
+    return json;
+}
+
+
+function DeleteFromGrid(pageTemplateId, keyName, keyDataType, gridType, refKeyValue) {
+
+    var ids = "";
+
+    $(".chk_" + pageTemplateId).each(function() {
+        if (this.checked) {
+            if (keyDataType == "TEXT") {
+                ids += "'" + $(this).attr("value").toString() + "', ";
+            } else {
+                ids += $(this).attr("value").toString() + ", ";
+            }
+
+        }
+    });
+
+    if (ids.length < 2) {
+        MessageBox("Information", "No record(s) were selected to delete.<br>Check the checkbox beside each record, then click delete.", false);
+        return;
+    }
+    ids = ids.substr(0, ids.length - 2);
+
+    ConfirmMessage("Warning", "Delete record?");
+
+    $("#dialogYesButton").click(function() {
+
+        $.ajax({
+            url: "/Data/DeleteRecord",
+            async: false,
+            type: "POST",
+            data: {
+                ids_: ids,
+                pageTemplateId: pageTemplateId
+            },
+            dataType: "text",
+            success: function(data) {
+                if (data.length > 0) {
+                    if (data.indexOf("REFERENCE constraint") > -1) {
+                        MessageBox("Information", "Dependencies exists for one or more of the records attempting to be deleted.<br>The records with dependencies may not be deleted to retain data integrity.", false);
+                    } else {
+                        MessageBox("Information", data, false);
+                    }
+                    return;
+                }
+
+
+                try {
+                    if (gridType == "inline") {
+                        //var hiddenIds = $("#hiddenIds" + pageTemplateId).val() + chkId;
+                        $("#hiddenIds" + pageTemplateId).val(chkId);
+                    } else if (gridType == "grid") {
+                        var grid = $("#grid_" + pageTemplateId).data("kendoGrid");
+                        $("#grid_" + pageTemplateId).find("input:checked").each(function() {
+                            grid.removeRow($(this).closest('tr'));
+                        })
+                    } else if (gridType == "detailgrid") {
+                        $("#RefreshDetail" + refKeyValue).click();
+                    }
+
+
+                } catch (e) {
+
+                }
+
+
+                $("#dialogYesNo").data("kendoWindow").close();
+            },
+            error: function(x, y, z) {
+                alert("Error deleting record.");
+                $("#dialogYesNo").data("kendoWindow").close();
+            }
+        });
+
+
+    })
+
+    $("#dialogNoButton").click(function() {
+        $("#dialogYesNo").data("kendoWindow").close();
+    })
+}
+
+function IsInt(value) {
+    return !isNaN(value) && (function(x) {
+        return (x | 0) === x;
+    })(parseFloat(value))
+}
+
+function ClearPageFilter(pageTemplateId) {
+    var grid = $("#grid_" + pageTemplateId).data("kendoGrid").dataSource;
+
+    grid.filter([]);
+
+    $.ajax({
+        url: "/Page/ClearPageFilter",
+        data: {
+            pageTemplateId: pageTemplateId
+        },
+        dataType: "text",
+        type: "POST",
+        success: function(response) {
+            $("#grid_" + pageTemplateId).data("kendoGrid").dataSource.read();
+        },
+        error: function(x, y, z) {
+            alert("Error ClearFilter.");
+        }
+    });
+}
+
+function DownloadFile__(fileAttachmentId) {
+    $("#fileAttachmentId").val(fileAttachmentId);
+    $("#btnDownload")[0].click();
+};
+
+function DownloadFile(columnDefId, recordId) {
+    var fileAttachmentId = $("#download" + columnDefId + "_" + recordId).val().toString();
+    if (fileAttachmentId.length > 0) {
+        $("#fileAttachmentId").val(fileAttachmentId);
+        $("#btnDownload")[0].click();
+    }
+};
+
+function UploadFile1(pageTemplateId, columnDefId) {
+    $('#UploadForm input[id=pageTemplateId_]').val(pageTemplateId);
+    $('#UploadForm input[id=columnDefId_]').val(columnDefId);
+
+
+    var recordId = $('#InternalId_' + pageTemplateId).val();
+    if (recordId == 0) {
+        recordId = (columnDefId + @userId) * -1;
+    }
+    $('#UploadForm input[id=recordId_]').val(recordId);
+
+    $("#postedFile")[0].click();
+
+};
+
+function UploadFile() {
+    var columnDefId = $('#UploadForm input[id=columnDefId_]').val();;
+    $("#spanUpload" + columnDefId).html("<img src='/Images/loader.gif' height='25' width='25' />");
+
+    var form = $('#UploadForm')[0];
+    var formData = new FormData(form);
+
+    var ajaxRequest = $.ajax({
+        type: "POST",
+        url: "/FileAttachment/UploadFile",
+        cache: false,
+        contentType: false,
+        processData: false,
+        data: formData,
+        success: function() {
+            RefreshUploadList();
+            $("#spanUpload" + columnDefId).html("");
+        },
+        error: function(x, y, z) {
+            alert("Failed to upload file.");
+        }
+    });
+    return false;
+};
+
+function RefreshUploadList() {
+    $.ajax({
+        url: '/FileAttachment/GetAttachedFiles',
+        type: 'POST',
+        data: {
+            pageTemplateId: $("#UploadForm input[id=pageTemplateId_]").val(),
+            columnDefId: $("#UploadForm input[id=columnDefId_]").val(),
+            recordId: $("#UploadForm input[id=recordId_]").val()
+        },
+        async: false,
+        dataType: 'text',
+        success: function(data) {
+            $("#spanDownload" + $("#UploadForm input[id=columnDefId_]").val()).html(data);
+        }
+    }).done(function() {});
+}
+
+function GetFullNote(columnDefId, recordId, getAll) {
+
+    $("#NoteWindow").load('/Note/NoteWindow', {
+        columnDefId: columnDefId,
+        recordId: recordId,
+        getAll: getAll
+    }, function(response, status, xhr) {
+        if (status == "error") {
+
+            alert("Error GetFullNote in index.cshtml\r\n" + response);
+        } else {
+            $("#NoteWindow").data("kendoWindow").open().center();
+        }
+    });
+}
+
+function AddNote(pageTemplateId, columnDefId) {
+    $('#NoteForm input[id=pageTemplateId_]').val(pageTemplateId);
+    $('#NoteForm input[id=columnDefId_]').val(columnDefId);
+    var recordId = $('#InternalId_' + pageTemplateId).val();
+    if (recordId == 0) {
+        recordId = (columnDefId + @userId) * -1;
+    }
+
+    $('#NoteForm input[id=recordId_]').val(recordId);
+    $('#NoteForm textarea[id=NoteInput]').val("");
+
+    $("#AddNoteWindow").data("kendoWindow").open().center();
+}
+
+function CancelNote() {
+    $("#AddNoteWindow").data("kendoWindow").close();
+}
+
+function SaveNote() {
+    $("#AddNoteWindow").data("kendoWindow").close();
+
+    $.ajax({
+        url: '/Note/SaveNote',
+        type: 'POST',
+        data: {
+            pageTemplateId: $("#NoteForm input[id=pageTemplateId_]").val(),
+            columnDefId: $("#NoteForm input[id=columnDefId_]").val(),
+            recordId: $("#NoteForm input[id=recordId_]").val(),
+            noteText: $("#NoteForm textarea[id=NoteInput]").val()
+        },
+        async: false,
+        dataType: 'text',
+        success: function(data) {
+            $("#spanNote" + $("#NoteForm input[id=columnDefId_]").val()).html(data);
+        }
+    }).done(function() {
+        $("#AddNoteWindow").data("kendoWindow").close();
+    });
+
+}
+
+var iii = 1;
+
+function GetDateTime(t) {
+
+    if (iii == 1) {
+        alert(t);
+        iii = 3;
+    }
+    var formattedDate = new Date(t);
+    return t;
+}
+
+function CheckboxChangeColumnDef(t, columnName) {
+    CurrentColumnName = columnName;
+}
+
+function AddRemoveGrid(grid1, grid2, tran) {
+    var gridUser1 = $("#" + grid1).data("kendoGrid");
+    var gridUser2 = $("#" + grid2).data("kendoGrid");
+
+    if (tran == "add") {
+        moveTo(gridUser1, gridUser2, tran);
+    } else {
+        moveTo(gridUser2, gridUser1, tran);
+    }
+}
+
+function moveTo(from, to, action) {
+    var selected = from.select();
+    if (selected.length > 0) {
+        var items = [];
+        $.each(selected, function(idx, elem) {
+            items.push(from.dataItem(elem));
+        });
+
+        var fromDS = from.dataSource;
+        var toDS = to.dataSource;
+        $.each(items, function(idx, elem) {
+            toDS.add($.extend({}, elem));
+            fromDS.remove(elem);
+        });
+        toDS.sync();
+        fromDS.sync();
+    }
+}
+
+function GetGridIds(gridName, keyName) {
+    var gridUser2 = $("#" + gridName).data("kendoGrid");
+    var ids = "";
+    $("#" + gridName + " tbody").find("tr").each(
+        function() {
+            var dataItem = gridUser2.dataItem($(this));
+            ids += eval("dataItem." + keyName) + ",";
+        });
+
+    if (ids.length > 0) ids = ids.substring(0, ids.length - 1);
+    return ids;
+}
+
+function AppSpinner(tf) {
+    if (tf) {
+        $("#overlay").css({
+            "display": "block"
+        });
+        $("#appSpinner").addClass("lds-spinner");
+    } else {
+        $("#overlay").css({
+            "display": "none"
+        });
+        $("#appSpinner").removeClass("lds-spinner");
+    }
+}
+
+</script>
+
+<div id="NoteWindow"></div>
+<div id="AddNoteWindow">
+
+    @* have to change the ids duplicates<form action="" id="NoteForm" name="NoteForm">
+            <input type="hidden" id="pageTemplateId_" name="pageTemplateId_" value="" />
+            <input type="hidden" id="columnDefId_" name="columnDefId_" value="" />
+            <input type="hidden" id="recordId_" name="recordId_" value="" />
+            <a href="javascript:SaveNote()" style="text-decoration:none;"><img src="/Images/ToolBar/save.png" /> <span style="position:relative;top:-10px;">Save</span></a>
+            <a href="javascript:CancelNote()" style="text-decoration:none;"><img src="/Images/ToolBar/cancel.png" /> <span style="position:relative;top:-10px;">Cancel</span></a>
+            <textarea id="NoteInput" name="NoteInput" style="width:760px;height:300px;"></textarea>
+        </form>*@
+
+</div>
+
+@using (Html.BeginForm("UploadFile", "FileAttachment", FormMethod.Post, new { id = "UploadForm", enctype = "multipart/form-data" }))
+{
+    @*have to change the ids  duplicates <input type="hidden" id="pageTemplateId_" name="pageTemplateId_" value="" />
+        <input type="hidden" id="columnDefId_" name="columnDefId_" value="" />*@
+    <input type="hidden" id="recordId_" name="recordId_" value="" />
+    <input type="file" id="postedFile" name="postedFile" style="visibility:hidden;" onchange="UploadFile()" />
+}
+
+@using (Html.BeginForm("DownloadFile", "FileAttachment", FormMethod.Post, new { id = "DownloadForm" }))
+{
+    <input type="hidden" id="fileAttachmentId" name="fileAttachmentId" />
+    <input type="submit" id="btnDownload" value="Download" style="display:none" />
+}
+
+<form action="/Home/ReportViewer" id="formReport" method="post" target="_blank">
+    <input type="hidden" id="reportPageTemplateId" name="reportPageTemplateId" />
+    <input type="hidden" id="reportRecordId" name="reportRecordId" />
+</form>
+
+
+
+<div id="overlay"></div>
+<div id="appSpinner" class=""><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div><div></div></div>
+
+

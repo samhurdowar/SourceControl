@@ -1,0 +1,415 @@
+﻿
+<style>
+	#clickable:hover {
+		cursor: pointer;
+	}
+
+	.body-content {
+		padding-top: 50px
+	}
+
+	.checkbox {
+		padding: 0;
+		margin: 0;
+	}
+
+	.dropdown-menu {
+		overflow: auto !important;
+	}
+
+	.form-group div {
+		display: inline-block;
+		margin-right: 10px
+	}
+</style>
+
+
+
+<div class="app-command-bar">
+	<a href="SwitchPorts/DownloadExcelPortCapacityReport" class="app-command-item"><img src="Images/ToolBar/download.png" width="20" height="20" /><span> Download to Excel</span></a>
+</div>
+
+
+<table style="width:100%;padding:2px;">
+	<tr style="vertical-align:top;">
+		<td style="padding:5px;width:25%;">
+			<div>
+				<div class="panel panel-warning">
+					<div class="panel-heading">
+						Tree List of Groups
+					</div>
+					<div class="panel-body" id="divDeviceGroup">
+
+					</div>
+				</div>
+			</div>
+		</td>
+		<td style="padding:5px;width:25%;">
+			<div id="divGroupInfo" style="display:none;">
+				<div class="panel panel-info">
+					<div class="panel-heading">
+						<h3 class="panel-title">Group <input type="text" id="GroupName" class="app-input-noborder" /> Information</h3>
+					</div>
+					<div class="panel-body">
+						<span id="spanCannotHaveSubGroups" style="display:none;">
+							This group has devices and can not have subgroups.
+						</span>
+						<table class="table table-striped table-hover">
+							<tr>
+								<td>Device Count: </td>
+								<td></td>
+								<td><input type="text" id="DeviceCount" class="app-input-noborder" /></td>
+							</tr>
+							<tr>
+								<td>Total Ports: </td>
+								<td></td>
+								<td><input type="text" id="TotalPortCount" class="app-input-noborder" /></td>
+							</tr>
+							<tr>
+								<td>Open Ports: </td>
+								<td></td>
+								<td><input type="text" id="OpenPortCount" class="app-input-noborder" /></td>
+							</tr>
+							<tr>
+								<td>Reserved Ports: </td>
+								<td></td>
+								<td><input type="text" id="ReserverPortCount" class="app-input-noborder" /></td>
+							</tr>
+							<tr>
+								<td>Percent Free:</td>
+								<td></td>
+								<td><input type="text" id="PercentUsed" class="app-input-noborder" /></td>
+							</tr>
+						</table>
+
+						<span id="spanCreateSubGroup" style="display:none;">
+							This group has subgroups and can not have members.<br /><br />
+							<label>CREATE SUBGROUP</label><br />
+							<input type="text" id="newGroupName" placeholder="Group Name" style="width:200px;" /><br />
+							<label>Group Type</label>
+							<input type="checkbox" id="AddMember" value="true" /> Group will be used for Device.<br />
+							<button type="submit" class="btn btn-success" onclick="CreateGroup()">Submit</button>
+
+							<br />----------------------- <br />
+						</span>
+
+						<span>
+
+							<a class="btn btn-danger" onclick="DeleteGroup()">Danger Delete Group</a><br />
+							Delete Group. This will delete all subgroups and devices under this group.
+						</span>
+
+					</div>
+				</div>
+			</div>
+
+		</td>
+		<td style="padding:5px;width:50%;">
+			<div id="divDeviceList" style="display:none;">
+				<div class="panel panel-success">
+					<div class="panel-heading">
+						<h3 class="panel-title">Device List</h3>
+						<span style="float:right;top:-17px;position:relative;text-decoration:underline;cursor:pointer;" onclick="AddDevicesToGroup()">Add Devices to Group</span>
+						<span class='k-icon k-i-add' style="float:right;top:-17px;position:relative;"></span>
+					</div>
+					<div class="panel-body">
+						<table class="table table-striped table-hover" id="tableDeviceList"></table>
+					</div>
+				</div>
+			</div>
+		</td>
+	</tr>
+</table>
+
+
+<div id="dialogAddDevicesToGroup" style="display:none;">
+	<div id="addGroupList">
+
+
+	</div>
+
+
+</div>
+
+<script>
+	var CurrentGroupGuid = "";
+	var CurrentGroupId = 0;
+	AppSpinner(true);
+
+
+	$("#dialogAddDevicesToGroup").kendoWindow({
+		height: "800px",
+		width: "500px",
+		modal: true,
+		scrollable: true,
+		title: "Add Device(s) to Group",
+		animation: {
+			open: {
+				duration: 100
+			}
+		},
+		visible: false,
+		actions: ["Minimize", "Maximize", "Close"],
+		activate: function () {
+			$("#NewTemplateName").focus();
+		}
+	});
+
+
+	var DevicesNotInGroup;
+
+
+
+	function GetTree() {
+		$.ajax({
+			url: "/SwitchPorts/GetDeviceGroupTree",
+			dataType: "text",
+			success: function (data) {
+				$("#divDeviceGroup").html(data);
+
+				$("#treeDeviceGroup").kendoTreeView();
+
+
+				AppSpinner(false);
+			},
+			error: function (request, status, error) {
+				AppSpinner(false);
+				alert(request.responseText);
+			}
+		});
+
+	}
+
+
+
+	function GetDeviceGroupInfo(guid) {
+		CurrentGroupGuid = guid;
+		AppSpinner(true);
+		$("#divGroupInfo").hide();
+		$("#divDeviceList").hide();
+		$("#spanCannotHaveSubGroups").hide();
+
+
+		$.ajax({
+			url: "/SwitchPorts/GetGroupDeviceInfo",
+			dataType: "json",
+			data: { groupguid: guid },
+			success: function (group) {
+				CurrentGroupId = group.devicegroupitem.GroupID;
+
+				$("#GroupName").val(group.devicegroupitem.GroupName);
+				$("#DeviceCount").val(group.devicegroupitem.DeviceCount);
+
+				$("#TotalPortCount").val(group.devicegroupitem.TotalPortCount);
+				$("#OpenPortCount").val(group.devicegroupitem.OpenPortCount);
+				$("#ReserverPortCount").val(group.devicegroupitem.ReserverPortCount);
+				$("#PercentUsed").val(group.devicegroupitem.PercentUsed);
+
+
+				$("#divGroupInfo").show();
+
+				if (group.devicegroupitem.AddMembers) {
+					$("#divDeviceList").show();
+					$("#spanCannotHaveSubGroups").show();
+					$("#spanCreateSubGroup").hide();
+
+					var td = "<tr><th></th><th>Device Name</th><th>Total Ports</th><th>Open Ports</th><th>Reserved Ports</th><th>Percent Free</th></tr>";
+
+					for (i in group.devicegroupitem.DeviceList) {
+						td += "<tr>";
+						td += "<td><span class='k-icon k-i-delete' onclick=\"DeleteDeviceFromGroup('" + group.devicegroupitem.DeviceList[i].guid + "','" + group.devicegroupitem.DeviceList[i].groupguid + "')\"></span></td>";
+						td += "<td>" + group.devicegroupitem.DeviceList[i].DeviceName + "</td>";
+						td += "<td>" + group.devicegroupitem.DeviceList[i].TotalPortCount + "</td>";
+						td += "<td>" + group.devicegroupitem.DeviceList[i].OpenPortCount + "</td>";
+						td += "<td>" + group.devicegroupitem.DeviceList[i].ReservedPortCount + "</td>";
+						td += "<td>" + group.devicegroupitem.DeviceList[i].PercentUsed + "</td>";
+						td += "</tr>";
+					}
+					$("#tableDeviceList").html("");
+					$("#tableDeviceList").append(td);
+
+					DevicesNotInGroup = group.devicesnotingroup;
+
+				} else {
+					$("#divDeviceList").hide();
+					$("#spanCannotHaveSubGroups").hide();
+					$("#spanCreateSubGroup").show();
+				}
+
+
+
+				AppSpinner(false);
+
+			},
+			error: function (request, status, error) {
+				alert(request.responseText);
+			}
+		});
+
+
+	}
+
+	function DeleteDeviceFromGroup(guid, groupguid) {
+
+		ConfirmMessage("Warning", "Delete device from group?");
+
+		$("#dialogYesButton").click(function () {
+
+			$.ajax({
+				url: "SwitchPorts/DeleteDeviceFromGroup",
+				data: { deviceguid: guid, groupguid: groupguid },
+				async: false,
+				dataType: "text",
+				success: function (data) {
+
+					$("#dialogYesNo").data("kendoWindow").close();
+
+					GetDeviceGroupInfo(groupguid);
+				},
+				error: function (jqXHR, textStatus, errorThrown) {
+					alert("errorThrown: " + errorThrown);
+				}
+			});
+		})
+	}
+
+	function AddDevicesToGroup() {
+
+		var unique = {};
+
+		var chkList = "<div class='app-command-bar'><a href='javascript:SaveAddDevice()' class='app-command-item'><img src='Images/ToolBar/save.png' width='25' height='25' /> <span>Save</span></a>";
+		chkList += "<a href='javascript:CancelAddDevice()' class='app-command-item'><img src='Images/ToolBar/cancel.png' width='25' height='25' /> <span>Cancel</span></a></div>";
+
+		chkList += "<input type='checkbox' value='0' id='SelectAll' onclick='SelectAll(this)' /> Check/Uncheck All<br>";
+		for (i in DevicesNotInGroup) {
+
+			if (typeof (unique[DevicesNotInGroup[i].HostName]) == "undefined") {
+				chkList += "<input type='checkbox' class='chkguid' name='chkGuid' value='" + DevicesNotInGroup[i].HostName + "' > " + DevicesNotInGroup[i].HostName + "<br>";
+			}
+
+			unique[DevicesNotInGroup[i].HostName] = 0;
+
+		}
+
+		$("#addGroupList").html(chkList);
+
+
+		$("#dialogAddDevicesToGroup").data("kendoWindow").open().center();
+	}
+
+
+	function SelectAll(t) {
+		if (t.checked) {
+			$(".chkguid").each(function () {
+				this.checked = true;
+			});
+		} else {
+			$(".chkguid").each(function () {
+				this.checked = false;
+			});
+		}
+	}
+
+	function CancelAddDevice() {
+		$("#dialogAddDevicesToGroup").data("kendoWindow").close();
+	}
+
+	function SaveAddDevice() {
+		var unique = {};
+		var deviceIDs = [];
+
+		$(".chkguid:checked").each(function () {
+			var value = $(this).attr("value");
+
+			if (typeof (unique[value]) == "undefined") {
+				deviceIDs.push({ dname: value, dguid: CurrentGroupGuid });
+			}
+
+			unique[value] = 0;
+		});
+
+		SaveAddDevice_(deviceIDs);
+
+	}
+
+	function SaveAddDevice_(deviceIDs) {
+
+		$.ajax({
+			url: "SwitchPorts/AddMultipleDevicesToGroup",
+			type: "POST",
+			data: { hostnames: deviceIDs },
+			async: false,
+			dataType: "text",
+			success: function (data) {
+				$("#dialogAddDevicesToGroup").data("kendoWindow").close();
+				GetDeviceGroupInfo(CurrentGroupGuid);
+			},
+			error: function (jqXHR, textStatus, errorThrown) {
+				$("#dialogAddDevicesToGroup").data("kendoWindow").close();
+				alert("errorThrown: " + errorThrown);
+			}
+		});
+	}
+
+	function CreateGroup() {
+		if ($("#newGroupName").val() == "") {
+			MessageBox("Warning", "Group name is required.", false);
+			return;
+		} else {
+			$.ajax({
+				url: "SwitchPorts/CreateGroup",
+				data: { groupID: CurrentGroupId, groupName: $("#newGroupName").val(), addMember: $("#AddMember").val() },
+				async: false,
+				dataType: "json",
+				success: function (data) {
+					GetTree();
+
+					GetDeviceGroupInfo(CurrentGroupGuid);
+				},
+				error: function (jqXHR, textStatus, errorThrown) {
+					alert("errorThrown: " + errorThrown);
+				}
+			});
+		}
+
+	}
+
+	function DeleteGroup() {
+		ConfirmMessage("Warning", "This will delete all subgroups and devices under this group.  Delete group?");
+
+
+		$("#dialogYesButton").click(function () {
+
+			$.ajax({
+				url: "SwitchPorts/DeleteGroup",
+				data: { groupID: CurrentGroupId },
+				async: false,
+				dataType: "text",
+				success: function (data) {
+					GetTree();
+					$("#divGroupInfo").hide();
+					$("#divDeviceList").hide();
+					$("#spanCannotHaveSubGroups").hide();
+					$("#dialogYesNo").data("kendoWindow").close();
+
+				},
+				error: function (jqXHR, textStatus, errorThrown) {
+					alert("errorThrown: " + errorThrown);
+				}
+			});
+		})
+	}
+
+
+
+
+
+	setTimeout(function () { GetTree(); }, 1000);
+
+
+</script>
+
+
+
+
+

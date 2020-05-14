@@ -1,0 +1,289 @@
+﻿
+<table style="width:100%">
+	<tr>
+		<td style="width:60%">
+			<table>
+				<tr>
+					<td>Job <input id="jobGuid" name="jobGuid" style="width:200px;"></td>
+					<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+					<td>Environment <input id="environment" name="environment" style="width:220px;"></td>
+					<td>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+					<td>Device <input id="device" name="device" style="width:280px;"></td>
+					<td>&nbsp;&nbsp;&nbsp;<button onclick="SearchVirtual()" class="btn btn-primary">Search</button></td>
+				</tr>
+			</table>
+
+		</td>
+		<td style="width:40%">
+			<table>
+				<tr>
+					<td>
+						<span class="foo-box bcolor-gray"></span> The f5 sees at least 1 pool member up and is prepared to pass traffic.
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<span class="foo-box bcolor-orange"></span> The service is not being monitored and could be up or down.
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<span class="foo-box bcolor-red"></span> The service is down.  Most likely the f5 is unable to contact the pool members on the service port.
+					</td>
+				</tr>
+			</table>
+
+		</td>
+	</tr>
+</table>
+
+<style>
+	.foo-box {
+		float: left;
+		width: 12px;
+		height: 12px;
+		margin: 5px;
+		border: 1px solid rgba(0, 0, 0, .2);
+	}
+
+	.bcolor-gray {
+		background: rgba(206, 188, 188, 0.45);
+	}
+
+	.bcolor-orange {
+		background: rgba(243, 192, 97, 0.85);
+	}
+
+	.bcolor-red {
+		background: rgba(251, 153, 153, 0.85);
+	}
+
+	.kendoToolTips {
+		cursor: pointer;
+		position: absolute;
+		display: block;
+		/*width: 12px;
+		height: 12px;
+		background-color: #fff600;
+		-moz-border-radius: 30px;
+		-webkit-border-radius: 30px;
+		border-radius: 30px;
+		border: 0;
+		-moz-box-shadow: 0 0 0 1px rgba(0,0,0,0.5);
+		-webkit-box-shadow: 0 0 0 1px rgba(0,0,0,0.5);
+		box-shadow: 0 0 0 1px rgba(0,0,0,0.5);
+		-moz-transition: -moz-box-shadow .3s;
+		-webkit-transition: -webkit-box-shadow .3s;
+		transition: box-shadow .3s;*/
+	}
+
+		.kendoToolTips:hover {
+			-moz-box-shadow: 0 0 0 15px rgba(0,0,0,0.5);
+			-webkit-box-shadow: 0 0 0 15px rgba(0,0,0,0.5);
+			box-shadow: 0 0 0 15px rgba(0,0,0,0.5);
+			-moz-transition: -moz-box-shadow .3s;
+			-webkit-transition: -webkit-box-shadow .3s;
+			transition: box-shadow .3s;
+		}
+</style>
+
+
+
+<div id="gridVirtual"></div>
+
+
+<script>
+	var dsVirtual = new kendo.data.DataSource({
+		pageable: false,
+		transport: {
+			read: {
+				url: "/App/GetVipsForDevice",
+				dataType: "json"
+			}
+		}
+	});
+
+	$("#gridVirtual").kendoGrid({
+		dataSource: dsVirtual,
+		autoBind: false,
+		scrollable: true,
+		height: window.innerHeight - 330,
+		sortable: false,
+		pageable: false,
+		filterable: false,
+		resizable: true,
+		detailInit: detailInit,
+		columns: [
+			{ field: "name", title: "VIP", width: 300, attributes: { "style": "white-space:nowrap;" } },
+			{ field: "StatusAvailabilityState", title: "Status", width: 150 },
+			{ field: "destination", title: "IP", width: 300, attributes: { "style": "white-space:nowrap;" } },
+			{ field: "routeDomain", title: "RD" },
+			{ field: "port", title: "Port", width: 100 },
+			{ field: "PoolName", title: "Pool", width: 300, attributes: { "style": "white-space:nowrap;" } },
+			{ field: "PoolMonitor", title: "Monitor", width: 150 },
+			{ field: "PoolLoadBalancingMode", title: "Method" },
+			{ field: "rules", title: "Rules" },
+			{ title: "Certs", template: '<span title="Chain: #=CertChain#   Key: #=CertKey#" class="kendoToolTips">#= CertName #</span>' },
+			{ title: "Persist", template: '<span title="Type: #=PersistType#   Timeout: #=PersistTimeOut#" class="kendoToolTips">#= PersistName #</span>' }
+
+		],
+		dataBound: function (e) {
+
+			var rows = e.sender.tbody.children();
+
+			for (var j = 0; j < rows.length; j++) {
+				var row = $(rows[j]);
+				var dataItem = e.sender.dataItem(row);
+
+				var stat = dataItem.get("StatusAvailabilityState");
+				if (stat == "offline") {
+					row.addClass('bcolor-red');
+				}
+				if (stat == "available") {
+					//row.addClass('bcolor-red');
+				}
+				if (stat == "unknown") {
+					row.addClass('bcolor-orange');
+				}
+
+			}
+		}
+
+	});
+
+
+
+	$("#jobGuid").kendoDropDownList({
+		dataTextField: "TextField",
+		dataValueField: "ValueField",
+		dataSource: {
+			transport: {
+				read: {
+					dataType: "json",
+					url: "App/GetJobs",
+				}
+			}
+		},
+		change: function (e) {
+			GetDevices();
+		}
+	});
+
+	$("#environment").kendoDropDownList({
+		dataTextField: "TextField",
+		dataValueField: "ValueField",
+		dataSource: {
+			transport: {
+				read: {
+					dataType: "json",
+					url: "App/GetEnvironments",
+				}
+			}
+		},
+		change: function (e) {
+			GetDevices();
+		}
+	});
+
+	$("#device").kendoDropDownList({
+		autoBind: false,
+		optionLabel: {
+			TextField: "Select Device",
+			ValueField: ""
+		},
+		dataTextField: "TextField",
+		dataValueField: "ValueField",
+		dataSource: {
+			transport: {
+				read: {
+					dataType: "json",
+					url: "App/GetDevices",
+				}
+			}
+		},
+		change: function (e) {
+			//alert($("#xxx").data("kendoDropDownList").value());
+		}
+
+	});
+
+
+
+
+	function GetDevices() {
+		var jobGuid = $("#jobGuid").data("kendoDropDownList").value();
+		var environment = $("#environment").data("kendoDropDownList").value();
+		var device = $("#device").data("kendoDropDownList");
+
+		device.dataSource.transport.options.read.url = "App/GetDevices?jobGuid=" + jobGuid + "&environment=" + environment;
+		device.dataSource.read();
+
+	}
+
+
+	setTimeout(function () {
+		GetDevices();
+
+	}, 2000);
+
+
+	var tooltip = $(".kendoToolTips").kendoTooltip({
+
+		width: 120,
+		position: "top",
+		animation: {
+			open: {
+				effects: "zoom",
+				duration: 150
+			}
+		}
+	}).data("kendoTooltip");
+
+
+
+	function SearchVirtual() { //jobGuid f5HostName
+		var jobGuid = $("#jobGuid").data("kendoDropDownList").value();
+		var f5HostName = $("#device").data("kendoDropDownList").value();
+		var grid = $("#gridVirtual").data("kendoGrid");
+
+
+		if (f5HostName.length == 0) {
+			MessageBox("Information", "Please select a device.", false);
+			return;
+		}
+
+		grid.dataSource.transport.options.read.url = "App/GetVipsForDevice?jobGuid=" + jobGuid + "&f5HostName=" + f5HostName;
+		grid.dataSource.read();
+
+
+	}
+
+	function detailInit(e) {
+
+		var dsGroupDetail = new kendo.data.DataSource({
+			transport: {
+				read: {
+					url: "/App/GetVirtualPoolMembers?poolGuid=" + e.data.PoolGuid,
+					dataType: "json"
+				}
+			}
+		});
+
+		$("<div/>").appendTo(e.detailCell).kendoGrid({
+			scrollable: true,
+			height: 200,
+			dataSource: dsGroupDetail,
+			columns: [
+				{ field: "Name", title: "Server" },
+				{ field: "IP", title: "IP" },
+				{ field: "routeDomain", title: "RD" },
+				{ field: "session", title: "Session" },
+				{ field: "state", title: "State" },
+				{ field: "monitor", title: "Monitor" }
+			]
+		});
+	}
+
+
+</script>
+

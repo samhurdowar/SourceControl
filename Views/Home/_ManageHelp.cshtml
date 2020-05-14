@@ -1,0 +1,486 @@
+@using SourceControl.Services;
+
+@{
+	var vd = SessionService.VirtualDomain;
+}
+
+<style>
+
+
+	#ulHelp0 li {
+		list-style-type: none;
+		margin-left: -25px;
+		padding: 4px 0px 4px 10px;
+		white-space: nowrap;
+		width: 100%;
+	}
+
+	.li-state-highlight {
+		background-color: #007cc0;
+		color: white;
+		width: 100%;
+	}
+
+	.li-state-default {
+		background-color: white;
+		color: black;
+		width: 100%;
+	}
+
+	.help-item {
+		cursor: pointer;
+		padding: 3px;
+		white-space: nowrap;
+	}
+
+	.help-spacer {
+		padding-right: 14px;
+	}
+
+	.k-i-collapse {
+		cursor: pointer;
+	}
+
+	.k-i-expand {
+		cursor: pointer;
+	}
+
+	#divEditorHelp {
+		position: relative;
+		z-index: 4;
+	}
+
+	.k-sprite {
+		background-image: url(/Images/coloricons-sprite.png);
+	}
+
+	.folder {
+		background-position: 0 -16px;
+	}
+
+	.pdf {
+		background-position: 0 -32px;
+	}
+
+	.doc {
+		background-position: 0 -48px;
+	}
+</style>
+
+
+<div style="position:relative;width: 98%;" class="row">
+	<div style="position:relative;width: 100%;">
+		<span id="cmdGetRootHelp" class="app-command-enabled" onclick="GetRootHelp('',0)"><img src="@vd/Images/ToolBar/x24/select_none.png" /><span> Collapse</span></span>
+		<span id="cmdGetRootHelpALL" class="app-command-enabled" onclick="GetRootHelp('ALL',0)"><img src="@vd/Images/ToolBar/x24/select_all.png" /><span> Expand</span></span>
+		<span id="cmdAddRootHelpFolder" class="app-command-enabled" onclick="AddRootHelpFolder()"><img src="@vd/Images/ToolBar/x24/folder-add.png" /><span> Add Root Folder</span></span>
+		<span id="cmdAddHelpFolder" class="app-command-disabled"><img src="@vd/Images/ToolBar/x24/folder-add_disabled.png" /><span> Add Folder</span></span>
+		<span id="cmdAddHelpDoc" class="app-command-disabled"><img src="@vd/Images/ToolBar/x24/document_text_image-add_disabled.png" /><span> Add Document</span></span>
+		<span id="cmdSaveHelp" class="app-command-disabled"><img src="@vd/Images/ToolBar/x24/save_disabled.png" /><span> Save</span></span>
+		<span id="cmdDeleteHelp" class="app-command-disabled"><img src="@vd/Images/ToolBar/x24/delete_circle_disabled.png" /><span> Delete</span></span>
+
+	</div>
+</div>
+
+
+<div id="splitterHelp">
+	<div id="paneHelp1">
+		<div id="manageHelp" style="width: 100%;"></div>
+	</div>
+
+	<div id="paneHelp2">
+
+		<form id="FormHelp">
+
+			<div style="position: relative; float: left; width: 99%;">
+
+				<div id="divHelpTitle" style="margin-left:10px;display:none;">Title <input type="text" id="HelpTitle" name="HelpTitle" value="" style="width:500px" required validationMessage="Required" /></div>
+
+				<div id="divEditorHelp" style="display:none;">
+					<textarea id="editorHelpContent" name="editorHelpContent" rows="10" cols="30" style="width:100%;min-height:500px"></textarea>
+				</div>
+			</div>
+
+		</form>
+	</div>
+</div>
+
+
+<script>
+	var HelpParentId = 0;
+	var HelpId = 0;
+	var GoToHelpFunction = "";
+
+	$(document).ready(function () {
+
+		//----------------------  Splitter
+		var splitterHelp = $("#splitterHelp").kendoSplitter({
+			panes: [
+			 { collapsible: true, size: 400 },
+			 {}
+			],
+			orientation: "horizontal"
+		});
+
+
+		$("#splitterHelp").height(window.innerHeight - 270);
+
+		$("#splitterHelp").css("overflow", "hidden");
+
+
+		GetRootHelp("", 0);
+
+
+		//----------------------  Editor
+		var eCss = $('#editorHelpContent');
+		eCss.css("height", (window.innerHeight - 300) + "px");
+
+
+		$("#editorHelpContent").kendoEditor({
+			//encoded: false,
+			tools: [
+             "bold",
+             "italic",
+             "underline",
+             "strikethrough",
+             "justifyLeft",
+             "justifyCenter",
+             "justifyRight",
+             "justifyFull",
+             "insertUnorderedList",
+             "insertOrderedList",
+             "indent",
+             "outdent",
+             "createLink",
+             "unlink",
+             "insertImage",
+             "insertFile",
+             "subscript",
+             "superscript",
+             "createTable",
+             "addRowAbove",
+             "addRowBelow",
+             "addColumnLeft",
+             "addColumnRight",
+             "deleteRow",
+             "deleteColumn",
+             "viewHtml",
+             "formatting",
+             "cleanFormatting",
+             "fontName",
+             "fontSize",
+             "foreColor",
+             "backColor",
+             "print"
+			]
+		});
+
+
+		// Bind form elements to enable save button
+		BindButtonToForm("FormHelp", "cmdSaveHelp", "SaveHelp()");
+
+		
+	});
+
+
+	function AddRootHelpFolder() {
+		AddHelpFolder("root");
+	}
+
+	function AddHelpFolder(mode) {
+		$("#divHelpTitle").show();
+		$("#divEditorHelp").hide();
+		$("#HelpTitle").val("");
+		$("#HelpTitle").focus();
+		GoToHelpFunction = "AddHelpFolder_('" + mode + "')";
+	}
+
+	function AddHelpFolder_(mode) {
+		var validator = $("#FormHelp").kendoValidator().data("kendoValidator");
+		if (!validator.validate()) {
+			return;
+		}
+
+		HelpParentId = HelpId;
+		if (mode == "root") {
+			HelpParentId = 0;
+		}
+
+		$.ajax({
+			url: "@vd/Help/AddHelp",
+			type: "POST",
+			data: { parentId: HelpParentId, helpTitle: $("#HelpTitle").val(), helpContent: "", isDoc: 0 },
+			async: false,
+			dataType: "text",
+			success: function (helpId) {
+				HelpId = helpId;
+				GetRootHelp("", helpId);
+				$("#Help" + HelpParentId + "_" + helpId).removeClass("li-state-default").addClass("li-state-highlight");
+				GoToHelpFunction = "EditHelp_()";
+			}
+		});
+	}
+
+	function AddHelpDoc() {
+		$("#divHelpTitle").show();
+		$("#divEditorHelp").show();
+		$("#editorHelpContent").data("kendoEditor").value("");
+		$("#HelpTitle").val("");
+		$("#HelpTitle").focus();
+		GoToHelpFunction = "AddHelpDoc_()";
+	}
+
+	function AddHelpDoc_() {
+		var validator = $("#FormHelp").kendoValidator().data("kendoValidator");
+		if (!validator.validate()) {
+			return;
+		}
+
+		$.ajax({
+			url: "@vd/Help/AddHelp",
+			type: "POST",
+			data: { parentId: HelpId, helpTitle: $("#HelpTitle").val(), helpContent: $("#editorHelpContent").data("kendoEditor").value(), isDoc: 1 },
+			async: false,
+			dataType: "text",
+			success: function (newHelpId) {
+				HelpParentId = HelpId;
+				HelpId = newHelpId;
+				GetRootHelp("", newHelpId);
+				$("#Help" + HelpParentId + "_" + HelpId).removeClass("li-state-default").addClass("li-state-highlight");
+				GoToHelpFunction = "EditHelp_()";
+			}
+		});
+	}
+
+
+	function EditHelp_() {
+		DebugLog("EditHelp_()   ---- HelpParentId=" + HelpParentId + "    HelpId=" + HelpId);
+		var validator = $("#FormHelp").kendoValidator().data("kendoValidator");
+		if (!validator.validate()) {
+			return;
+		}
+
+		$.ajax({
+			url: "@vd/Help/EditHelp",
+			type: "POST",
+			data: { helpId: HelpId, helpTitle: $("#HelpTitle").val(), helpContent: $("#editorHelpContent").data("kendoEditor").value() },
+			//async: false,
+			dataType: "text",
+			success: function (data) {
+				$("#Help" + HelpParentId + "_" + HelpId).html($("#HelpTitle").val());
+				DisableButton("cmdSaveHelp");
+			},
+			error: function (jqXHR, textStatus, errorThrown) {
+				alert("errorThrown: " + errorThrown);
+				alert(jqXHR.responseText);
+			}
+		});
+	}
+
+
+	function SaveHelp() {
+		eval(GoToHelpFunction);
+	}
+
+	function DeleteHelp() {
+
+		//DebugLog("DeleteHelp()   ---- HelpParentId=" + HelpParentId + "    HelpId=" + HelpId);
+
+		ConfirmMessage("Warning", "Delete help and all related items?");
+
+		$("#dialogYesButton").click(function () {
+			$.ajax({
+				url: "@vd/Help/DeleteHelp",
+				type: "POST",
+				data: { parentId: HelpParentId, helpId: HelpId },
+				async: false,
+				dataType: "text",
+				success: function (data) {
+					$("#liHelp" + HelpId).remove();
+
+					$("#divHelpTitle").hide();
+					$("#divEditorHelp").hide();
+					DisableButton("cmdSaveHelp");
+					DisableButton("cmdDeleteHelp");
+					DisableButton("cmdAddHelpFolder");
+					DisableButton("cmdAddHelpDoc");
+					HelpParentId = 0;
+					HelpId = 0;
+					GoToHelpFunction = "EditHelp_()";
+					$("#dialogYesNo").data("kendoWindow").close();
+				},
+				error: function (jqXHR, textStatus, errorThrown) {
+					alert("errorThrown: " + errorThrown);
+					alert(jqXHR.responseText);
+				}
+			});
+		})
+
+
+		$("#dialogNoButton").click(function () {
+			$("#dialogYesNo").data("kendoWindow").close();
+		})
+	}
+
+
+	function GetRootHelp(scope, selectHelpId) {
+		// get root helps
+		$.ajax({
+			async: false,
+			url: "@vd/Help/GetHelpLevel0?scope=" + scope + "&selectHelpId=" + selectHelpId,
+			type: "POST",
+			dataType: "text",
+			success: function (data) {
+				$("#manageHelp").html(data);
+
+				$(".sortULHelp").each(function (i, obj) {
+					var ulName = $(this).attr("id");
+
+					$("#" + ulName).sortable({
+						helper: function (event, ui) {
+							ui.children().each(function () {
+								$(this).width($(this).width());
+							});
+							return ui;
+						},
+						start: function (event, ui) {
+							ui.item.startPos = ui.item.index();
+							ui.placeholder.height(ui.item.height());
+						},
+						stop: function (event, ui) {
+							if (ui.item.startPos != ui.item.index()) {
+								var ids = $("span:last", ui.item).attr("id").replace("Help", "");
+								var ray = ids.split("_");
+
+								$.ajax({
+									async: false,
+									url: "@vd/Help/SortHelp",
+									type: "POST",
+									data: { parentId: ray[0], helpId: ray[1], newOrder: ui.item.index() },
+									dataType: "text",
+									success: function (data) {
+									}
+								});
+
+								//DebugLog("Sort From : " + ui.item.startPos + "   To: " + ui.item.index() + "   ids: " + ids);
+							}
+						}
+					}).disableSelection();
+				});
+
+			}
+		});
+	}
+
+	//divHelpTitle   divEditorHelp
+	function SelectHelp(t) {
+		$("#divHelpTitle").show();
+		$("#HelpTitle").val($(t).html());
+
+		DisableButton("cmdSaveHelp");
+		EnableButton("cmdDeleteHelp", "DeleteHelp()");
+		EnableButton("cmdAddHelpFolder", "AddHelpFolder('')");
+		EnableButton("cmdAddHelpDoc", "AddHelpDoc()");
+
+
+		$(".help-item").removeClass("li-state-highlight").addClass("li-state-default");
+		$(t).removeClass("li-state-default").addClass("li-state-highlight");
+
+		var ids = $(t).attr("id").replace("Help", "");
+		var ray = ids.split("_");
+		var parentId = ray[0];
+		var helpId = ray[1];
+
+
+		var isDoc = $(t).attr("IsDoc");
+		if (isDoc == "True") {
+			$("#divEditorHelp").show();
+		} else {
+			$("#divEditorHelp").hide();
+		}
+
+		HelpParentId = parentId;
+		HelpId = helpId;
+
+		//DebugLog("SelectHelp(t)  ---  HelpParentId=" + HelpParentId + "    HelpId=" + HelpId);
+
+		$.ajax({
+			async: false,
+			url: "@vd/Help/GetHelp",
+			type: "POST",
+			data: { helpId: helpId },
+			dataType: "text",
+			success: function (data) {
+				GoToHelpFunction = "EditHelp_()";
+				$("#editorHelpContent").data("kendoEditor").value(data);
+			},
+			error: function (x, y, z) {
+				$("#editorHelpContent").data("kendoEditor").value("");
+				MessageBox("Information", "Error loading help document.", false);
+			}
+		});
+
+	}
+
+	function ExpandHelp(id) {
+		if ($("#liHelp" + id + " ul").length) {
+			if ($("#expanderHelp" + id).hasClass("k-i-collapse")) {  // is expanded, close it
+				$("#expanderHelp" + id).removeClass("k-i-collapse").addClass("k-i-expand");
+				$("#ulHelp" + id).hide();
+			} else {  // is closed, expand it
+				$("#expanderHelp" + id).removeClass("k-i-expand").addClass("k-i-collapse");
+				$("#ulHelp" + id).show();
+			}
+
+		} else {
+
+
+			// get children
+			$.ajax({
+				async: false,
+				url: "@vd/Help/GetHelpChild?parentId=" + id,
+				dataType: "text",
+				success: function (data) {
+					$("#liHelp" + id).append(data);
+
+					$("#expanderHelp" + id).removeClass("k-i-expand").addClass("k-i-collapse");
+
+					$("#ulHelp" + id).sortable({
+						helper: function (event, ui) {
+							ui.children().each(function () {
+								$(this).width($(this).width());
+							});
+							return ui;
+						},
+						start: function (event, ui) {
+							ui.item.startPos = ui.item.index();
+							ui.placeholder.height(ui.item.height());
+						},
+						stop: function (event, ui) {
+
+							if (ui.item.startPos != ui.item.index()) {
+								var ids = $("span:last", ui.item).attr("id").replace("Help", "");
+								var ray = ids.split("_");
+
+								$.ajax({
+									async: false,
+									url: "@vd/Help/SortHelp",
+									type: "POST",
+									data: { parentId: ray[0], helpId: ray[1], newOrder: ui.item.index() },
+									dataType: "text",
+									success: function (data) {
+									}
+								});
+
+								//DebugLog("Sort From : " + ui.item.startPos + "   To: " + ui.item.index() + "   ids: " + ids);
+							}
+
+						}
+					}).disableSelection();
+				}
+			});
+
+		}
+	}
+
+
+</script>

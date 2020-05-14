@@ -1,0 +1,853 @@
+﻿
+<style>
+	#gridCustomOption tbody tr:hover {
+		cursor: pointer;
+	}
+</style>
+
+<div id="divColumnDetail">
+
+
+    <div class="command-bar">
+        <span class="command-active-span" onclick="alert('Under construction')"><span class="command-icon fas fa-plus-square">&nbsp;</span> Add Field</span>
+        <span class="command-active-span" onclick="alert('Under construction')"><span class="command-icon fas fa-trash-alt">&nbsp;</span> Delete Field</span>
+        <span id="cmdSaveColumnDef" formname="FormColumnDef" class="command-disabled-span"><span class="command-icon fas fa-save">&nbsp;</span> Save</span>
+    </div>
+
+
+    <form id="FormColumnDef">
+        @Html.Hidden("ColumnDefId")
+
+
+        <table cellpadding="0" cellspacing="0">
+            <tr valign="top">
+                <td style="border-radius:3px;">
+                    <b>Fields</b><br />
+                    <div id="ColumnDefs" style="width:280px;overflow-x:hidden;white-space:nowrap;border-radius:3px;"></div>
+                    <br />
+                </td>
+
+                <td>&nbsp;&nbsp;</td>
+                <td>
+
+                    <table id="divEditField" style="display:none;">
+                        <tr>
+                            <td>Column Name</td>
+                            <td>
+                                <input type="text" id="ColumnName" name="ColumnName" style="width:175px;" maxlength="50" readonly />
+                                &nbsp;&nbsp;&nbsp;&nbsp;
+                                Data Type&nbsp;<input type="text" id="DataType" name="DataType" style="width:150px;" readonly />
+                                &nbsp;&nbsp;&nbsp;&nbsp;
+                                Data Length&nbsp;<input type="text" id="DataLength" name="DataLength" style="width:50px;" readonly />
+                                &nbsp;&nbsp;&nbsp;&nbsp;
+                                Default Value&nbsp;<input type="text" id="DefaultValue" name="DefaultValue" style="width:50px;" readonly />
+                                &nbsp;&nbsp;&nbsp;&nbsp;
+                                Overide Value&nbsp;<input type="text" id="OverideValue" name="OverideValue" style="width:50px;" />
+
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>Display Name</td>
+                            <td>
+                                <input type="text" id="DisplayName" name="DisplayName" style="width:350px;" />
+                                &nbsp;&nbsp;&nbsp;
+                                <input type="checkbox" id="IsRequired" name="IsRequired" value="true" disabled />&nbsp;Is Required
+                                &nbsp;&nbsp;&nbsp;
+                                <input type="checkbox" id="ShowInGrid" name="ShowInGrid" value="true" />&nbsp;Show in Grid
+                                &nbsp;&nbsp;&nbsp;
+                                <input type="checkbox" id="IsMultiSelect" name="IsMultiSelect" value="true" />&nbsp;Show as Filter in Grid (Unique multiple checkboxes)
+                            </td>
+                        </tr>
+
+                        <tr>
+                            <td>Form Element Type</td>
+                            <td>
+                                <input id="ElementType" name="ElementType" style="width:350px;" />
+
+                                <span class="param-Note param-Textbox param-HyperLink param-Textarea param-ImageTextarea param-NumericTextbox param-ChangeHistory param-DropdownCustomOption param-DropdownSimple param-MultiSelect param-ParentTable  param-DropdownSearchOption param-DatePicker">
+                                    &nbsp;&nbsp;&nbsp;
+                                    Width&nbsp;&nbsp;<input type="text" id="ElementWidth" name="ElementWidth" style="width:75px;" />
+
+                                    &nbsp;&nbsp;&nbsp;
+                                    Grid Width&nbsp;&nbsp;<input type="text" id="GridWidth" name="GridWidth" style="width:75px;" />
+
+                                </span>
+                                <span class="param-Textarea param-ImageTextarea param-ChangeHistory param-ParentTable">
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    Height&nbsp;&nbsp;<input type="text" id="ElementHeight" name="ElementHeight" style="width:75px;" />
+                                </span>
+                                <span class="param-DatePicker">
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    Date Options&nbsp;&nbsp;<input id="DatePickerOption" name="DatePickerOption" style="width:150px;" />
+                                </span>
+                            </td>
+                        </tr>
+
+
+                        <tr class="param-DropdownCustomOption">
+                            <td>Custom Options</td>
+                            <td>
+
+                                <div class="app-command-bar">
+                                    <span onclick="AddCustomOption()" class="span-app-command"><img src="/Images/ToolBar/add.png" /><span class="label-command-bar"> Add </span></span>
+                                    <span onclick="EditCustomOption()" class="span-app-command"><img src="/Images/ToolBar/edit.png" /><span class="label-command-bar"> Edit </span></span>
+                                    <span onclick="DeleteCustomOption()" class="span-app-command"><img src="/Images/ToolBar/delete.png" /><span class="label-command-bar"> Delete </span></span>
+                                </div>
+
+                                <div id="gridCustomOption" style="width:600px;position:relative;top:5px;"></div>
+
+                            </td>
+                        </tr>
+
+
+                        <tr class="param-DropdownSimple param-MultiSelect param-ParentTable param-DropdownSearchOption param-Checkboxes">
+                            <td>Lookup Table</td>
+                            <td>
+                                <select id="LookupTable" name="LookupTable" style="width:250px;"></select>
+                                &nbsp;&nbsp;&nbsp;
+                                Key Relationship Field&nbsp;<input id="ValueField" name="ValueField" style="width:250px;" />
+                                &nbsp;&nbsp;&nbsp;
+                                <input type="checkbox" id="AddBlankOption" name="AddBlankOption" value="true" />&nbsp;Add blank option
+                            </td>
+                        </tr>
+
+                        <tr class="param-ParentTable">
+                            <td>Child Template</td>
+                            <td>
+                                <input id="ChildTemplateId" name="ChildTemplateId" style="width:250px;" />
+                                &nbsp;&nbsp;&nbsp;
+                                Child table must contain the primary key of the parent table.
+                            </td>
+                        </tr>
+
+                        <tr class="param-DropdownSimple param-MultiSelect param-ParentTable param-DropdownSearchOption param-Checkboxes">
+                            <td>Display Field(s)</td>
+                            <td>
+                                <select id="TextField" name="TextField" multiple="multiple" style="width:600px"></select>
+                            </td>
+                        </tr>
+                        <tr class="param-DropdownSimple param-MultiSelect param-ParentTable param-DropdownSearchOption param-Checkboxes">
+                            <td>Order By</td>
+                            <td>
+                                <select id="OrderField" name="OrderField" multiple="multiple" style="width:600px"></select>
+                            </td>
+                        </tr>
+
+
+                        @*<tr class="param-Textbox param-NumericTextbox param-DropdownSimple param-DropdownSearchOption">
+                                 <td>Prevent Duplicate Value(s)</td>
+                                 <td>
+                                     <input type="checkbox" id="PreventDuplicate" name="PreventDuplicate" value="true" />
+                                     &nbsp;&nbsp;&nbsp;Message Failed
+                                     <input type="text" id="PreventDuplicateMessage" name="PreventDuplicateMessage" style="width:400px;" />
+                                 </td>
+                                </tr>
+
+
+                            <tr class="param-NumericTextbox">
+                                <td>Numeric Requirements</td>
+                                <td>
+
+                                    <table style="border:1px solid #eee;">
+                                        <tr>
+                                            <td style="border-top:1px solid #aaa;border-bottom:1px solid #aaa;border-left:1px solid #aaa;padding:4px;">Min <input id="NumberMin" name="NumberMin" style="width:70px;" /></td>
+                                            <td style="border-top:1px solid #aaa;border-bottom:1px solid #aaa;padding:4px;">Max <input id="NumberMax" name="NumberMax" style="width:70px;" /></td>
+                                            <td style="border-top:1px solid #aaa;border-bottom:1px solid #aaa;padding:4px;">Num of Decimals <input id="NumberOfDecimal" name="NumberOfDecimal" style="width:70px;" /></td>
+                                            <td style="border:1px solid #aaa;padding:4px;">Format <span id="TTFormat" style="position:relative; top:3px;"><img src="/Images/ToolBar/x16/info.png" /></span> <input type="text" id="NumberFormat" name="NumberFormat" style="width:50px;" /></td>
+                                        </tr>
+                                    </table>
+
+                                </td>
+                            </tr>
+
+                            <tr class="param-Textbox">
+                                <td>Textbox Requirements</td>
+                                <td>
+
+                                    <table style="border:1px solid #eee;">
+                                        <tr>
+                                            <td style="border-top:1px solid #aaa;border-bottom:1px solid #aaa;border-left:1px solid #aaa;padding:4px;"><input type="radio" name="TextboxCase" value="NORMAL" style="width:25px;" /> Normal()</td>
+                                            <td style="border-top:1px solid #aaa;border-bottom:1px solid #aaa;padding:4px;"><input type="radio" name="TextboxCase" value="UPPER" style="width:25px;" /> Upper()</td>
+                                            <td style="border-top:1px solid #aaa;border-bottom:1px solid #aaa;padding:4px;"><input type="radio" name="TextboxCase" value="LOWER" style="width:25px;" /> Lower()</td>
+                                            <td style="border:1px solid #aaa;padding:4px;"><input type="checkbox" id="PreventSpecialChar" name="PreventSpecialChar" value="true" />&nbsp;Prevent special characters</td>
+                                            <td style="border:1px solid #aaa;padding:4px;"><input type="checkbox" id="PreventSpace" name="PreventSpace" value="true" />&nbsp;Prevent spaces</td>
+                                            <td style="border:1px solid #aaa;padding:4px;"><input type="checkbox" id="EncryptData" name="EncryptData" value="true" />&nbsp;Encrypt data</td>
+                                        </tr>
+                                    </table>
+
+                                </td>
+                            </tr>
+
+
+                            <tr class="param-Textbox">
+                                <td>Textbox Mask</td>
+                                <td><input type="text" id="TextboxMask" name="TextboxMask" style="width:240px;" /> i.e.: (999) 000-0000 | 0000 0000 0000 0000 | 000-00-0000 | L0L 0LL</td>
+                            </tr>
+
+
+                            <tr class="param-Textbox">
+                                <td>Validation Expression</td>
+                                <td>
+                                    <input type="text" id="ValidationExp" name="ValidationExp" style="width:200px;" />
+                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                    Message&nbsp;&nbsp;<input type="text" id="ValidationMsg" name="ValidationMsg" style="width:300px;" />
+                                </td>
+                            </tr>*@
+
+                        <tr valign="top" class="param-Custom">
+                            <td>Form Element Object</td>
+                            <td>
+                                <textarea id="ElementObject" name="ElementObject" style="width:800px;height:50px;"></textarea>
+                            </td>
+                        </tr>
+
+                        <tr valign="top" class="param-Custom">
+                            <td>Document Ready</td>
+                            <td>
+                                <textarea id="ElementDocReady" name="ElementDocReady" style="width:800px;height:100px;"></textarea>
+                            </td>
+                        </tr>
+
+                        <tr valign="top" class="param-Custom">
+                            <td>Element Function</td>
+                            <td>
+                                <textarea id="ElementFunction" name="ElementFunction" style="width:800px;height:100px;"></textarea>
+                            </td>
+                        </tr>
+
+                        <tr valign="top" class="param-Custom">
+                            <td>Element Label Link</td>
+                            <td>
+                                <textarea id="ElementLabelLink" name="ElementLabelLink" style="width:800px;height:50px;"></textarea>
+                            </td>
+                        </tr>
+
+
+                    </table>
+
+                </td>
+
+            </tr>
+
+        </table>
+
+    </form>
+
+    <div id="CustomOptionWindow">
+
+        <form action="" id="CustomOptionForm" name="CustomOptionForm">
+            <input type="hidden" id="CustomOptionId" name="CustomOptionId" value="" />
+            <input type="hidden" id="CustomOptionForm_ColumnDefId" name="CustomOptionForm_ColumnDefId" value="" />
+
+
+
+            <div class="app-command-bar">
+                <a href="javascript:SaveCustomOption()" style="text-decoration:none;"><img src="/Images/ToolBar/save.png" /> <span style="position:relative;">Save</span></a>
+                <a href="javascript:CancelCustomOption()" style="text-decoration:none;"><img src="/Images/ToolBar/cancel.png" /> <span style="position:relative;">Cancel</span></a>
+            </div>
+
+
+
+            <table>
+                <tr>
+                    <td>Option Value</td>
+                    <td><input type="text" id="OptionValue" name="OptionValue" style="width:400px;"></td>
+                </tr>
+                <tr>
+                    <td>Option Text</td>
+                    <td><input type="text" id="OptionText" name="OptionText" style="width:400px;"></td>
+                </tr>
+            </table>
+
+        </form>
+
+    </div>
+</div>
+
+
+<script>
+	var SetValueField = "";
+	var SetTextField = "";
+	var SetOrderField = "";
+
+	//AddNoteWindow
+	$("#CustomOptionWindow").kendoWindow({
+		height: "250px",
+		width: "600px",
+		modal: true,
+		scrollable: true,
+		title: "Custom Options",
+		animation: {
+			open: {
+				duration: 100
+			}
+		},
+		visible: false,
+		actions: ["Close"],
+		activate: function () {
+			$("#CustomOptionForm input[id=OptionValue]").focus();
+		}
+	});
+
+
+	// ElementType dropdown ImageTextarea
+	var dsElementType = [
+		{ TextField: "", ValueField: "" },
+		{ TextField: "Custom", ValueField: "Custom" },
+		{ TextField: "Textbox", ValueField: "Textbox" },
+        { TextField: "Textarea", ValueField: "Textarea" },
+        { TextField: "Image Input", ValueField: "ImageTextarea" },
+		{ TextField: "HyperLink", ValueField: "HyperLink" },
+		{ TextField: "Numeric Textbox", ValueField: "NumericTextbox" },
+		{ TextField: "Date Picker", ValueField: "DatePicker" },
+		{ TextField: "Checkbox - True or False", ValueField: "CheckboxTrueFalse" },
+		{ TextField: "Checkbox - Yes or No", ValueField: "CheckboxYesNo" },
+		{ TextField: "Dropdown - Simple Lookup", ValueField: "DropdownSimple" },
+		{ TextField: "Dropdown - Simple Custom Options", ValueField: "DropdownCustomOption" },
+		{ TextField: "Dropdown - Search Option", ValueField: "DropdownSearchOption" },
+		{ TextField: "Checkboxes - MultiSelect", ValueField: "Checkboxes" },
+		{ TextField: "Change History", ValueField: "ChangeHistory" },
+		//{ TextField: "Parent Table", ValueField: "ParentTable" },
+		{ TextField: "File Attachment", ValueField: "FileAttachment" },
+		{ TextField: "MultiSelect", ValueField: "MultiSelect" },
+		{ TextField: "Notes", ValueField: "Note" },
+		{ TextField: "Date Changed", ValueField: "DateChanged" },
+
+		//{ TextField: "AutoComplete", ValueField: "AutoComplete" },
+		//{ TextField: "Radio", ValueField: "Radio" },
+		//{ TextField: "Phone", ValueField: "Phone" },
+		//{ TextField: "Email", ValueField: "Email" },
+		{ TextField: "Hidden", ValueField: "Hidden" },
+		{ TextField: "Password", ValueField: "Password" },
+		{ TextField: "Display Only", ValueField: "DisplayOnly" }
+	];
+
+	$("#ElementType").kendoDropDownList({
+		dataTextField: "TextField",
+		dataValueField: "ValueField",
+		dataSource: dsElementType,
+		change: function (e) {
+			var dataItem = e.sender.dataItem();
+			var selected = dataItem.ValueField;
+			DisplayTypes(selected);
+		}
+	});
+
+	$("#NumberMin").kendoNumericTextBox();
+	$("#NumberMax").kendoNumericTextBox();
+
+	$("#NumberOfDecimal").kendoDropDownList({
+		dataTextField: "text",
+		dataValueField: "value",
+		dataSource: [
+			{ text: "0", value: "0" },
+			{ text: "1", value: "1" },
+			{ text: "2", value: "2" },
+			{ text: "3", value: "3" },
+			{ text: "4", value: "4" },
+			{ text: "5", value: "5" },
+			{ text: "6", value: "6" }
+		]
+	});
+
+	$("#DatePickerOption").kendoDropDownList({
+		dataTextField: "text",
+		dataValueField: "value",
+		dataSource: [
+			{ text: "Date only", value: "Date" },
+			{ text: "Date and Time", value: "DateTime" },
+			{ text: "Month and Year", value: "MonthYear" },
+			{ text: "Year Only", value: "Year" },
+		]
+	});
+
+
+
+	// listTableColumn List View
+	var dsGetColumnDefs = new kendo.data.DataSource({
+		transport: {
+			read: {
+				url: "/PageTemplate/GetColumnDefs?pageTemplateId=0",
+				dataType: "json"
+			}
+		 },
+		 schema: {
+			  model: {
+					id: "ColumnDefId",
+					fields: {
+						 ColumnDefId: { editable: false, defaultValue: 0 }
+					}
+			  }
+		 }
+	});
+
+	$("#ColumnDefs").kendoListView({
+		autoBind: false,
+		dataSource: dsGetColumnDefs,
+		selectable: "single",
+		change: onChange_TableColumn,
+		template: "<div style='padding:2px;' class='divTableField'>#:ColumnName#  #= IsComputed ? ' (computed)' : '' # #= IsRequired ? ' *' : '' #</div>"
+	});
+
+
+
+	$("#gridCustomOption").kendoGrid({
+		dataSource: {
+			type: "json",
+			transport: {
+				read: {
+					url: "/PageTemplate/GetCustomOption?customDefid=",
+					dataType: "json",
+					type: "POST",
+					contentType: "application/json; charset=utf-8"
+				}
+			}
+		},
+		autoBind: false,
+		selectable: "row",
+		height: 400,
+		sortable: true,
+		pageable: false,
+		columns: [
+			{ field: "OptionValue", title: "Option Value" },
+			{ field: "OptionText", title: "Option Text" }
+		],
+   	change: function (e) {
+			//var data = $("#gridCustomOption").data("kendoGrid").dataItem(this.select());
+			EditCustomOption();
+   	}
+	});
+
+	$("#ChildTemplateId").kendoDropDownList({
+		optionLabel: {
+			ValueField: "0",
+			TextField: ""
+		},
+		dataValueField: "ValueField",
+		dataTextField: "TextField",
+		dataSource: {
+			transport: {
+				read: {
+					dataType: "json",
+					url: "/PageTemplate/GetPageTemplateOptions"
+				}
+			}
+		},
+		change: function (e) {
+			var dataItem = e.sender.dataItem();
+
+			SetkendoMultiSelect("TextField", "/PageTemplate/GetColumnOptionsByName?tableName=" + dataItem.TableName + "&dbEntityId=" + $("#DbEntityId").data("kendoDropDownList").value());
+			SetkendoMultiSelect("OrderField", "/PageTemplate/GetSortColumnOptionsByName?tableName=" + dataItem.TableName + "&dbEntityId=" + $("#DbEntityId").data("kendoDropDownList").value());
+
+			SetValueField = "";
+			SetTextField = "";
+			SetOrderField = "";
+
+		}
+	});
+
+
+	$("#LookupTable").kendoDropDownList({
+		optionLabel: {
+			ValueField: "",
+			TextField: ""
+		},
+		autoBind: false,
+		dataValueField: "ValueField",
+		dataTextField: "TextField",
+		dataSource: {
+			transport: {
+				read: {
+					dataType: "json",
+					url: "/PageTemplate/GetTableOptions?dbEntityId=1" 
+				}
+			}
+		},
+		change: function (e) {
+			var dataItem = e.sender.dataItem();
+			SetkendoDropDownList("ValueField", "/PageTemplate/GetColumnOptionsByName?tableName=" + dataItem.ValueField + "&dbEntityId=" + $("#DbEntityId").data("kendoDropDownList").value());
+			SetkendoMultiSelect("TextField", "/PageTemplate/GetColumnOptionsByName?tableName=" + dataItem.ValueField + "&dbEntityId=" + $("#DbEntityId").data("kendoDropDownList").value());
+			SetkendoMultiSelect("OrderField", "/PageTemplate/GetSortColumnOptionsByName?tableName=" + dataItem.ValueField + "&dbEntityId=" + $("#DbEntityId").data("kendoDropDownList").value());
+
+			SetValueField = "";
+			SetTextField = "";
+			SetOrderField = "";
+
+		}
+	});
+
+	$("#ValueField").kendoDropDownList({
+		autoBind: false,
+		optionLabel: {
+			ValueField: "",
+			TextField: ""
+		},
+		dataValueField: "ValueField",
+		dataTextField: "TextField",
+		dataSource: {
+			transport: {
+				read: {
+					dataType: "json",
+					url: "/PageTemplate/GetColumnOptionsByName?tableName=none&dbEntityId=1"
+				}
+			}
+		},
+		dataBound: function (e) {
+			$("#ValueField").data("kendoDropDownList").value(SetValueField);
+		}
+	});
+
+
+	$("#TextField").kendoMultiSelect({
+		placeholder: "Select field(s) to display...",
+		dataValueField: "ValueField",
+		dataTextField: "TextField",
+		autoBind: false,
+		dataSource: {
+			transport: {
+				read: {
+					dataType: "json",
+					url: "/PageTemplate/GetColumnOptionsByName?tableName=none&dbEntityId=1"
+				}
+			}
+		},
+		dataBound: function (e) {
+			if (SetTextField.length > 0) {
+				var ray = SetTextField.split(",");
+				$("#TextField").data("kendoMultiSelect").value(ray);
+			}
+		}
+	});
+
+
+	$("#OrderField").kendoMultiSelect({
+		placeholder: "Select field(s) to sort...",
+		dataValueField: "ValueField",
+		dataTextField: "TextField",
+		autoBind: false,
+		dataSource: {
+			transport: {
+				read: {
+					dataType: "json",
+					url: "/PageTemplate/GetColumnOptionsByName?tableName=none&dbEntityId=1"
+				}
+			}
+		},
+		dataBound: function (e) {
+			if (SetOrderField.length > 0) {
+				var ray = SetOrderField.split(",");
+				$("#OrderField").data("kendoMultiSelect").value(ray);
+			}
+		}
+	});
+
+
+	function onChange_TableColumn(e) {
+
+		var dataItem = $("#ColumnDefs").data("kendoListView").dataItem(this.select());
+
+		$("#ColumnDefId").val(dataItem.ColumnDefId);
+		ColumnDefId = dataItem.ColumnDefId;
+
+		EnableButton("cmdAddField", "AddField()");
+
+
+		DisableButton("cmdSaveColumnDef");
+		BindFormColumnDef(dataItem.ColumnName);
+	}
+
+	function EditCustomOption() {
+		try {
+			var gridCustomOption = $("#gridCustomOption").data("kendoGrid");
+			var dataItem = gridCustomOption.dataItem(gridCustomOption.select());
+
+			$('#CustomOptionForm input[id=CustomOptionId]').val(dataItem.CustomOptionId);
+			$('#CustomOptionForm input[id=CustomOptionForm_ColumnDefId]').val(ColumnDefId);
+			$('#CustomOptionForm input[id=OptionValue]').val(dataItem.OptionValue);
+			$('#CustomOptionForm input[id=OptionText]').val(dataItem.OptionText);
+
+			$("#CustomOptionWindow").data("kendoWindow").open().center();
+
+		} catch (e) {
+			alert("Please select option to edit.");
+		}
+	}
+
+
+	 function BindFormColumnDef(columnName) {
+		  $.ajax({
+				url: "/PageTemplate/GetColumnDefById",
+				type: "POST",
+				data: { pageTemplateId: PageTemplateId, columnDefId: ColumnDefId, columnName: columnName },
+				dataType: "json",
+				async: false,
+				success: function (data) {
+
+
+
+					 // set ValueField dropdown
+					 var lookupTable = data.LookupTable;
+
+					 if (lookupTable.length < 2) lookupTable = "none";
+
+
+					SetkendoDropDownList("ValueField", "/PageTemplate/GetColumnOptionsByName?tableName=" + lookupTable + "&dbEntityId=" + $("#DbEntityId").data("kendoDropDownList").value());
+					SetkendoMultiSelect("TextField", "/PageTemplate/GetColumnOptionsByName?tableName=" + lookupTable + "&dbEntityId=" + $("#DbEntityId").data("kendoDropDownList").value());
+					SetkendoMultiSelect("OrderField", "/PageTemplate/GetSortColumnOptionsByName?tableName=" + lookupTable + "&dbEntityId=" + $("#DbEntityId").data("kendoDropDownList").value());
+
+					//  refresh gridCustomOption
+					var gridCustomOption = $("#gridCustomOption").data("kendoGrid");
+				    gridCustomOption.dataSource.transport.options.read.url = "/PageTemplate/GetCustomOption?customDefid=" + ColumnDefId + "&dbEntityId=" + $("#DbEntityId").data("kendoDropDownList").value();
+					gridCustomOption.dataSource.read();
+
+					 DisplayTypes(data.ElementType);
+
+					 BindForm("FormColumnDef", data);
+
+					 if (ColumnDefId > 0) {
+						  BindButtonToForm("cmdSaveColumnDef");
+					 }
+
+					// show the edit form for ColumnDef
+					$("#divEditField").show();
+
+					$("#DisplayName").focus();
+				},
+				error: function (x, y, z) {
+					 alert("Error onChange_TableColumn()");
+				}
+		  });
+	 }
+
+	function DisplayTypes(elementType) {
+		var ray = "Textbox,Textarea,ImageTextarea,NumericTextbox,DropdownSimple,ParentTable,DropdownSearchOption,DatePicker,Checkboxes,Custom,Note,DropdownCustomOption,ChangeHistory,FileAttachment,MultiSelect,Note,DateChanged".split(",");
+
+		for (var i = 0; i < ray.length; i++) {
+			$(".param-" + ray[i]).hide();
+		}
+
+		if (elementType.length > 1) {
+			$(".param-" + elementType).show();
+		}
+	}
+
+	function AddCustomOption() {
+		$('#CustomOptionForm input[id=CustomOptionId]').val(0);
+		$('#CustomOptionForm input[id=CustomOptionForm_ColumnDefId]').val(ColumnDefId);
+		$('#CustomOptionForm input[id=OptionValue]').val("");
+		$('#CustomOptionForm input[id=OptionText]').val("");
+
+		$("#CustomOptionWindow").data("kendoWindow").open().center();
+	}
+
+
+
+	function SaveCustomOption() {
+		var json = ToJsonString("CustomOptionForm");
+		//DebugLog("json=" + json);
+		//return;  
+        json = json.replace("CustomOptionForm_ColumnDefId","ColumnDefId");
+		var uid = "";
+		$.ajax({
+			url: "/PageTemplate/SaveCustomOption",
+			type: "POST",
+			data: { dbEntityId: $("#DbEntityId").data("kendoDropDownList").value(), tableName: "CustomOption", json: json },
+			async: false,
+			dataType: "text",
+			success: function (currentRowId) {
+				 $("#gridCustomOption").data("kendoGrid").dataSource.read();
+			}
+		}).done(function () {
+			$("#CustomOptionWindow").data("kendoWindow").close();
+		});
+	}
+
+	function CancelCustomOption() {
+		$("#CustomOptionWindow").data("kendoWindow").close();
+	}
+
+	function DeleteCustomOption() {
+
+		ConfirmMessage("Warning", "Delete record?");
+
+		$("#dialogYesButton").click(function () {
+			var gridCustomOption = $("#gridCustomOption").data("kendoGrid");
+			var dataItem = gridCustomOption.dataItem(gridCustomOption.select());
+
+			$.ajax({
+				url: "/PageTemplate/DeleteCustomOption",
+				async: false,
+				type: "POST",
+				data: { customOptionId: dataItem.CustomOptionId },
+				dataType: "text",
+				success: function (data) {
+					$("#gridCustomOption").data("kendoGrid").dataSource.read();
+				},
+				error: function (x, y, z) {
+					alert("Error deleting record.");
+				}
+			}).done(function () {
+				$("#dialogYesNo").data("kendoWindow").close();
+			});
+
+
+		})
+
+		$("#dialogNoButton").click(function () {
+			$("#dialogYesNo").data("kendoWindow").close();
+		})
+
+	}
+
+
+	 //function AddColumnDef() {
+		//  var json = ToJsonString("FormColumnDef");
+		//  $.ajax({
+		//		url: "/PageTemplate/AddColumnDef",
+		//		type: "POST",
+		//		data: { pageTemplateId: PageTemplateId, json: json },
+		//		dataType: "text",
+		//		success: function (response) {
+		//			 if (response.indexOf("Unable to process") > -1) {
+		//				  MessageBox("Information", response, false);
+		//			 } else {
+		//				  DisableButton("xxx");
+
+		//				  ColumnDefId = response * 1;
+		//				  $("#ColumnDefId").val(ColumnDefId);
+
+		//				  // refresh ListView
+		//				  $("#ColumnDefs").data("kendoListView").dataSource.read();
+		//				  $("#ColumnDefs").data("kendoListView").dataSource.sync();
+		//			 }
+		//		},
+		//		error: function (x, y, z) {
+		//			 alert("Error AddColumnDef()");
+		//		}
+		//  }).done(function () {
+		//		setTimeout(SelectNewColumnDef, 500);
+		//  });
+	 //}
+
+	 function SelectNewColumnDef() {
+		  try {
+				var listView = $("#ColumnDefs").data("kendoListView");
+				var dataItem = listView.dataSource.get(ColumnDefId);
+
+				var row = listView.element.children("[data-uid='" + dataItem.uid + "']");
+				listView.select(row);
+
+		  } catch (e) {
+				alert("Error SelectNewColumnDef() " + e);
+		  }
+	 }
+
+
+	 function SaveColumnDef() {
+		  var json = ToJsonString("FormColumnDef");
+		  //DebugLog(json);
+		  $.ajax({
+				url: "/PageTemplate/SaveColumnDef",
+				type: "POST",
+				data: { pageTemplateId: PageTemplateId, json: json },
+				dataType: "text",
+				success: function (response) {
+					 if (response.indexOf("Unable to process") > -1) {
+						  // refresh ListView
+						  $("#ColumnDefs").data("kendoListView").dataSource.read();
+						  $("#ColumnDefs").data("kendoListView").dataSource.sync();
+						  $("#divEditField").hide();
+						  MessageBox("Information", response + "<br>Field list updated.", false);
+					 } else {
+						  DisableButton("cmdSaveColumnDef");
+
+						  // refresh ListView
+						  $("#ColumnDefs").data("kendoListView").dataSource.read();
+						  $("#ColumnDefs").data("kendoListView").dataSource.sync();
+
+						  // refresh inline grid  
+						  $("#gridColumnDefInline").data("kendoGrid").dataSource.read();
+					 }
+				},
+				error: function (x, y, z) {
+					 alert("Error SaveColumnDef()");
+				}
+		  }).done(function () {
+				setTimeout(SelectNewColumnDef, 500);
+		  });
+
+	 }
+
+	 //function DeleteColumnDef() {
+		//  if (ColumnDefId == 0) {
+		//		MessageBox("Information", "Select field to delete.", false);
+		//		return;
+		//  }
+
+		//  ConfirmMessage("Warning", "Deleting field will delete all field data.  Proceed?");
+
+		//  $("#dialogYesButton").click(function () {
+		//		try {
+
+		//			 $.ajax({
+		//				  url: "/PageTemplate/DeleteColumnDef",
+		//				  data: { columnDefId: ColumnDefId },
+		//				  dataType: "text",
+		//				  type: "POST",
+		//				  success: function (response) {
+		//						if (response.indexOf("Unable to process") > -1) {
+		//							 MessageBox("Information", response, false);
+		//						} else {
+		//							 // refresh ListView
+		//							 $("#ColumnDefs").data("kendoListView").dataSource.read();
+		//							 $("#ColumnDefs").data("kendoListView").dataSource.sync();
+
+		//							 DisableButton("cmdDeleteColumnDef");
+		//							 DisableButton("xxx");
+		//							 $("#dialogYesNo").data("kendoWindow").close();
+		//						}
+		//				  },
+		//				  error: function (x, y, z) {
+		//						alert("Error DeleteColumnDef.");
+		//						$("#dialogYesNo").data("kendoWindow").close();
+		//				  }
+		//			 });
+
+		//		} catch (e) {
+		//			 $("#dialogYesNo").data("kendoWindow").close();
+		//		}
+
+		//  })
+
+		//  $("#dialogNoButton").click(function () {
+		//		$("#dialogYesNo").data("kendoWindow").close();
+		//  })
+	 //}
+
+
+	$(document).ready(function () {
+
+		var field = document.querySelector('[name="ColumnName"]');
+
+		field.addEventListener('keypress', function (event) {
+			var key = event.keyCode;
+			if ((key > 64 && key < 91) || (key > 96 && key < 123) || (key > 47 && key < 58)) {
+
+			} else {
+				event.preventDefault();
+			}
+		});
+
+		EnableButton("cmdAddField", "AddField()");
+
+		$("#ColumnDefs").css("height", (window.innerHeight - 300) + "px");
+
+
+		//$("#TTLookupColumns").tooltipster({
+		//	content: $("<span>Used on Lookup element type.  i.e.   Field1, Field2 AS [Display Name 2], Field3 AS [Display Name 3]</span>")
+		//});
+
+	});
+
+</script>

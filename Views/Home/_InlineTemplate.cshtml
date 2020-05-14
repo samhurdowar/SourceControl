@@ -1,0 +1,193 @@
+﻿@using SourceControl.Services;
+
+@{
+	var vd = SessionService.VirtualDomain;
+
+	var pageTemplate = (SourceControl.Models.Db.PageTemplate)ViewData["PageTemplate"];
+	var pageTemplateId = pageTemplate.PageTemplateId.ToString();
+	var obj = "obj" + pageTemplateId;
+
+	var primaryKey = pageTemplate.PrimaryKey;
+
+
+	var gridScripts = SessionService.GridScripts(Convert.ToInt32(pageTemplateId));
+	var gridSchema = SessionService.GridSchema(Convert.ToInt32(pageTemplateId));
+	var gridColumns = SessionService.GridColumns(Convert.ToInt32(pageTemplateId));
+}
+
+<style>
+	#grid_@pageTemplateId .k-dirty {
+		border-width: 0 !important;
+	}
+</style>
+
+<div>
+	@{
+		if (pageTemplate.PageType != "gridonly")
+		{
+			<a href="javascript:@Html.Raw(obj)Edit(0)" style="text-decoration:none;"><img src="@vd/Images/ToolBar/add.png" width="20" height="20" /><span style='position:relative;top:3px;margin-right:15px;'> @pageTemplate.AddTabLabel</span></a>
+			<a href="javascript:DeleteFromGrid(@pageTemplateId, '@pageTemplate.PrimaryKey', 'grid')" style="text-decoration:none;"><img src="@vd/Images/ToolBar/delete.png" width="20" height="20" /><span style='position:relative;top:3px;margin-right:15px;'> Delete</span></a>
+			<a href="javascript:ReloadTab()" style='text-decoration:none;'><img src="@vd/Images/ToolBar/reload.png" width="20" height="20" /><span style='position:relative;top:3px;margin-right:15px;'> Refresh</span></a>
+		}
+
+		if (pageTemplate.ReportGridColumns.ToString().Length > 1)
+		{
+			<a href="javascript:ReportGridClick(@pageTemplateId)" style='text-decoration:none;'><img src="@vd/Images/ToolBar/print.png" width="20" height="20" /><span style='position:relative;top:3px;margin-right:15px;'> Report</span></a>
+		}
+
+		if (pageTemplate.HelpId > 0)
+		{
+			<div style="float:right;">
+				<a href='javascript:AddHelpTab(@Html.Raw(pageTemplate.HelpId))' style="text-decoration:none;"><img src="@vd/Images/ToolBar/help.png" width="20" height="20" /><span style='position:relative;top:3px;margin-right:15px;'> Help</span></a>
+			</div>
+		}
+	}
+
+</div>
+
+<div style="position:relative;width: 98%;" class="row">
+	<div id="grid_@pageTemplateId" style="width:100%;"></div>
+</div>
+
+
+<script>
+
+	@Html.Raw(gridScripts)
+
+	var dsgrid_@pageTemplateId = new kendo.data.DataSource({
+		autoSync: true,
+		pageable: false,
+		transport: {
+			read: {
+				url: "@vd/Page/GetServerSideRecords?pageTemplateId=@pageTemplateId&take=0",
+				dataType: "json",
+				type: "post"
+			},
+			update: {
+				 url: "@vd/Data/UpdateInline",
+				dataType: "json",
+				type: "post"
+			},
+			parameterMap: function (options, operation) {
+
+				if (!options.models) return;
+
+				// get dirty
+				var grid = $("#grid_@pageTemplateId").data("kendoGrid");
+				var data = grid.dataSource.data();
+
+				var dirty = $.grep(data, function (item) {
+					return item.dirty
+				});
+
+				var json = kendo.stringify(dirty).replace("[{", "{").replace("}]", "}");
+				var obj = JSON && JSON.parse(json) || $.parseJSON(json);
+
+				var recordId = eval("obj.@primaryKey");
+				var columnName = CurrentColumnName;
+				var columnValue = eval("obj." + CurrentColumnName);
+
+				// reset all dirties
+				$.each(data, function () {
+					this.dirty = false;
+				});
+
+
+				return { pageTemplateId: @pageTemplateId, recordId: recordId, columnName: columnName, columnValue: columnValue };
+
+			}
+		},
+		batch: true,
+
+		schema: {
+			model: {
+				id: "@primaryKey",
+				fields: {
+						@Html.Raw(gridSchema)
+				}
+			}
+		}
+	});
+
+
+
+	var grid_@pageTemplateId = $("#grid_@pageTemplateId").kendoGrid({
+		dataSource: dsgrid_@pageTemplateId,
+		autoBind: true,
+		selectable: 'cell',
+		scrollable: true,
+		sortable: true,
+		pagable: false,
+
+		filterable: {
+			extra: false,
+			operators: {
+				string: {
+					startswith: "Starts with",
+					endswith: "Ends with",
+					eq: "Is equal to",
+					neq: "Is not equal to",
+					contains: "Contains",
+					doesnotcontain: "Does not contain"
+				}
+			}
+		},
+		height: window.innerHeight - 245,
+		change: function (e) {
+			var $grid = e.sender; //grid ref
+			var $cell = $grid.select(); // selected td
+			var cell_index = $cell.index(); //cell index 0 based
+
+			CurrentColumnName = $grid.options.columns[cell_index].field;
+
+		},
+		columns: [
+				@Html.Raw(gridColumns)
+		],
+		editable: {
+			confirmation: false
+		}
+
+	}).data('kendoGrid');
+
+
+
+   function @Html.Raw(obj)Edit_Click() {
+   	var grid = $("#grid_@pageTemplateId").data("kendoGrid");
+   	var dataItem = grid.dataItem(grid.select());
+   	if (dataItem == null) {
+   		alert("No row to edit.");
+   		return;
+		}
+
+		@Html.Raw(obj)Edit(dataItem.@pageTemplate.PrimaryKey);
+   }
+
+	function @Html.Raw(obj)Edit(recordId) {
+		CurrentRowId_@pageTemplateId = recordId;
+		GoToEditTab(@pageTemplateId, @pageTemplateId, recordId, '@pageTemplate.AddTabLabel', '@pageTemplate.EditTabLabel');
+   }
+
+	function editor_Textbox(container, options) {
+		CurrentColumnName = options.field;
+		$('<input id="thisTextbox" style="margin-left:-1px;padding-left:3px;width:100%;padding:.177em 0;border-radius: 4px;height: 1.55em;line-height: 1.55em;" data-text-field="' + options.field + '" ' +
+			'data-value-field="' + options.field + '" ' +
+			'data-bind="value:' + options.field + '" ' +
+			'data-format="' + options.format + '" />')
+			.appendTo(container);
+
+		$('#thisTextbox').on('keydown', function (e) {
+			if (e.which == 13) {
+				$("#dumButton").focus();
+				$("#dumButton").click();
+
+			}
+		});
+	}
+
+
+
+
+</script>
+
+

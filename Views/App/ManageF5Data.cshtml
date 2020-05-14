@@ -1,0 +1,45 @@
+﻿
+
+<div id="AngularTemplatePlaceHolder000"></div>
+
+<div id="AngularTemplateBody000">
+
+
+	<div class="container" style="width:97%" ng-app="MainApp">
+		<div class="bs-docs" ng-controller="f5ManageJobsController">
+			<div class="row">
+				<div class="col-lg-8">
+					<div class="fa-header">Delete Records Individually: </div>
+					<ul>
+						<li ng-repeat="j in JobsList" class="list-unstyled">
+							<div ng-click="ChangeJobState(j)">
+								<i class="fa fa-circle-o" aria-hidden="true" ng-hide="j.show"></i>
+								<i class="fa fa-check-circle-o" aria-hidden="true" ng-show="j.show"></i>
+								- {{j.jobname}} - {{j.startTime}} - {{j.endTime}} - {{j.Successful}}
+							</div>
+						</li>
+					</ul>
+					<button class="btn btn-primary" ng-click="DeleteRecordsByGuids()">Submit</button>
+				</div>
+			</div>
+		</div>
+	</div>
+
+
+
+</div>
+
+
+
+<script>
+	
+
+	var AngularTemplateBody = $("#AngularTemplateBody000").html();
+
+	$("#AngularTemplateBody000").remove();
+	$("#btnTriggerAngular5").click();
+
+	
+
+
+</script>

@@ -1,0 +1,106 @@
+﻿.form-layout-sm tr td:first-child {
+    width: 10%;
+}
+
+.form-layout-sm tr td:last-child {
+    width: 90%;
+}
+
+table tr td {
+    padding:5px;
+}
+
+input {
+    padding: 5px;
+}
+
+.k-dropdown .k-input, .k-selectbox .k-input {
+     background: white; 
+}
+
+.command-bar {
+    width: 99%;
+    background-color: #eee;
+    border-radius: 3px;
+    padding: 7px;
+    margin-bottom: 5px;
+}
+
+.command-icon {
+    font-size: 1.3em;
+}
+
+
+.command-active-span {
+    cursor: pointer;
+    padding: 7px;
+    border-radius: 5px;
+    text-align: center;
+}
+
+    .command-active-span:hover {
+        background-color: #007cc0;
+        color: white;
+    }
+
+.command-disabled-span {
+    color: #ccc;
+    padding: 7px;
+    border-radius: 5px;
+    text-align: center;
+}
+
+.tab-close-x-active {
+    margin-left: 5px;
+    color: #444343;
+    padding: 0px 2px 0px 2px;
+    /*font-weight: bold;*/
+    border: 1px solid #ffd800;
+    border-radius: 3px;
+}
+
+    .tab-close-x-active:hover {
+        margin-left: 5px;
+        color: #808080;
+        border: 1px solid #ffd800;
+        background-color: #7caec7;
+        border-radius: 3px;
+    }
+
+.tab-close-x {
+    margin-left: 5px;
+    color: white;
+    padding: 0px 2px 0px 2px;
+}
+
+    .tab-close-x:hover {
+        margin-left: 5px;
+        color: #444343;
+        border: 1px solid #ffd800;
+        border-radius: 3px;
+        background-color: #fbf6d1;
+        /*font-weight: bold;*/
+    }
+
+
+.k-tabstrip-items {
+    margin-left: 10px !important;
+}
+
+#overlay {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 100vw;
+    height: 100vh;
+    display: none;
+    background-color: #ccc;
+    opacity: 0.5;
+}
+
+
+select {
+    padding: 6px;
+    border-radius: 3px;
+    border: 1px solid #ddd;
+}

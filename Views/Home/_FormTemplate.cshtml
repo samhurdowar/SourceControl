@@ -1,0 +1,142 @@
+﻿
+@using SourceControl.Services;
+
+@{
+    var recordId = ViewData["RecordId"].ToString();
+    var layoutType = ViewData["LayoutType"].ToString();
+    var pageTemplate = (SourceControl.Models.Db.PageTemplate)ViewData["PageTemplate"];
+
+    var pageTemplateId = pageTemplate.PageTemplateId;
+    var obj = "obj" + pageTemplate.PageTemplateId;
+
+
+    var parentPageTemplateId = Convert.ToInt32(ViewData["ParentPageTemplateId"]);
+    if (parentPageTemplateId == 0)
+    {
+        parentPageTemplateId = pageTemplateId;
+    }
+
+    var gridReference = "var grid = $('#grid_" + pageTemplateId + "').data('kendoGrid'); grid.dataSource.read();";
+    if (parentPageTemplateId != pageTemplateId)
+    {
+        gridReference = "var grid = $('#detailGrid_" + parentPageTemplateId + "').closest('.k-grid').data('kendoGrid'); grid.dataSource.read();";
+    }
+
+
+    string tabStrip_GoToListTab = "GoToListTab(" + parentPageTemplateId + ");";
+
+    if (ViewData["CancelMode"].ToString() == "main")
+    {
+        tabStrip_GoToListTab = "CloseMainTab();";
+    }
+
+    if (pageTemplate.PageType == "formonly")
+    {
+        gridReference = "";
+    }
+
+    var bindRefKeyValue = "";
+
+    var refKeyValue = ViewData["RefKeyValue"].ToString();
+    var refKeyColumnName = ViewData["RefKeyColumnName"].ToString();
+    if (refKeyValue.Length > 0 && (recordId == "" || recordId == "0"))
+    {
+        bindRefKeyValue = "var jsonn = JSON.parse('{ \"" + pageTemplate.TableName + "_" + refKeyColumnName + "\" : \"" + refKeyValue + "\" }'); BindForm('Form" + layoutType + "_" + pageTemplateId + "',  jsonn);";
+    }
+
+    var nextStep = "";
+    var formName = "Form" + layoutType + "_" + pageTemplateId;
+}
+
+    <div class="command-bar">
+
+        @{
+            if (layoutType == "View")
+            {
+                <span class="command-active-span" onclick="ReplaceCurrentTab(@pageTemplateId, @pageTemplateId, '@recordId', '', '', '@pageTemplate.EditTabLabel')"><span class="command-icon fas fa-edit">&nbsp;</span> Edit</span>
+                <span class="command-active-span" onclick="@Html.Raw(obj)Cancel()"><span class="command-icon fas fa-window-close">&nbsp;</span> Cancel</span>
+            }
+            else
+            {
+                @Html.Raw(SourceControl.Common.Helper.HTMLEncode(pageTemplate.EditFormCommand))
+                if (pageTemplate.PageType == "formonly")
+                {
+                    nextStep = "close";
+
+                    <span id="cmd_@Html.Raw(obj)Save" formname="@formName" class="command-disabled-span"><span class="command-icon fas fa-save">&nbsp;</span> Save</span>
+                }
+                else
+                {
+                    nextStep = "default";
+
+                    <span id="cmd_@Html.Raw(obj)Save" formname="@formName" class="command-disabled-span"><span class="command-icon fas fa-save">&nbsp;</span> Save</span>
+                    <span class="command-active-span" onclick="@Html.Raw(obj)Cancel()"><span class="command-icon fas fa-window-close">&nbsp;</span> Cancel</span>
+                }
+            }
+        }
+    </div>
+
+
+
+<br />
+<input type="hidden" id="InternalId_@pageTemplateId" value="@Html.Raw(recordId)" />
+
+@Html.Raw(SessionService.FormLayout(pageTemplateId, layoutType))
+
+<script>
+
+    var @Html.Raw(obj)NextStep = "@nextStep";
+
+    $(document).ready(function () {
+
+        if ("@recordId" == "0" && $("#addSpan_@pageTemplateId").length) {
+            $("#addSpan_@pageTemplateId").show();
+        }
+
+        BindFormData(@pageTemplateId, "@Html.Raw(recordId)", "@layoutType");
+
+        @Html.Raw(bindRefKeyValue)
+
+        OldJson_@pageTemplateId = ToJsonString("@formName");
+
+        BindButtonToForm("cmd_@Html.Raw(obj)Save");
+    });
+
+
+    function @Html.Raw(obj)Cancel() {
+	    @Html.Raw(tabStrip_GoToListTab)
+    }
+
+    function @Html.Raw(obj)Save() {
+
+	    // validation
+	    var validCustomRule = true;
+	    var validator = $("#@formName").kendoValidator().data("kendoValidator");
+
+	    if (!validator.validate() || !validCustomRule) {
+		    return;
+	    }
+
+	    var json = ToJsonString("@formName");
+
+	    $.ajax({
+		    url: "/Page/SaveFormData",
+		    type: "POST",
+		    data: { pageTemplateId: @pageTemplateId, json: json, oldJson: OldJson_@pageTemplateId },
+		    async: false,
+		    dataType: "text",
+		    success: function (currentRowId) {
+			    @Html.Raw(gridReference)
+		    }
+	    }).done(function () {
+		    if (@Html.Raw(obj)NextStep == "close") {
+			    CloseSpecificTab("PageTemplate" + @pageTemplateId);
+		    } else {
+			    @Html.Raw(tabStrip_GoToListTab)
+		    }
+	    });
+    }
+
+    @Html.Raw(SourceControl.Common.Helper.HTMLEncode(pageTemplate.EditFormScript))
+</script>
+
