@@ -36,7 +36,96 @@ namespace SourceControl.Controllers
 			return json;
 		}
 
-		public string GetPageTemplates(int dbEntityId)
+        public string GetImportData(int dbEntityId, string tableName)
+        {
+            var sql = "";
+            var insertStatement = "";
+            var insertSqlStatement = "";
+            var buildSql = "";
+            StringBuilder sb = new StringBuilder();
+            sb.AppendLine("TRUNCATE TABLE " + tableName );
+            sb.AppendLine("GO");
+            sb.AppendLine("SET IDENTITY_INSERT " + tableName + " ON;");
+            sb.AppendLine("GO");
+
+            
+            var dbEntity = SessionService.DbEntity(dbEntityId);
+            using (TargetEntities targetDb = new TargetEntities())
+            {
+                targetDb.Database.Connection.ConnectionString = dbEntity.ConnectionString;
+
+                // get insert statement
+                sql = "SELECT (SELECT 'INSERT INTO " + tableName + "(' + STUFF((SELECT ', ' + ColumnName FROM (SELECT c.Name AS ColumnName FROM sys.columns c JOIN sys.objects o ON o.object_id = c.object_id WHERE o.name = '" + tableName + "' AND c.is_computed = 0 )  AS T FoR XML PATH('')), 1, 1, '') + ') VALUES' AS ColumnNames)";
+                insertStatement = targetDb.Database.SqlQuery<string>(sql).FirstOrDefault();
+                sb.AppendLine(insertStatement);
+
+                // get insert SQL statement
+                sql = @"
+                    SELECT (SELECT 'SELECT ''(''' + STUFF((SELECT ', ' + ValuesString FROM (
+                    SELECT 
+                    CASE 
+                    WHEN (is_identity = 1) THEN ' + CAST(' + c.Name + ' AS varchar) + '''  
+                    WHEN (system_type_id = 35)  THEN ''''''' + REPLACE(CAST(ISNULL(' + c.Name + ','''') AS varchar(max)), '''''''','''''''''''') + '''''''  
+                    WHEN (system_type_id = 36)  THEN ''''''' + ISNULL(' + c.Name + ','''') + '''''''
+                    WHEN (system_type_id = 40)  THEN ''''''' + CAST(ISNULL(' + c.Name + ','''') AS varchar) + '''''''  
+                    WHEN (system_type_id = 42)  THEN 'datetime2'
+                    WHEN (system_type_id = 48)  THEN ''' + ISNULL(' + c.Name + ',0) + '''
+                    WHEN (system_type_id = 52)  THEN ''' + CAST(ISNULL(' + c.Name + ', 0) AS varchar) + '''  
+                    WHEN (system_type_id = 56)  THEN ''' + CAST(ISNULL(' + c.Name + ', 0) AS varchar) + '''  
+                    WHEN (system_type_id = 58)  THEN 'smalldatetime'   
+                    WHEN (system_type_id = 59)  THEN ''' + ISNULL(' + c.Name + ',0) + '''
+                    WHEN (system_type_id = 60)  THEN ''' + ISNULL(' + c.Name + ',0) + '''
+                    WHEN (system_type_id = 61)  THEN ''''''' + CAST(ISNULL(' + c.Name + ','''') AS varchar) + '''''''  
+                    WHEN (system_type_id = 62)  THEN ''' + ISNULL(' + c.Name + ',0) + '''
+                    WHEN (system_type_id = 98)  THEN 'sql_variant'
+                    WHEN (system_type_id = 99)  THEN ''''''' + ISNULL(' + c.Name + ','''') + '''''''
+                    WHEN (system_type_id = 104) THEN ''' + CAST(ISNULL(' + c.Name + ',0) AS varchar) + '''  
+                    WHEN (system_type_id = 106) THEN ''' + ISNULL(' + c.Name + ',0) + '''
+                    WHEN (system_type_id = 108) THEN ''' + ISNULL(' + c.Name + ',0) + '''  
+                    WHEN (system_type_id = 122) THEN ''' + ISNULL(' + c.Name + ',0) + '''
+                    WHEN (system_type_id = 127) THEN ''' + ISNULL(' + c.Name + ',0) + '''
+                    WHEN (system_type_id = 165) THEN 'varbinary'
+                    WHEN (system_type_id = 167) THEN ''''''' + REPLACE(ISNULL(' + c.Name + ',''''), '''''''','''''''''''') + '''''''  
+                    WHEN (system_type_id = 173) THEN 'binary'
+                    WHEN (system_type_id = 175) THEN ''''''' + ISNULL(' + c.Name + ','''') + '''''''  
+                    WHEN (system_type_id = 189) THEN 'timestamp'
+                    WHEN (system_type_id = 231) THEN ''''''' + REPLACE(CAST(ISNULL(' + c.Name + ','''') AS varchar(max)), '''''''','''''''''''') + '''''''  
+                    WHEN (system_type_id = 239) THEN ''''''' + ISNULL(' + c.Name + ','''') + '''''''
+                    WHEN (system_type_id = 241) THEN ''''''' + ISNULL(' + c.Name + ','''') + '''''''
+                    END 
+                    AS ValuesString 
+                    FROM sys.columns c JOIN sys.objects o ON o.object_id = c.object_id WHERE o.name = 'PageTemplate' AND c.is_computed = 0
+                    )  AS T FoR XML PATH('')), 1, 1, '') + '), '' FROM PageTemplate' AS SqlString)
+                ";
+                sql = sql.Replace("PageTemplate", tableName);
+                insertSqlStatement = targetDb.Database.SqlQuery<string>(sql).FirstOrDefault();
+
+                var recs = targetDb.Database.SqlQuery<string>(insertSqlStatement);
+                foreach (var rec in recs)
+                {
+                    sb.AppendLine(rec);
+                }
+
+                buildSql = sb.ToString();
+                buildSql = buildSql.Substring(0, buildSql.Length - 4);
+
+            }
+            sb.Clear();
+            sb.AppendLine(buildSql);
+
+            sb.AppendLine("GO");
+            sb.AppendLine("SET IDENTITY_INSERT " + tableName + " OFF;");
+            sb.AppendLine("GO");
+
+
+            return sb.ToString();
+        }
+
+
+        
+        
+
+        public string GetPageTemplates(int dbEntityId)
 		{
             DataService.SyncDatabases(dbEntityId);
             using (SourceControlEntities Db = new SourceControlEntities())

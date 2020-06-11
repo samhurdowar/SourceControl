@@ -1,4 +1,14 @@
-﻿.form-layout-sm tr td:first-child {
+﻿#AppMenu li {
+    background-color: white !important;
+    border: none;
+}
+
+.k-menu .k-item, .k-menu.k-header {
+    border-color: none;
+}
+
+
+.form-layout-sm tr td:first-child {
     width: 10%;
 }
 
@@ -30,6 +40,15 @@ input {
     font-size: 1.3em;
 }
 
+.command-button {
+    cursor: pointer;
+    padding: 7px;
+    border-radius: 5px;
+    text-align: center;
+    background-color: #007cc0;
+    color: white;
+}
+
 
 .command-active-span {
     cursor: pointer;
@@ -53,7 +72,7 @@ input {
 .tab-close-x-active {
     margin-left: 5px;
     color: #444343;
-    padding: 0px 2px 0px 2px;
+    padding: 0px 2px 2px 2px;
     /*font-weight: bold;*/
     border: 1px solid #ffd800;
     border-radius: 3px;

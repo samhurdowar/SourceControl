@@ -61,7 +61,8 @@ namespace SourceControl.Controllers
 				{
                     targetDb.Database.Connection.ConnectionString = dbEntity.ConnectionString;
 
-                    targetDb.Database.ExecuteSqlCommand("DELETE FROM " + pageTemplate.TableName + " WHERE " + pageTemplate.PrimaryKey + " IN (" + ids_ + ")");
+                    var exe = "DELETE FROM " + pageTemplate.TableName + " WHERE " + pageTemplate.PrimaryKey + " IN (" + ids_ + ")";
+                    targetDb.Database.ExecuteSqlCommand(exe);
                     targetDb.SaveChanges();
 				}
 				return "";

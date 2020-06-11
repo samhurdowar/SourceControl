@@ -135,6 +135,7 @@ function change_gridPageTemplate(e) {
                 $("#SearchLayout").data("kendoEditor").value(searchLayout);
 
                 // bind other forms
+                BindForm("FormGridLayoutOption", data);
                 BindForm("FormViewLayoutOption", data);
                 BindForm("FormEditLayoutOption", data);
                 BindForm("FormSearchLayoutOption", data);

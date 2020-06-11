@@ -15,6 +15,28 @@ namespace SourceControl.Services
 {
     public static class SessionService
     {
+        public static bool IsNinja
+        {
+            get
+            {
+                if (HttpContext.Current.Session["IsNinja"] == null)
+                {
+                    if (File.Exists(@"C:\Websites\NinjaLibrary\Web.config"))
+                    {
+                        HttpContext.Current.Session["IsNinja"] = true;
+                    }
+                    else
+                    {
+                        HttpContext.Current.Session["IsNinja"] = false;
+                    }
+                }
+
+                return (bool)HttpContext.Current.Session["IsNinja"];
+
+            }
+        }
+
+
         public static bool IsLocal {
             get
             {

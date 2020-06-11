@@ -125,11 +125,20 @@ namespace SourceControl.Controllers
         //dynamic obj = Newtonsoft.Json.JsonConvert.DeserializeObject(json);
         public string ReclaimPorts(string ids)
         {
-            using (TargetEntities targetDb = new TargetEntities("NetworkCafeEntities"))
+            try
             {
-                targetDb.Database.ExecuteSqlCommand("UPDATE SwitchPorts SET HostName = 'OPEN', VLAN = '999', Comments = null, Interface = null WHERE PortGuid IN (" + ids + ") ");
+                using (TargetEntities targetDb = new TargetEntities("NetworkCafeEntities"))
+                {
+                    var exe = "UPDATE SwitchPorts SET HostName = 'OPEN', VLAN = '999', Comments = null, Interface = null WHERE PortGuid IN (" + ids + ")";
+                    targetDb.Database.ExecuteSqlCommand(exe);
+                }
+                return "T";
             }
-            return "T";
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+
         }
 
 

@@ -1,1 +1,86 @@
-﻿GRID - Under construction
+﻿
+<div id="tabGridLayout" style="width:100%;">
+    <ul>
+        <li class="k-state-active">Layout</li>
+        <li>Custom Options</li>
+    </ul>
+    <div>
+        
+        Under Construction
+
+    </div>
+    <div>
+        <div class="command-bar">
+            <span id="cmdSaveGridLayoutOption" formname="FormGridLayoutOption" class="command-disabled-span"><span class="command-icon fas fa-save">&nbsp;</span> Save</span>
+        </div>
+
+        <form id="FormGridLayoutOption" name="FormGridLayoutOption">
+            <table style="width:100%;" class="form-layout-sm">
+
+
+                <tr>
+                    <td>Style</td>
+                    <td>
+                        <textarea id="GridStyle" name="GridStyle" style="width:100%;height:150px;" />
+                    </td>
+                </tr>
+
+                <tr>
+                    <td>Command</td>
+                    <td>
+                        <textarea id="GridCommand" name="GridCommand" style="width:100%;height:150px;" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>Body</td>
+                    <td>
+                        <textarea id="GridBody" name="GridBody" style="width:100%;height:150px;" />
+                    </td>
+                </tr>
+                <tr>
+                    <td>Script</td>
+                    <td>
+                        <textarea id="GridScript" name="GridScript" style="width:100%;height:400px;" />
+                    </td>
+                </tr>
+            </table>
+        </form>
+
+    </div>
+
+</div>
+
+<script>
+
+    $(document).ready(function () {
+
+        setTimeout(function () {
+            BindButtonToForm("cmdSaveGridLayoutOption");
+        }, 1000);
+
+        $("#tabGridLayout").kendoTabStrip();
+    });
+
+
+    function SaveGridLayoutOption() {
+        var json = ToJsonString("FormGridLayoutOption");
+        json = InjectPrimaryKey(json, "PageTemplateId", $("#PageTemplateId").val());
+
+        $.ajax({
+            url: "/PageTemplate/SavePageTemplate",
+            type: "POST",
+            data: { pageTemplateId: $("#PageTemplateId").val(), json: json },
+            dataType: "text",
+            success: function (response) {
+                if (response.indexOf("Unable to process") > -1) {
+                    MessageBox("Information", response, false);
+                } else {
+                    DisableButton("cmdSaveGridLayoutOption");
+                }
+            }
+        });
+    }
+
+
+
+</script>

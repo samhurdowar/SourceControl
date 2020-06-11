@@ -1,0 +1,64 @@
+﻿Database: <input id="DbEntityId" name="DbEntityId" style="width:250px;" />&nbsp;&nbsp;&nbsp;
+
+<div id="divTables"></div>
+<textarea id="divData" rows="25" cols="300"></textarea>
+<script>
+    $("#DbEntityId").kendoDropDownList({
+        autoBind: true,
+        dataValueField: "ValueField",
+        dataTextField: "TextField",
+        dataSource: {
+            transport: {
+                read: {
+                    dataType: "json",
+                    url: "/PageTemplate/GetDbEntity"
+                }
+            }
+        },
+        change: function(e) {
+            GetTables();
+        },
+        dataBound: function(e) {
+            GetTables();
+        }
+    });
+
+    function GetTables() {
+        var dbEntityId = $("#DbEntityId").data("kendoDropDownList").value();
+
+        $.ajax({
+            url: "/PageTemplate/GetTableOptions",
+            data: { dbEntityId: dbEntityId },
+            dataType: "json",
+            success: function (data) {
+                var obj = [];
+                obj.push("<ul>");
+                for (var i in data) {
+                    obj.push("<li>");
+                    obj.push("<span onclick=\"GetData('" + data[i].ValueField + "')\" style='cursor:pointer;'>" + data[i].ValueField + "</span>");
+                    obj.push("</li>");
+                }
+                obj.push("</ul>");
+﻿
+                $("#divTables").html(obj.join(""));
+            }
+        });
+    }
+
+
+    function GetData(tableName) {
+        var dbEntityId = $("#DbEntityId").data("kendoDropDownList").value();
+
+        $.ajax({
+            url: "/PageTemplate/GetImportData",
+            data: { dbEntityId: dbEntityId, tableName: tableName },
+            dataType: "text",
+            success: function (data) {﻿
+                $("#divData").val(data);
+            }
+        });
+    }
+
+</script>
+
+
