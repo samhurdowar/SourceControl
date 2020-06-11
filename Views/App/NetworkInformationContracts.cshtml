@@ -44,11 +44,11 @@
 </div>
 
 <center>
-    <div id="@Html.Raw(obj)divGrid" class="app-command-bar" style="width:98%">
+    <div id="@Html.Raw(obj)divGrid" class="command-bar">
         <div style="text-align:left;">
-            <a href="javascript:@Html.Raw(obj)Edit(0)"><img src="@vd/Images/ToolBar/add.png" /><span> Add Contract</span></a>
-            <a href="javascript:@Html.Raw(obj)Edit_Click()"><img src="@vd/Images/ToolBar/edit.png" /><span> Edit Contract</span></a>
-            <a href="javascript:DeleteFromGrid(@pageTemplateId, '@primaryKey', 'TEXT', 'grid','')"><img src="@vd/Images/ToolBar/delete.png" /><span> Delete</span></a>
+            <span class="command-active-span" onclick="@Html.Raw(obj)Edit(0)"><span class="command-icon fas fa-plus-square">&nbsp;</span> Add</span>
+            <span class="command-active-span" onclick="@Html.Raw(obj)Edit_Click()"><span class="command-icon fas fa-edit">&nbsp;</span> Edit</span>
+            <span class="command-active-span" onclick="DeleteFromGrid(@pageTemplateId, '@primaryKey', 'TEXT', 'grid','')"><span class="command-icon fas fa-trash-alt">&nbsp;</span> Delete</span>
         </div>
     </div>
 

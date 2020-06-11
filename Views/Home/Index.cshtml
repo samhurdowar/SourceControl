@@ -1,8 +1,6 @@
 ﻿@using SourceControl.Services;
-
 @{
-    var defaultPage = "tsMain.append({\r\n text: \"xxxxxxxx\", \r\n contentUrl: \"/Home/RoutePage?pageTemplateId=11\" \r\n });  \r\n tsMain.select(1); \r\n ";
-    defaultPage = "tsMain.select(0);";
+    var defaultPage = "tsMain.select(0);";
 
     // set default menu tree items
     var userId = SessionService.UserId;
@@ -1224,23 +1222,10 @@ function AppSpinner(tf) {
 </script>
 
 <div id="NoteWindow"></div>
-<div id="AddNoteWindow">
-
-    @* have to change the ids duplicates<form action="" id="NoteForm" name="NoteForm">
-            <input type="hidden" id="pageTemplateId_" name="pageTemplateId_" value="" />
-            <input type="hidden" id="columnDefId_" name="columnDefId_" value="" />
-            <input type="hidden" id="recordId_" name="recordId_" value="" />
-            <a href="javascript:SaveNote()" style="text-decoration:none;"><img src="/Images/ToolBar/save.png" /> <span style="position:relative;top:-10px;">Save</span></a>
-            <a href="javascript:CancelNote()" style="text-decoration:none;"><img src="/Images/ToolBar/cancel.png" /> <span style="position:relative;top:-10px;">Cancel</span></a>
-            <textarea id="NoteInput" name="NoteInput" style="width:760px;height:300px;"></textarea>
-        </form>*@
-
-</div>
+<div id="AddNoteWindow"></div>
 
 @using (Html.BeginForm("UploadFile", "FileAttachment", FormMethod.Post, new { id = "UploadForm", enctype = "multipart/form-data" }))
 {
-    @*have to change the ids  duplicates <input type="hidden" id="pageTemplateId_" name="pageTemplateId_" value="" />
-        <input type="hidden" id="columnDefId_" name="columnDefId_" value="" />*@
     <input type="hidden" id="recordId_" name="recordId_" value="" />
     <input type="file" id="postedFile" name="postedFile" style="visibility:hidden;" onchange="UploadFile()" />
 }

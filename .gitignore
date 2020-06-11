@@ -8,3 +8,7 @@ Properties/
 obj/Debug/
 
 packages/
+
+obj/
+
+.vs/SourceControl/v16/

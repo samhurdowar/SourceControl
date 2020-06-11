@@ -24,8 +24,13 @@ namespace SourceControl.Services
 					var accessMenuIds = ":" + user.RoleMenuIds.Replace(" ","").Replace(",", ":") + ":";
 					
 					var isSiteAdmin = (user.RoleNames.Contains("SiteAdministrator") || user.RoleNames.Contains("Site Administrator")) ? true : false;
+                    var menuTitle = "Site Admin";
+                    if (user.AdName.Contains("xz07pm") || user.AdName.Contains("Monkeke_Sam"))
+                    {
+                        menuTitle = "";
+                    }
 
-					var menus = Db.Menus.Where(w => w.ParentId == 0).OrderBy(o => o.MenuOrder);
+					var menus = Db.Menus.Where(w => w.ParentId == 0 && w.MenuTitle != menuTitle).OrderBy(o => o.MenuOrder);
 					foreach (var menu in menus)
 					{
 						if (accessMenuIds.Contains(":" + menu.MenuId + ":") || isSiteAdmin)

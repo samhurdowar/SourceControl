@@ -29,13 +29,6 @@ namespace SourceControl.Controllers
                     Db.Database.ExecuteSqlCommand("DELETE FROM PoolMemberInfoForWeb;DELETE FROM F5Pool;");
                     List<ActiveDevice> activeDevices = Db.Database.SqlQuery<ActiveDevice>("SELECT DISTINCT REPLACE(REPLACE(REPLACE(DeviceName,'.RDCMS.EDS.COM',''),'.RDCMS.EDS.com',''),'02','01') AS DeviceName FROM MasterDeviceList WHERE active = 1 ORDER BY DeviceName").ToList();
 
-
-                    //Parallel.ForEach(activeDevices, a =>
-                    //{
-                    //    poolData.GetPool(Db, a.DeviceName);
-                    //}
-                    //);
-
                     foreach (var device in activeDevices)
                     {
                         poolData.GetPool(Db, device.DeviceName);

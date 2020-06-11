@@ -1,4 +1,5 @@
-﻿
+﻿using OpenHtmlToPdf;
+using System.IO;
 using System;
 using System.DirectoryServices.AccountManagement;
 using System.Linq;
@@ -28,13 +29,16 @@ namespace SourceControl.Controllers
 
         public ActionResult Index()
 		{
-			string username = User.Identity.Name.ToString();
-			//username = "DESKTOP-5409NQJ\\Monkeke_Sam";
+            //string html = System.IO.File.ReadAllText(@"D:\Kraken\SourceControl\App_Data\SampleEIDMHtml.txt");
+            //var pdfBytes = Pdf.From(html).WithGlobalSetting("orientation", "Landscape").Content();
+            //System.IO.File.WriteAllBytes("C:\\Temp\\Test2.pdf", pdfBytes);
+
+            string username = User.Identity.Name.ToString();
+			//string username = "DESKTOP-5409NQJ\\Monkeke_Sam";
 			//Helper.LogError("User tried to log in " + username + " at " + DateTime.Now);
 
 			using (SourceControlEntities Db = new SourceControlEntities())
 			{
-
 				var user = Db.AppUsers.Where(a => a.AdName == username).FirstOrDefault();
 
 				if (user == null)

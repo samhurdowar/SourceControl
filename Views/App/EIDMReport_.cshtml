@@ -1,0 +1,49 @@
+
+
+
+<div class="demo-section content-wrapper wide">
+    <div id="divF5Pool"></div>
+</div>
+
+
+
+<script>
+$(document).ready(function () {
+
+    setTimeout(function () {
+
+        $.ajax({
+            url: "/F5Pool/GetEIDMReport",
+            type: "POST",
+            dataType: "text",
+            success: function (response) {
+
+                $("#divF5Pool").html(response);
+
+                setTimeout(function () {
+                    kendo.drawing.drawDOM($(".content-wrapper"))
+                    .then(function(group) {
+                        return kendo.drawing.exportPDF(group, {
+                            paperSize: "auto",
+                            margin: { left: "1cm", top: "1cm", right: "1cm", bottom: "1cm" }
+                        });
+                    })
+                    .done(function(data) {
+                        kendo.saveAs({
+                            dataURI: data,
+                            fileName: "EIDM-Inventory.pdf"
+                        });
+                    });
+                }, 5000);
+
+
+            },
+            error: function (request, status, error)  {
+                alert(request.responseText);
+            }
+        });
+    }, 2000);
+
+});
+
+</script>

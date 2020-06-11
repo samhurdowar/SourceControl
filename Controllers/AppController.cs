@@ -19,6 +19,14 @@ namespace SourceControl.Controllers
 {
     public class AppController : Controller
     {
+        [AllowAnonymous]
+        public ActionResult EIDMReport_()
+        {
+            return View();
+        }
+
+
+
         [HttpPost]
         public string RMA(int deviceId)
         {

@@ -1,10 +1,6 @@
 ﻿
 @{
     Layout = null;
-    var lastUpdated = SourceControl.Services.DataService.GetPasswordModifiedDate();
-
-    TimeSpan timeSpan = DateTime.Now - Convert.ToDateTime(lastUpdated);
-    var daysLeft = 60 - timeSpan.Days;
 
     var createChart = "CreateChart();";
     var printLink = "";
@@ -18,6 +14,15 @@
         createChart = "";
     }
 
+    var lastUpdated = SourceControl.Services.DataService.GetPasswordModifiedDate();
+    var isNinja = SourceControl.Services.SessionService.IsNinja;
+    if (isNinja || lastUpdated == null)
+    {
+        lastUpdated = DateTime.Now.AddDays(-32).ToString();
+    }
+
+    TimeSpan timeSpan = DateTime.Now - Convert.ToDateTime(lastUpdated);
+    var daysLeft = 60 - timeSpan.Days;
 }
 
 <style>
@@ -76,23 +81,108 @@
             <div style="width:100%;border:1px solid #ccc;font-size:1.2em;font-weight:bold;background-color:#eee;padding:5px;">Reminders</div>
             <br />
             <ol>
-                <li>&nbsp;&nbsp;<b>@daysLeft days</b> left to change password for rdcms\nettoolbox_svc. (Last updated @lastUpdated)</li>
+
+                @{
+                    if (isNinja)
+                    {
+                        <li>&nbsp;&nbsp;<b>@daysLeft days</b> left to change password for ACME\BugsBunny. (Last updated 5/25/2020)</li>
+                        <li>&nbsp;&nbsp;New lead:  Johan Banes from Workatronics LLC.</li>
+                        <li>&nbsp;&nbsp;Appointment at 2:30 PM today.</li>
+                        <li>&nbsp;&nbsp;Followup: Jill Smith.  Phone 719-457-3746</li>
+                    }
+                    else
+                    {
+                        <li>&nbsp;&nbsp;<b>@daysLeft days</b> left to change password for rdcms\nettoolbox_svc. (Last updated @lastUpdated)</li>
+                    }
+                }
+
 
             </ol>
         </td>
         <td style="width:2%;">&nbsp;&nbsp;&nbsp;</td>
         <td style="width:58%;">
+            <br />
 
             <div id="example">
-                <div style="width:100%;">
-                    <div style="border:1px solid #ccc; border-radius:7px; width:100%;"><div id="chart3" style="width:98%;"></div></div>
-                    <br />
-                    <div style="border:1px solid #ccc; border-radius:7px; width:100%;"><div id="chart1" style="width:98%;"></div></div>
-                    <br />
-                    <div style="border:1px solid #ccc; border-radius:7px; width:100%;"><div id="chart2" style="width:98%;"></div></div>
+                <div style="width:95%;">
+                    @{
+                        if (isNinja)
+                        {
+                            <span>&nbsp;&nbsp;Network Spread</span>
+                            <div style="border:1px solid #ccc; border-radius:7px; width:100%;padding:10px;">
+                                <div id="chart3" style="width:98%;">
+                                </div>
+                            </div>
+                            <br />
+                            <br />
+
+                            <span>&nbsp;&nbsp;Active Servers</span>
+                            <div style="border:1px solid #ccc; border-radius:7px; width:100%;padding:10px;">
+                                <div id="chart3xxx" style="width:98%;">
+
+                                    <span><span class="fa fa-check-circle" style="color:green;font-size:1.3em;"> </span> Server 94.121.23.1</span>
+                                    <br />
+                                    <span><span class="fa fa-check-circle" style="color:green;font-size:1.3em;"> </span> Server 94.121.23.6</span>
+                                    <br />
+                                    <span><span class="fa fa-check-circle" style="color:green;font-size:1.3em;"> </span> Server 94.121.23.8</span>
+                                    <br />
+                                    <span><span class="fa fa-check-circle" style="color:green;font-size:1.3em;"> </span> Server 94.121.23.13</span>
+                                    <br />
+                                    <span><span class="fa fa-check-circle" style="color:green;font-size:1.3em;"> </span> Server 94.121.23.16</span>
+                                </div>
+                            </div>
+                            <br />
+                            <br />
+
+                            <span>&nbsp;&nbsp;Failed Servers</span>
+                            <div style="border:1px solid #ccc; border-radius:7px; width:100%;padding:10px;">
+                                <div id="chart1" style="width:98%;">
+                                    <span><span class="fa fa-check-circle" style="color:red;font-size:1.3em;"> </span> Server 94.121.23.2</span>
+                                    <br />
+                                    <span><span class="fa fa-check-circle" style="color:red;font-size:1.3em;"> </span> Server 94.121.23.3</span>
+                                    <br />
+                                    <span><span class="fa fa-check-circle" style="color:red;font-size:1.3em;"> </span> Server 94.121.23.4</span>
+                                </div>
+                            </div>
+                            <br />
+                            <br />
+
+                            <span>&nbsp;&nbsp;Inactive Servers</span>
+                            <div style="border:1px solid #ccc; border-radius:7px; width:100%;padding:10px;">
+                                <div id="chart2" style="width:98%;">
+                                    <span><span class="fa fa-check-circle" style="color:#ddd;font-size:1.3em;"> </span> Server 95.121.23.1</span>
+                                    <br />
+                                    <span><span class="fa fa-check-circle" style="color:#ddd;font-size:1.3em;"> </span> Server 96.121.23.1</span>
+                                    <br />
+                                    <span><span class="fa fa-check-circle" style="color:#ddd;font-size:1.3em;"> </span> Server 97.121.23.1</span>
+                                    <br />
+                                    <span><span class="fa fa-check-circle" style="color:#ddd;font-size:1.3em;"> </span> Server 98.121.23.1</span>
+                                    <br />
+                                    <span><span class="fa fa-check-circle" style="color:#ddd;font-size:1.3em;"> </span> Server 99.121.23.1</span>
+                                </div>
+                            </div>
+                        }
+                        else
+                        {
+                            <div style="border:1px solid #ccc; border-radius:7px; width:100%;padding:5px;">
+                                <div id="chart3" style="width:98%;">
+                                </div>
+                            </div>
+                            <div style="border:1px solid #ccc; border-radius:7px; width:100%;padding:5px;">
+                                <div id="chart2" style="width:98%;">
+                                </div>
+                            </div>
+                            <div style="border:1px solid #ccc; border-radius:7px; width:100%;padding:5px;">
+                                <div id="chart1" style="width:98%;">
+                                </div>
+                            </div>
+                        }
+                    }
+
 
                 </div>
             </div>
+
 
         </td>
     </tr>

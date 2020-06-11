@@ -15,7 +15,6 @@ using SourceControl.Services;
 
 namespace F5PoolData
 {
-
     public class PoolData
     {
         //"admin", "3nt3rpR1se2020!!"
@@ -225,8 +224,6 @@ namespace F5PoolData
 
     }
 
-
-
     public class ICR
     {
 
@@ -269,7 +266,5 @@ namespace F5PoolData
 
 
     }
-
-
 
 }

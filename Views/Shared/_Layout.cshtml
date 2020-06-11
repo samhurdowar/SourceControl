@@ -23,14 +23,6 @@
 
     <link href="~/Content/bootstrap.css" rel="stylesheet" type="text/css" />
     <link href="~/Content/Site.css" rel="stylesheet" />
-    <style>
-        #AppMenu li {
-            background-color: white !important;
-            border-bottom: none;
-            border-top: none;
-            border-color: #ccc;
-        }
-    </style>
 
     <script src="~/Scripts/jquery.min.js"></script>
     <script src="~/Content/fontawesome/js/all.min.js"></script>
@@ -39,7 +31,7 @@
     <script src="~/Scripts/angular.min.js"></script>
     <script src="~/Scripts/kendo/2018.1.117/kendo.all.min.js"></script>
     <script src="~/Scripts/kendo/2018.1.117/kendo.aspnetmvc.min.js"></script>
-    @*<script src="~/Scripts/jquery.tooltipster.min.js"></script>*@
+    <script src="~/Scripts/jquery.tooltipster.min.js"></script>
     <script src="~/Scripts/jquery-ui.min.js"></script>
 
 
@@ -224,7 +216,7 @@
     <div id="divAppMenu" style="position:relative;min-height:50px;width:100%;display:none;">
         <div style="float:left;"><img src="/Images/@Html.Raw(SessionService.SiteSettingModel.BannerLogo)" style="z-index:200;width:200px;height:50px;" /></div>
         <div style='float:left;position:relative;top:17px;margin-left:20px;'>
-            <ul id="AppMenu" style="">
+            <ul id="AppMenu" style="border:none;">
                 @Html.Raw(MenuService.GetUserMenu())
             </ul>
         </div>

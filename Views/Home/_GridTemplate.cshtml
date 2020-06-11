@@ -141,6 +141,7 @@
         <span class="command-active-span" onclick="@Html.Raw(obj)Edit2(0, '[RefKeyValue1]')"><span class="command-icon fas fa-plus-square">&nbsp;</span> @pageTemplate2.AddTabLabel</span>
         <span class="command-active-span" onclick="@Html.Raw(obj)Edit2_Click('[RefKeyValue2]')"><span class="command-icon fas fa-edit">&nbsp;</span> @pageTemplate2.EditTabLabel</span>
         <span class="command-active-span" onclick="DeleteFromGrid(@pageTemplate2.PageTemplateId, '@pageTemplate2PrimaryKey', '@primaryKey2DataType', 'detailgrid','[RefKeyValue3]')"><span class="command-icon fas fa-trash-alt">&nbsp;</span> Delete</span>
+        <span class="command-active-span grid-detail-refresh" id="RefreshDetail[RefKeyValue4]"><span class="command-icon fas fa-sync">&nbsp;</span> Refresh</span>
     </div>
 </script>
 
@@ -359,7 +360,7 @@
         var grid = $("#grid_@pageTemplateId").data("kendoGrid");
         var dataItem = grid.dataItem(grid.select());
         if (dataItem == null) {
-            alert("No row to edit.");
+            MessageBox("Information", "No row to edit.", true);
             return;
         }
 
@@ -385,7 +386,7 @@
     function @Html.Raw(obj)Edit2_Click(refKeyValue) {
 
 		if (ChildRecordId_@pageTemplate2.PageTemplateId == "") {
-   		    alert("No row to edit.");
+   		    MessageBox("Information", "No row to edit.", true);
    		    return;
 		}
 
