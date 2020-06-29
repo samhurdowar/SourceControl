@@ -12,10 +12,12 @@ namespace SourceControl.Services
 	public class PageService
 	{
 
-		public static string GetServerSideRecords(int skip, int take, int page, int pageSize, List<GridSort> gridSorts = null, GridFilters filter = null, int pageTemplateId = 0, string tableNameOveride = "", string selectColumns = "", string sortOveride = "")
+		public static string GetServerSideRecords(int skip, int take, int page, int pageSize, List<GridSort> gridSorts = null, GridFilters filter = null, int pageTemplateId = 0)
 		{
-            try
-            {
+            //try
+            //{
+				var pageTemplate = SessionService.PageTemplate(pageTemplateId);
+
                 string tableName = "";
                 string primaryKey = "";
                 string innerSelect = "";
@@ -26,31 +28,17 @@ namespace SourceControl.Services
                 Dictionary<string, string> sort1Map = new Dictionary<string, string>();
                 Dictionary<string, string> sort2Map = new Dictionary<string, string>();
 
-                if (tableNameOveride.Length > 0)
-                {
-                    tableName = tableNameOveride;
-                    primaryKey = Helper.GetPrimaryKey(pageTemplateId, tableName);
-                    innerSelect = tableName + "." + primaryKey;
-                    outerSelect = tableName + "." + selectColumns;
-                    sortColumns = sortOveride;
-                    HttpContext.Current.Session["SortField1" + pageTemplateId] = null;
-                    HttpContext.Current.Session["SortField2" + pageTemplateId] = null;
-                }
-                else
-                {
-                    tableName = SessionService.TableName(pageTemplateId);
-                    primaryKey = SessionService.PrimaryKey(pageTemplateId);
+                tableName = pageTemplate.TableName;
+                primaryKey = pageTemplate.PrimaryKey;
 
-                    TableFilterSort tfs = SessionService.TableFilterSort(pageTemplateId);
-                    innerSelect = tfs.InnerSelect;
-                    innerJoin = tfs.InnerJoin;
-                    outerSelect = tfs.OuterSelect;
-                    sortColumns = tfs.SortColumns;
-                    filterMap = tfs.FilterMap;
-                    sort1Map = tfs.Sort1Map;
-                    sort2Map = tfs.Sort2Map;
-                    selectColumns = tfs.GridColumns;
-                }
+                TableFilterSort tfs = SessionService.TableFilterSort(pageTemplateId);
+                innerSelect = tfs.InnerSelect;
+                innerJoin = tfs.InnerJoin;
+                outerSelect = tfs.OuterSelect;
+                sortColumns = tfs.SortColumns;
+                filterMap = tfs.FilterMap;
+                sort1Map = tfs.Sort1Map;
+                sort2Map = tfs.Sort2Map;
 
 
                 // WHERE
@@ -155,31 +143,14 @@ namespace SourceControl.Services
                         }
                     }
                 }
+
                 // set default sort
-                if (HttpContext.Current.Session["SortField1" + pageTemplateId] == null)
+                if (HttpContext.Current.Session["SortField1" + pageTemplateId] == null && sortColumns.Length > 0)
                 {
-                    string[] columns = selectColumns.Split(new char[] { ',' });
-
                     HttpContext.Current.Session["SortDir" + pageTemplateId] = "ASC";
-
-                    if (sortColumns.Length > 0)
-                    {
-                        HttpContext.Current.Session["SortField1" + pageTemplateId] = sortColumns;
-                        HttpContext.Current.Session["SortDir" + pageTemplateId] = "";
-                    }
-                    else
-                    {
-                        if (columns.Count() > 1)
-                        {
-                            HttpContext.Current.Session["SortField1" + pageTemplateId] = columns[1];
-                        }
-                        else if (columns.Count() == 1)
-                        {
-                            HttpContext.Current.Session["SortField1" + pageTemplateId] = columns[0];
-                        }
-
-                    }
-                }
+					HttpContext.Current.Session["SortField1" + pageTemplateId] = sortColumns;
+					HttpContext.Current.Session["SortDir" + pageTemplateId] = "";
+				}
 
                 string orderBy1 = " ORDER BY " + HttpContext.Current.Session["SortField1" + pageTemplateId].ToString() + " " + HttpContext.Current.Session["SortDir" + pageTemplateId].ToString() + " ";
 
@@ -213,13 +184,10 @@ namespace SourceControl.Services
                     sbCount.Append(innerJoin + " ");
                     sbCount.Append(whereClause + " ");
 
-                    PageTemplate pageTemplate = SessionService.PageTemplate(pageTemplateId);
                     var dbEntity = SessionService.DbEntity(pageTemplate.DbEntityId);
                     using (TargetEntities Db = new TargetEntities())
                     {
                         Db.Database.Connection.ConnectionString = dbEntity.ConnectionString;
-
-                        Helper.LogError("GetServerSideRecords=" + sbCount.ToString());
                         totalCount = Db.Database.SqlQuery<int>(sbCount.ToString()).FirstOrDefault();
                     }
                 }
@@ -254,7 +222,7 @@ namespace SourceControl.Services
                 sb.Append(") ");
 
                 // outer query
-                sb.Append("SELECT [PAGEDATA] FROM " + tableName + " INNER JOIN MAIN ON " + pk + " = MAIN." + primaryKey + " ");
+                sb.Append("SELECT " + outerSelect + " FROM " + tableName + " INNER JOIN MAIN ON " + pk + " = MAIN." + primaryKey + " ");
                 sb.Append(orderBy2 + " ");
 
                 string sql = sb.ToString();
@@ -263,28 +231,27 @@ namespace SourceControl.Services
                 {
                     return "{\"total\":0,\"data\":[] }";
                 }
+
                 var json = "";
                 if (take > 0)
                 {
-                    json = "{\"total\":" + totalCount + ",\"data\":" + DataService.GetJsonFromSQL(outerSelect, outerSelect, sql, "PAGEDATA", false, pageTemplateId) + "}";
+                    json = "{\"total\":" + totalCount + ",\"data\":" + DataService.GetJsonFromSQL(pageTemplate.DbEntityId, sql) + "}";
                 }
                 else
                 {
-                    json = DataService.GetJsonFromSQL(outerSelect, outerSelect, sql, "PAGEDATA", false, pageTemplateId);
+                    json = DataService.GetJsonFromSQL(pageTemplate.DbEntityId, sql);
                 }
 
                 json = json.Replace("\r", "").Replace("\n", "");
                 return json;
-            }
-            catch (Exception ex)
-            {
-                Helper.LogError(ex.StackTrace);
-                return "";
-            }
+            //}
+            //catch (Exception ex)
+            //{
+            //    Helper.LogError(ex.StackTrace);
+            //    return "";
+            //}
 
         }
-
-
 
 		private static string BuildFilter(string fldName, string oper, string fldValue, Dictionary<string, string> filterMap)
 		{
@@ -405,8 +372,6 @@ namespace SourceControl.Services
 			return "";
 		}
 
-
-
 		public static GridSchemaColumns GetGridSchemaAndColumn(int pageTemplateId)
 		{
             if (SessionService.IsLocal) HttpContext.Current.Session["sec.GridSchemaColumns" + pageTemplateId] = null; //xxx
@@ -444,12 +409,11 @@ namespace SourceControl.Services
 
 				using (SourceControlEntities Db = new SourceControlEntities())
 				{
+                    var gridColumns = Db.GridColumns.Where(w => w.PageTemplateId == pageTemplateId).OrderBy(o => o.SortOrder);
 
-					int[] columnDefIds = Array.ConvertAll(pageTemplate.GridColumns.Split(new char[] { ',' }), s => int.Parse(s));
-
-					foreach (var columnDefId in columnDefIds)
+					foreach (var gridColumn in gridColumns)
 					{
-						var columnDef = columnDefs.Where(w => w.ColumnDefId == columnDefId).FirstOrDefault();
+						var columnDef = columnDefs.Where(w => w.ColumnDefId == gridColumn.ColumnDefId).FirstOrDefault();
 						if (columnDef == null) continue;
 
 						gridWidth = "";
@@ -558,13 +522,13 @@ namespace SourceControl.Services
 
 				}
 
-				var gridColumns = sbColumns.ToString();
-				if (gridColumns.Length > 2)
+				var gridColumns_ = sbColumns.ToString();
+				if (gridColumns_.Length > 2)
 				{
-					gridColumns = gridColumns.Substring(0, gridColumns.Length - 1);
+                    gridColumns_ = gridColumns_.Substring(0, gridColumns_.Length - 1);
 				}
 
-				GridSchemaColumns gridSchemaColumns = new GridSchemaColumns { GridSchema = sbSchema.ToString(), GridColumns = gridColumns, GridScripts = sbGridScripts.ToString() };
+				GridSchemaColumns gridSchemaColumns = new GridSchemaColumns { GridSchema = sbSchema.ToString(), GridColumns = gridColumns_, GridScripts = sbGridScripts.ToString() };
 				HttpContext.Current.Session["sec.GridSchemaColumns" + pageTemplateId] = gridSchemaColumns;
 
 			}
@@ -573,9 +537,6 @@ namespace SourceControl.Services
 			return (GridSchemaColumns)HttpContext.Current.Session["sec.GridSchemaColumns" + pageTemplateId];
 
 		}
-
-
-
 
 	}
 }

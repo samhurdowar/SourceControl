@@ -84,6 +84,23 @@
                             </td>
                         </tr>
 
+                        <tr class="param-Textbox">
+                            <td>Textbox Options</td>
+                            <td>
+
+                                <table style="border:1px solid #eee;">
+                                    <tr>
+                                        <td style="border-top:1px solid #aaa;border-bottom:1px solid #aaa;border-left:1px solid #aaa;padding:4px;"><input type="radio" name="TextboxCase" value="NORMAL" style="width:25px;" /> Normal()</td>
+                                        <td style="border-top:1px solid #aaa;border-bottom:1px solid #aaa;padding:4px;"><input type="radio" name="TextboxCase" value="UPPER" style="width:25px;" /> Upper()</td>
+                                        <td style="border-top:1px solid #aaa;border-bottom:1px solid #aaa;padding:4px;"><input type="radio" name="TextboxCase" value="LOWER" style="width:25px;" /> Lower()</td>
+                                        <td style="border:1px solid #aaa;padding:4px;"><input type="checkbox" id="PreventSpecialChar" name="PreventSpecialChar" value="true" />&nbsp;Prevent special characters</td>
+                                        <td style="border:1px solid #aaa;padding:4px;"><input type="checkbox" id="PreventSpace" name="PreventSpace" value="true" />&nbsp;Prevent spaces</td>
+                                        <td style="border:1px solid #aaa;padding:4px;"><input type="checkbox" id="IsEncrypted" name="IsEncrypted" value="true" onclick="ToggleEncryptOption()" />&nbsp;Is Encrypted  &nbsp;&nbsp;&nbsp;&nbsp;<span id="spanEncryptOption" class="command-button" onclick="EncryptRecords()"> <span class="fas fa-warning">&nbsp;</span> Encrypt the records</span></td>
+                                    </tr>
+                                </table>
+
+                            </td>
+                        </tr>
 
                         <tr class="param-DropdownCustomOption">
                             <td>Custom Options</td>
@@ -99,7 +116,6 @@
 
                             </td>
                         </tr>
-
 
                         <tr class="param-DropdownSimple param-MultiSelect param-ParentTable param-DropdownSearchOption param-Checkboxes">
                             <td>Lookup Table</td>
@@ -136,64 +152,48 @@
 
 
                         @*<tr class="param-Textbox param-NumericTextbox param-DropdownSimple param-DropdownSearchOption">
-                                 <td>Prevent Duplicate Value(s)</td>
-                                 <td>
-                                     <input type="checkbox" id="PreventDuplicate" name="PreventDuplicate" value="true" />
-                                     &nbsp;&nbsp;&nbsp;Message Failed
-                                     <input type="text" id="PreventDuplicateMessage" name="PreventDuplicateMessage" style="width:400px;" />
-                                 </td>
-                                </tr>
+                     <td>Prevent Duplicate Value(s)</td>
+                     <td>
+                         <input type="checkbox" id="PreventDuplicate" name="PreventDuplicate" value="true" />
+                         &nbsp;&nbsp;&nbsp;Message Failed
+                         <input type="text" id="PreventDuplicateMessage" name="PreventDuplicateMessage" style="width:400px;" />
+                     </td>
+                    </tr>
 
 
-                            <tr class="param-NumericTextbox">
-                                <td>Numeric Requirements</td>
-                                <td>
+                <tr class="param-NumericTextbox">
+                    <td>Numeric Requirements</td>
+                    <td>
 
-                                    <table style="border:1px solid #eee;">
-                                        <tr>
-                                            <td style="border-top:1px solid #aaa;border-bottom:1px solid #aaa;border-left:1px solid #aaa;padding:4px;">Min <input id="NumberMin" name="NumberMin" style="width:70px;" /></td>
-                                            <td style="border-top:1px solid #aaa;border-bottom:1px solid #aaa;padding:4px;">Max <input id="NumberMax" name="NumberMax" style="width:70px;" /></td>
-                                            <td style="border-top:1px solid #aaa;border-bottom:1px solid #aaa;padding:4px;">Num of Decimals <input id="NumberOfDecimal" name="NumberOfDecimal" style="width:70px;" /></td>
-                                            <td style="border:1px solid #aaa;padding:4px;">Format <span id="TTFormat" style="position:relative; top:3px;"><img src="/Images/ToolBar/x16/info.png" /></span> <input type="text" id="NumberFormat" name="NumberFormat" style="width:50px;" /></td>
-                                        </tr>
-                                    </table>
-
-                                </td>
+                        <table style="border:1px solid #eee;">
+                            <tr>
+                                <td style="border-top:1px solid #aaa;border-bottom:1px solid #aaa;border-left:1px solid #aaa;padding:4px;">Min <input id="NumberMin" name="NumberMin" style="width:70px;" /></td>
+                                <td style="border-top:1px solid #aaa;border-bottom:1px solid #aaa;padding:4px;">Max <input id="NumberMax" name="NumberMax" style="width:70px;" /></td>
+                                <td style="border-top:1px solid #aaa;border-bottom:1px solid #aaa;padding:4px;">Num of Decimals <input id="NumberOfDecimal" name="NumberOfDecimal" style="width:70px;" /></td>
+                                <td style="border:1px solid #aaa;padding:4px;">Format <span id="TTFormat" style="position:relative; top:3px;"><img src="/Images/ToolBar/x16/info.png" /></span> <input type="text" id="NumberFormat" name="NumberFormat" style="width:50px;" /></td>
                             </tr>
+                        </table>
 
-                            <tr class="param-Textbox">
-                                <td>Textbox Requirements</td>
-                                <td>
-
-                                    <table style="border:1px solid #eee;">
-                                        <tr>
-                                            <td style="border-top:1px solid #aaa;border-bottom:1px solid #aaa;border-left:1px solid #aaa;padding:4px;"><input type="radio" name="TextboxCase" value="NORMAL" style="width:25px;" /> Normal()</td>
-                                            <td style="border-top:1px solid #aaa;border-bottom:1px solid #aaa;padding:4px;"><input type="radio" name="TextboxCase" value="UPPER" style="width:25px;" /> Upper()</td>
-                                            <td style="border-top:1px solid #aaa;border-bottom:1px solid #aaa;padding:4px;"><input type="radio" name="TextboxCase" value="LOWER" style="width:25px;" /> Lower()</td>
-                                            <td style="border:1px solid #aaa;padding:4px;"><input type="checkbox" id="PreventSpecialChar" name="PreventSpecialChar" value="true" />&nbsp;Prevent special characters</td>
-                                            <td style="border:1px solid #aaa;padding:4px;"><input type="checkbox" id="PreventSpace" name="PreventSpace" value="true" />&nbsp;Prevent spaces</td>
-                                            <td style="border:1px solid #aaa;padding:4px;"><input type="checkbox" id="EncryptData" name="EncryptData" value="true" />&nbsp;Encrypt data</td>
-                                        </tr>
-                                    </table>
-
-                                </td>
-                            </tr>
+                    </td>
+                </tr>
 
 
-                            <tr class="param-Textbox">
-                                <td>Textbox Mask</td>
-                                <td><input type="text" id="TextboxMask" name="TextboxMask" style="width:240px;" /> i.e.: (999) 000-0000 | 0000 0000 0000 0000 | 000-00-0000 | L0L 0LL</td>
-                            </tr>
+        ToggleEncryptOption   spanEncryptOption  EncryptRecords
+
+                <tr class="param-Textbox">
+                    <td>Textbox Mask</td>
+                    <td><input type="text" id="TextboxMask" name="TextboxMask" style="width:240px;" /> i.e.: (999) 000-0000 | 0000 0000 0000 0000 | 000-00-0000 | L0L 0LL</td>
+                </tr>
 
 
-                            <tr class="param-Textbox">
-                                <td>Validation Expression</td>
-                                <td>
-                                    <input type="text" id="ValidationExp" name="ValidationExp" style="width:200px;" />
-                                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                                    Message&nbsp;&nbsp;<input type="text" id="ValidationMsg" name="ValidationMsg" style="width:300px;" />
-                                </td>
-                            </tr>*@
+                <tr class="param-Textbox">
+                    <td>Validation Expression</td>
+                    <td>
+                        <input type="text" id="ValidationExp" name="ValidationExp" style="width:200px;" />
+                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                        Message&nbsp;&nbsp;<input type="text" id="ValidationMsg" name="ValidationMsg" style="width:300px;" />
+                    </td>
+                </tr>*@
 
                         <tr valign="top" class="param-Custom">
                             <td>Form Element Object</td>
@@ -555,6 +555,7 @@
 
 		DisableButton("cmdSaveColumnDef");
 		BindFormColumnDef(dataItem.ColumnName);
+		ToggleEncryptOption();
 	}
 
 	function EditCustomOption() {
@@ -584,8 +585,6 @@
 				async: false,
 				success: function (data) {
 
-
-
 					 // set ValueField dropdown
 					 var lookupTable = data.LookupTable;
 
@@ -613,6 +612,8 @@
 					$("#divEditField").show();
 
 					$("#DisplayName").focus();
+
+					ToggleEncryptOption();
 				},
 				error: function (x, y, z) {
 					 alert("Error onChange_TableColumn()");
@@ -745,8 +746,10 @@
 
 
 	 function SaveColumnDef() {
-		  var json = ToJsonString("FormColumnDef");
-		  //DebugLog(json);
+		 var json = ToJsonString("FormColumnDef");
+   //      console.log("json=" + json);
+		 //return;
+
 		  $.ajax({
 				url: "/PageTemplate/SaveColumnDef",
 				type: "POST",
@@ -779,52 +782,6 @@
 
 	 }
 
-	 //function DeleteColumnDef() {
-		//  if (ColumnDefId == 0) {
-		//		MessageBox("Information", "Select field to delete.", false);
-		//		return;
-		//  }
-
-		//  ConfirmMessage("Warning", "Deleting field will delete all field data.  Proceed?");
-
-		//  $("#dialogYesButton").click(function () {
-		//		try {
-
-		//			 $.ajax({
-		//				  url: "/PageTemplate/DeleteColumnDef",
-		//				  data: { columnDefId: ColumnDefId },
-		//				  dataType: "text",
-		//				  type: "POST",
-		//				  success: function (response) {
-		//						if (response.indexOf("Unable to process") > -1) {
-		//							 MessageBox("Information", response, false);
-		//						} else {
-		//							 // refresh ListView
-		//							 $("#ColumnDefs").data("kendoListView").dataSource.read();
-		//							 $("#ColumnDefs").data("kendoListView").dataSource.sync();
-
-		//							 DisableButton("cmdDeleteColumnDef");
-		//							 DisableButton("xxx");
-		//							 $("#dialogYesNo").data("kendoWindow").close();
-		//						}
-		//				  },
-		//				  error: function (x, y, z) {
-		//						alert("Error DeleteColumnDef.");
-		//						$("#dialogYesNo").data("kendoWindow").close();
-		//				  }
-		//			 });
-
-		//		} catch (e) {
-		//			 $("#dialogYesNo").data("kendoWindow").close();
-		//		}
-
-		//  })
-
-		//  $("#dialogNoButton").click(function () {
-		//		$("#dialogYesNo").data("kendoWindow").close();
-		//  })
-	 //}
-
 
 	$(document).ready(function () {
 
@@ -849,5 +806,42 @@
 		//});
 
 	});
+
+	function ToggleEncryptOption() {
+		if ($("#IsEncrypted").is(":checked")) {
+			$("#spanEncryptOption").show();
+		} else {
+            $("#spanEncryptOption").hide();
+        }
+    }
+
+    function EncryptRecords() {
+
+        ConfirmMessage("Warning", "Encrypted records cannot be reversed.  Proceed?");
+
+        $("#dialogYesButton").click(function () {
+
+            $.ajax({
+                url: "/PageTemplate/EncryptRecords",
+                type: "POST",
+                data: { columnDefId: ColumnDefId },
+                dataType: "text",
+				success: function (response) {
+					$("#dialogYesNo").data("kendoWindow").close();
+
+                    MessageBox("Warning", response, false);
+                },
+                error: function (x, y, z) {
+                    alert("Error encrypting records.");
+                    $("#dialogYesNo").data("kendoWindow").close();
+                }
+            });
+
+        })
+
+        $("#dialogNoButton").click(function () {
+            $("#dialogYesNo").data("kendoWindow").close();
+        })
+    }
 
 </script>

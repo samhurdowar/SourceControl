@@ -42,7 +42,16 @@
 
             <tr class="tr-non-blank">
                 <td>Page Type</td>
-                <td><input id="PageType" style="width:300px;" /></td>
+                <td>
+                    <select id="PageType" name="PageType" style="width:300px;">
+                        <option value="gridedit">Grid > Edit</option>
+                        <option value="gridviewedit">Grid > View > Edit</option>
+                        <option value="gridonly">Grid Only</option>
+                        <option value="gridonly_with_delete">Grid Only With Delete Options</option>
+                        <option value="formonly">Form Only</option>
+                        <option value="inline">Inline</option>
+                    </select>
+                </td>
             </tr>
 
             <tr class="tr-non-blank">
@@ -93,7 +102,16 @@
 
                 <tr id="divPageType">
                     <td>Page Type</td>
-                    <td><input type="text" id="NewPageType" name="NewPageType" style="width:370px;" /></td>
+                    <td>
+                        <select id="NewPageType" name="NewPageType" style="width:300px;">
+                            <option value="gridedit">Grid > Edit</option>
+                            <option value="gridviewedit">Grid > View > Edit</option>
+                            <option value="gridonly">Grid Only</option>
+                            <option value="gridonly_with_delete">Grid Only With Delete Options</option>
+                            <option value="formonly">Form Only</option>
+                            <option value="inline">Inline</option>
+                        </select>
+                    </td>
                 </tr>
 
                 <tr id="divNewTableName">
@@ -116,15 +134,6 @@
 </div>
 
 <script>
-
-    var dsPageType = [
-        { TextField: "Grid > Edit", ValueField: "gridedit" },
-        { TextField: "Grid > View > Edit", ValueField: "gridviewedit" },
-        { TextField: "Grid Only", ValueField: "gridonly" },
-        { TextField: "Grid Only With Delete Options", ValueField: "gridonly_with_delete" },
-        { TextField: "Form Only", ValueField: "formonly" },
-        { TextField: "Inline", ValueField: "inline" }
-    ];
 
 
     $("#PageTemplateId2").kendoDropDownList({
@@ -190,44 +199,6 @@
         }
     });
 
-    $("#HelpId").kendoDropDownList({
-        dataTextField: "TextField",
-        dataValueField: "ValueField",
-        dataSource: {
-            transport: {
-                read: {
-                    dataType: "json",
-                    url: "/Help/GetHelpOptions"
-                }
-            }
-        }
-    });
-
-    $("#PageType").kendoDropDownList({
-        dataTextField: "TextField",
-        dataValueField: "ValueField",
-        dataSource: dsPageType
-    });
-
-    $("#DefaultSortColumn").kendoDropDownList({
-        autoBind: false,
-        dataTextField: "TextField",
-        dataValueField: "ValueField",
-        dataSource: {
-            transport: {
-                read: {
-                    dataType: "json",
-                    url: "/PageTemplate/GetDefaultSortColumn?pageTemplateId=0"
-                }
-            }
-        }
-    });
-
-    $("#NewPageType").kendoDropDownList({
-        dataTextField: "TextField",
-        dataValueField: "ValueField",
-        dataSource: dsPageType
-    });
 
     function OpenNewPageTemplateWindow() {
         $("#spanNewTemplateName").hide();
@@ -254,7 +225,7 @@
             url: "/PageTemplate/CreatePageTemplate",
             type: "POST",
             async: false,
-            data: { dbEntityId: $("#DbEntityId").data("kendoDropDownList").value(), newTemplateName: $("#NewTemplateName").val(), newPageType: $("#NewPageType").data("kendoDropDownList").value(), newTableName: $("#NewTableName").data("kendoDropDownList").value() },
+            data: { dbEntityId: $("#DbEntityId").data("kendoDropDownList").value(), newTemplateName: $("#NewTemplateName").val(), newPageType: $("#NewPageType").val(), newTableName: $("#NewTableName").data("kendoDropDownList").value() },
             dataType: "text",
             success: function (response) {
                 if (response.indexOf("Unable to process") > -1) {

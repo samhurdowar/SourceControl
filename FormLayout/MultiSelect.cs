@@ -17,20 +17,10 @@ namespace SourceControl.FormLayoutClasses
 				return "Column definition not set properly";
 			}
 
-			var textFields = columnDef.TextField;
-			if (columnDef.TextField.Contains(","))
-			{
-				textFields = "";
-				string[] words = columnDef.TextField.Split(new char[] { ',' });
-				foreach (string word in words)
-				{
-					textFields += "CAST(" + word + " AS varchar(250)) + ' ' + ";
-				}
+			var sql = "SELECT " + columnDef.ValueField + " AS ValueField, " + columnDef.TextField + " AS TextField FROM " + columnDef.LookupTable + " ORDER BY " + columnDef.OrderField;
 
-				textFields = textFields.Substring(0, textFields.Length - 9);
-			}
-
-			string json = DataService.GetJsonFromSQL("ValueField,TextField", columnDef.ValueField + "," + textFields, "FROM " + columnDef.LookupTable, "", false, columnDef.PageTemplateId);
+			var pageTemplate = SessionService.PageTemplate(columnDef.PageTemplateId);
+			string json = DataService.GetJsonFromSQL(pageTemplate.DbEntityId, sql);
 			if (json.Length < 2)
 			{
 				json = "[];";

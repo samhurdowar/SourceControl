@@ -315,6 +315,20 @@ namespace SourceControl.Common
         }
 
 
+        public static string ToEncrypted(object val)
+        {
+            try
+            {
+                var encryptedValue = Crypto.Encrypt(val.ToString());
+                return encryptedValue;
+            }
+            catch (Exception)
+            {
+                return "";
+            }
+        }
+
+
 
         public static string ToDbString(object val)
         {

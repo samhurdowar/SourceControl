@@ -36,7 +36,6 @@ namespace SourceControl.Services
             }
         }
 
-
         public static bool IsLocal {
             get
             {
@@ -50,13 +49,24 @@ namespace SourceControl.Services
                         HttpContext.Current.Session["IsLocal"] = false;
                     }
                 }
-
                 return (bool)HttpContext.Current.Session["IsLocal"];
-
             }
         }
 
-        public static List<ColumnDef> ColumnDefs(int pageTemplateId) 
+
+		public static List<SysColumn> SysColumns(int dbEntityId, string tableName)
+		{
+			if (HttpContext.Current.Session["SysColumns" + dbEntityId + tableName] == null)
+			{
+				var sysColumns = DataService.SysColumns(dbEntityId, tableName);
+
+				HttpContext.Current.Session["SysColumns" + dbEntityId + tableName] = sysColumns;
+			}
+			return (List<SysColumn>)HttpContext.Current.Session["SysColumns" + dbEntityId + tableName];
+		}
+
+
+		public static List<ColumnDef> ColumnDefs(int pageTemplateId) 
         {
             if (SessionService.IsLocal) HttpContext.Current.Session["sec.ColumnDefs" + pageTemplateId] = null; //xxx
 
@@ -68,14 +78,11 @@ namespace SourceControl.Services
                 {
                     var pageTemplate = Db.PageTemplates.Find(pageTemplateId);
 
-                    DataService.SyncColumns(pageTemplate);
-
                     var sysColumns = DataService.SysColumns(pageTemplate.DbEntityId, pageTemplate.TableName);
                     var columnDefs_ = Db.ColumnDefs.Where(w => w.PageTemplateId == pageTemplateId);
 
                     var columnDefs = from a in sysColumns
                                join b in columnDefs_ on a.ColumnName equals b.ColumnName
-
                                into aa
                                from bb in aa.DefaultIfEmpty()
                                select new ColumnDef {
@@ -107,9 +114,10 @@ namespace SourceControl.Services
                                    ShowInGrid = (bb == null) ? true : bb.ShowInGrid,
                                    GridWidth = (bb == null) ? "" : bb.GridWidth,
                                    IsMultiSelect = (bb == null) ? false : bb.IsMultiSelect,
+								   IsEncrypted = (bb == null) ? false : bb.IsEncrypted,
 
-                                   // SysColumn
-                                   ColumnOrder = a.ColumnOrder,
+								   // SysColumn
+								   ColumnOrder = a.ColumnOrder,
                                    DataLength = a.DataLength,
                                    IsIdentity = a.IsIdentity,
                                    IsRequired = a.IsRequired,
@@ -120,8 +128,7 @@ namespace SourceControl.Services
                                };
 
                     HttpContext.Current.Session["sec.ColumnDefs" + pageTemplateId] = columnDefs.ToList();
-                }
-                    
+                }       
             }
             return (List<ColumnDef>)HttpContext.Current.Session["sec.ColumnDefs" + pageTemplateId];
         }
@@ -139,7 +146,6 @@ namespace SourceControl.Services
 
                     var columnDefs = from a in sysColumns
                                      join b in columnDefs_ on a.ColumnName equals b.ColumnName
-
                                      into aa
                                      from bb in aa.DefaultIfEmpty()
                                      select new ColumnDef
@@ -186,12 +192,9 @@ namespace SourceControl.Services
 
                     HttpContext.Current.Session["sec.ColumnDefs" + tableName] = columnDefs.ToList();
                 }
-
             }
             return (List<ColumnDef>)HttpContext.Current.Session["sec.ColumnDefs" + tableName];
         }
-
-
 
         public static ColumnDef ColumnDef(int columnDefId)
         {
@@ -214,28 +217,100 @@ namespace SourceControl.Services
             return columnDef;
         }
 
+        public static List<PageTemplate> PageTemplates(int dbEntityId)
+        {
+            HttpContext.Current.Session["sec.PageTemplates" + dbEntityId] = null; //xxx
+
+            if (HttpContext.Current.Session["sec.PageTemplates" + dbEntityId] == null)
+            {
+                using (SourceControlEntities Db = new SourceControlEntities())
+                {
+                    var sysTables = DataService.SysTables(dbEntityId);
+                    var pageTemplates_ = Db.PageTemplates.Where(w => w.DbEntityId == dbEntityId).ToList();
+
+                    var pageTemplates = from a in pageTemplates_  
+                                        join b in sysTables on a.TableName equals b.TableName
+                                     into aa
+                                     from bb in aa.DefaultIfEmpty()
+										select new PageTemplate {
+											PageTemplateId = a.PageTemplateId,
+											DbEntityId = a.DbEntityId,
+											TemplateName = a.TemplateName,
+											TableName = a.TableName,
+											GridColumns = a.GridColumns,
+											SortColumns = a.SortColumns,
+											AddTabLabel = a.AddTabLabel,
+											ViewTabLabel = a.ViewTabLabel,
+											EditTabLabel = a.EditTabLabel,
+											EditLayout = a.EditLayout,
+											ViewLayout = a.ViewLayout,
+											PageType = a.PageType,
+											FilterClause = a.FilterClause,
+											HelpId = a.HelpId,
+											OnLoadScript = a.OnLoadScript,
+											BodyScript = a.BodyScript,
+											OnSaveScript = a.OnSaveScript,
+											PageTemplateId2 = a.PageTemplateId2,
+											RefKey2 = a.RefKey2,
+											PrimaryKey2 = a.PrimaryKey2,
+											GridStyle = a.GridStyle,
+											GridCommand = a.GridCommand,
+											GridBody = Helper.HTMLEncode(a.GridBody.Replace("[PageTemplateId]", a.PageTemplateId.ToString())),
+											GridOnDataBound = Helper.HTMLEncode(a.GridOnDataBound.Replace("[PageTemplateId]", a.PageTemplateId.ToString())),
+											GridScript = Helper.HTMLEncode(a.GridScript.Replace("[PageTemplateId]", a.PageTemplateId.ToString())),
+											CustomEditForm = a.CustomEditForm,
+											GroupByColumns = a.GroupByColumns,
+											GridAutoBind = a.GridAutoBind,
+											RefKey2Name = a.RefKey2Name,
+											PrimaryKey2Name = a.PrimaryKey2Name,
+											SearchLayout = a.SearchLayout,
+											ViewFormStyle = a.ViewFormStyle,
+											ViewFormCommand = a.ViewFormCommand,
+											ViewFormBody = a.ViewFormBody,
+											ViewFormScript = a.ViewFormScript,
+											EditFormStyle = a.EditFormStyle,
+											EditFormCommand = a.EditFormCommand,
+											EditFormBody = a.EditFormBody,
+											EditFormScript = a.EditFormScript,
+											SearchFormStyle = a.SearchFormStyle,
+											SearchFormCommand = a.SearchFormCommand,
+											SearchFormBody = a.SearchFormBody,
+											SearchFormScript = a.SearchFormScript,
+											ReportGridColumns = a.ReportGridColumns,
+											FormCommand = a.FormCommand,
+											FormScript = a.FormScript,
+
+											// from SysTable
+											PrimaryKey = (bb == null) ? "" : bb.PrimaryKey,
+											PrimaryKeyType = (bb == null) ? "" : bb.PrimaryKeyType
+
+										};
 
 
 
+
+                    HttpContext.Current.Session["sec.PageTemplates" + dbEntityId] = pageTemplates.ToList();
+                }
+
+            }
+            return (List<PageTemplate>)(HttpContext.Current.Session["sec.PageTemplates" + dbEntityId]);
+        }
 
 
         public static PageTemplate PageTemplate(int pageTemplateId)
         {
-            if (SessionService.IsLocal) HttpContext.Current.Session["sec.PageTemplate" + pageTemplateId] = null; //xxx
             if (pageTemplateId == 0) return null;
 
-            HttpContext.Current.Session["sec.PageTemplate" + pageTemplateId] = null;
+            HttpContext.Current.Session["sec.PageTemplate" + pageTemplateId] = null; //xxx
             if (HttpContext.Current.Session["sec.PageTemplate" + pageTemplateId] == null)
             {
-                // sync ColumnDefs with local
                 using (SourceControlEntities Db = new SourceControlEntities())
                 {
-                    var pageTemplate = Db.PageTemplates.Find(pageTemplateId);
-                    pageTemplate.GridBody = Helper.HTMLEncode(pageTemplate.GridBody.Replace("[PageTemplateId]", pageTemplateId.ToString()));
-                    pageTemplate.GridOnDataBound = Helper.HTMLEncode(pageTemplate.GridOnDataBound.Replace("[PageTemplateId]", pageTemplateId.ToString()));
-                    pageTemplate.GridScript = Helper.HTMLEncode(pageTemplate.GridScript.Replace("[PageTemplateId]", pageTemplateId.ToString()));
+					var pageTemplate = Db.PageTemplates.Find(pageTemplateId);
+                    var pageTemplates = SessionService.PageTemplates(pageTemplate.DbEntityId);
+					var pageTemplate_ = pageTemplates.Where(w => w.PageTemplateId == pageTemplateId).FirstOrDefault();
 
-                    HttpContext.Current.Session["sec.PageTemplate" + pageTemplateId] = pageTemplate;
+					HttpContext.Current.Session["sec.PageTemplate" + pageTemplateId] = pageTemplate_;
                 }
             }
             return (PageTemplate)(HttpContext.Current.Session["sec.PageTemplate" + pageTemplateId]);
@@ -439,7 +514,7 @@ namespace SourceControl.Services
 
 		public static TableFilterSort TableFilterSort(int pageTemplateId)
 		{
-            //if (SessionService.IsLocal) HttpContext.Current.Session["sec.TableFilterSort" + pageTemplateId] = null;  //xxx
+            if (SessionService.IsLocal) HttpContext.Current.Session["sec.TableFilterSort" + pageTemplateId] = null;  //xxx
 
             if (HttpContext.Current.Session["sec.TableFilterSort" + pageTemplateId] == null)
 			{
@@ -472,11 +547,11 @@ namespace SourceControl.Services
 				using (SourceControlEntities Db = new SourceControlEntities())
 				{
 
-
-					var pageTemplate = PageTemplate(pageTemplateId);
+					var pageTemplate = SessionService.PageTemplate(pageTemplateId);
 
 					// get GridColumns   
-					int[] columnDefIds = Array.ConvertAll(pageTemplate.GridColumns.Split(new char[] { ',' }), s => int.Parse(s));
+					var gridColumns = Db.GridColumns.Where(w => w.PageTemplateId == pageTemplateId).OrderBy(o => o.SortOrder);
+					int[] columnDefIds = gridColumns.Select(s => s.ColumnDefId).ToArray();
 
 					var gridColumnDefs = columnDefs.Where(w => columnDefIds.Contains(w.ColumnDefId) && !(bool)w.IsPrimary);
 					foreach (var columnDef in gridColumnDefs)
@@ -542,12 +617,12 @@ namespace SourceControl.Services
 
 							if (columnDef.DataType == "DATE")
 							{
-								OuterSelect.Append(string.Format(",{0}.{1}[DATE]", tableName, columnDef.ColumnName));
+								OuterSelect.Append(string.Format(",{0}.{1}", tableName, columnDef.ColumnName));
 								//OuterSelect.Append(",ISNULL(" + tableName + "." + columnDef.ColumnName + ",null) AS " + columnDef.ColumnName);
 							}
 							else if (columnDef.DataType == "DATETIME")
 							{
-								OuterSelect.Append(string.Format(",{0}.{1}[DATETIME]", tableName, columnDef.ColumnName));
+								OuterSelect.Append(string.Format(",{0}.{1}", tableName, columnDef.ColumnName));
 								//OuterSelect.Append(",ISNULL(" + tableName + "." + columnDef.ColumnName + ",null) AS " + columnDef.ColumnName);
 							}
 							else
@@ -559,19 +634,13 @@ namespace SourceControl.Services
 					}
 
 					// get SortColumns
-					var sortColumns = pageTemplate.SortColumns.Split(new char[] { ',' });
+					var sortColumns = Db.SortColumns.Where(w => w.PageTemplateId == pageTemplateId).OrderBy(o => o.SortOrder);
 					
 					foreach (var sortColumn in sortColumns)
 					{
-						int columnDefId_ = 0;
-						var columnDefId = sortColumn.Replace(" ASC", "").Replace(" DESC", "");
-						int.TryParse(columnDefId, out columnDefId_);
+						var columnDef = columnDefs.Where(w => w.ColumnDefId == sortColumn.ColumnDefId).FirstOrDefault();
 
-						var columnDef = columnDefs.Where(w => w.ColumnDefId == columnDefId_).FirstOrDefault();
-						if (columnDef == null) continue;
-
-
-						string ascDesc = (sortColumn.Contains(" ASC")) ? "ASC" : "DESC";
+						string ascDesc = sortColumn.SortDir;
 						if (columnDef.LookupTable.Length > 0 && columnDef.TextField.Length > 0 && columnDef.ValueField.Length > 0)
 						{
 							if (SortColumns.Length == 0)
@@ -666,7 +735,12 @@ namespace SourceControl.Services
 			HttpContext.Current.Session["sec.TableFilterSort" + pageTemplateId] = null;
             HttpContext.Current.Session["sec.ColumnDefs" + pageTemplateId] = null;
 
-        }
+			var items = SessionService.ColumnDefs(pageTemplateId);
+            foreach (var item in items)
+            {
+				HttpContext.Current.Session["sec.ColumnDefId" + item.ColumnDefId] = null;
+			}
+		}
 
 		public static SiteSettingModel SiteSettingModel 
 		{
@@ -708,7 +782,6 @@ namespace SourceControl.Services
 
             return "";
         }
-
 
     }
 }

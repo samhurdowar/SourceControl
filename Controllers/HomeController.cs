@@ -82,6 +82,9 @@ namespace SourceControl.Controllers
 				}
 			}
 
+			var columnDefs = SessionService.ColumnDefs(2126);
+			var pageTemplates = SessionService.PageTemplates(1);
+
 			return View();
 		}
 
@@ -290,50 +293,48 @@ namespace SourceControl.Controllers
 				return View();
 
 			}
-
-
 		}
 
 
-		[AllowAnonymous]
-		public ActionResult Logout()
-		{
-			Session.Abandon();
-			return RedirectToAction("Login", "Home");
-		}
+		//[AllowAnonymous]
+		//public ActionResult Logout()
+		//{
+		//	Session.Abandon();
+		//	return RedirectToAction("Login", "Home");
+		//}
 
 
-		public ActionResult Login()
-		{
-			return View();
-		}
+		//public ActionResult Login()
+		//{
+		//	return View();
+		//}
 
 
-		[HttpPost]
-		[AllowAnonymous]
-		[ValidateAntiForgeryToken]
-		public ActionResult Login(string usr, string pwd)
-		{
-			if (ModelState.IsValid)
-			{
-				using (SourceControlEntities Db = new SourceControlEntities())
-				{
-					var user = Db.AppUsers.Where(a => a.AdName == usr).FirstOrDefault();
+		//[HttpPost]
+		//[AllowAnonymous]
+		//[ValidateAntiForgeryToken]
+		//public ActionResult Login(string usr, string pwd)
+		//{
+		//	if (ModelState.IsValid)
+		//	{
+		//		using (SourceControlEntities Db = new SourceControlEntities())
+		//		{
+		//			var user = Db.AppUsers.Where(a => a.AdName == usr).FirstOrDefault();
 
-					if (user != null && Crypto.VerifyHashedPassword(user.Password, pwd)  )
-					{
-						Session["sec.CurrentUser"] = user;
+		//			if (user != null && Crypto.VerifyHashedPassword(user.Password, pwd)  )
+		//			{
+		//				Session["sec.CurrentUser"] = user;
 
-						return RedirectToAction("Index", "Home");
-					}
-					else
-					{
-						ModelState.AddModelError("", "Invalid username or password.");
-					}
-				}
-			}
-			return View();
-		}
+		//				return RedirectToAction("Index", "Home");
+		//			}
+		//			else
+		//			{
+		//				ModelState.AddModelError("", "Invalid username or password.");
+		//			}
+		//		}
+		//	}
+		//	return View();
+		//}
 
 
 

@@ -1,4 +1,19 @@
-﻿#AppMenu li {
+﻿.table-header td {
+    background-color: #eee;
+    border-radius: 2px;
+    padding: 7px;
+    margin-right: 3px;
+}
+
+.drag-drop li {
+    list-style-type: none;
+    margin: 0;
+    padding: 0;
+    cursor: pointer;
+}
+
+
+#AppMenu li {
     background-color: white !important;
     border: none;
 }
@@ -6,7 +21,6 @@
 .k-menu .k-item, .k-menu.k-header {
     border-color: none;
 }
-
 
 .form-layout-sm tr td:first-child {
     width: 10%;

@@ -400,6 +400,9 @@
     <Compile Include="Models\Db\FWRoute.cs">
       <DependentUpon>AppNetworkCafeModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\Db\GridColumn.cs">
+      <DependentUpon>SourceControlModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\Db\Help.cs">
       <DependentUpon>SourceControlModel.tt</DependentUpon>
     </Compile>
@@ -553,6 +556,9 @@
     <Compile Include="Models\Db\SNATPool.cs">
       <DependentUpon>F5Model.tt</DependentUpon>
     </Compile>
+    <Compile Include="Models\Db\SortColumn.cs">
+      <DependentUpon>SourceControlModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Models\Db\SourceControlModel.Context.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
@@ -639,6 +645,7 @@
     </Compile>
     <Compile Include="Models\JsonNetResult.cs" />
     <Compile Include="Models\ParsePoolStats.cs" />
+    <Compile Include="Models\Partials\PageTemplate_.cs" />
     <Compile Include="Models\Partials\ColumnDef_.cs" />
     <Compile Include="Models\TableFilterSort.cs" />
     <Compile Include="Models\SiteSettingModel.cs" />
@@ -650,6 +657,7 @@
     </Compile>
     <Compile Include="Services\AccessService.cs" />
     <Compile Include="Services\AppService.cs" />
+    <Compile Include="Services\Crypto.cs" />
     <Compile Include="Services\DataService.cs" />
     <Compile Include="Services\EmailService.cs" />
     <Compile Include="Services\FormLayoutService.cs" />
@@ -2587,6 +2595,8 @@
     <Content Include="Scripts\pdfmake.js" />
     <Content Include="Scripts\respond.js" />
     <Content Include="Scripts\respond.min.js" />
+    <Content Include="Scripts\kendo\2018.1.117\kendo.all.min.js.map" />
+    <Content Include="Scripts\kendo\2018.1.117\kendo.aspnetmvc.min.js.map" />
     <None Include="Scripts\_references.js" />
     <Content Include="Scripts\vfs_fonts.js" />
     <Content Include="Scripts\xeditable.js" />
@@ -2674,6 +2684,7 @@
     <Content Include="Views\Home\_SearchTemplate.cshtml" />
     <Content Include="Views\App\EIDMReport_.cshtml" />
     <Content Include="Views\Home\ImportTable.cshtml" />
+    <Content Include="Views\App\SearchEndDeviceByIp.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Code\" />

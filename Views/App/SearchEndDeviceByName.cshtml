@@ -1,23 +1,17 @@
-﻿@using SourceControl.Services;
-
-
-@*ustlvcmsp2167*@
-
+﻿
 <div class="app-command-bar">
     <table>
         <tr>
             <td nowrap>
-                Find ports for specific end device:
+                Host Name:
             </td>
             <td><input type="text" class="form-control" id="searchString4567" name="searchString4567" style="width:250px;" /></td>
             <td><input type="button" class="btn btn-primary" id="submit" value="Search" onclick="SearchEndDevice()" /></td>
             <td>
                 <a href="javascript:DownloadHostSearch()" class="app-command-item"><img src="Images/ToolBar/download.png" /><span> Download to Excel</span></a>
-                Homes use alternative energy.  they are used as alternative energy                <a href="javascript:EmailHostSearch" class="app-command-item"><img src="Images/ToolBar/Email.png" /><span> Email Me Results</span></a>
+                Homes use alternative energy.  They are used as alternative energy <a href="javascript:EmailHostSearch" class="app-command-item"><img src="Images/ToolBar/Email.png" /><span> Email Me Results</span></a>
             </td>
         </tr>
-
-
     </table>
 </div>
 
@@ -25,19 +19,19 @@
 <table style="width:100%;">
     <tr>
         <td style="width:70%;">
-            <span style="font-size:1.5em;font-weight:bold;">Switch Port Results  <span id="grid_Port_recordcount" style="float:right;font-size:0.8em;font-weight:normal;"></span></span>
+            <span style="font-size:1.5em;font-weight:bold;">Switch Port Results  <span id="grid4567_Port_recordcount" style="float:right;font-size:0.8em;font-weight:normal;"></span></span>
         </td>
         <td style="width:30%;">
-            <span style="font-size:1.5em;font-weight:bold;">DNS Results  <span id="grid_DNS_recordcount" style="float:right;font-size:0.8em;font-weight:normal;"></span></span>
+            <span style="font-size:1.5em;font-weight:bold;">DNS Results  <span id="grid4567_DNS_recordcount" style="float:right;font-size:0.8em;font-weight:normal;"></span></span>
         </td>
     </tr>
 
     <tr>
         <td style="width:70%;">
-            <div id="grid_Port" style="width:100%;"></div>
+            <div id="grid4567_Port" style="width:100%;"></div>
         </td>
         <td style="width:30%;">
-            <div id="grid_DNS" style="width:100%;"></div>
+            <div id="grid4567_DNS" style="width:100%;"></div>
         </td>
     </tr>
 
@@ -48,21 +42,21 @@
 
     <tr>
         <td style="width:50%;">
-            <span style="font-size:1.5em;font-weight:bold;">VIP Results  <span id="grid_VIP_recordcount" style="float:right;font-size:0.8em;font-weight:normal;"></span></span>
+            <span style="font-size:1.5em;font-weight:bold;">VIP Results  <span id="grid4567_VIP_recordcount" style="float:right;font-size:0.8em;font-weight:normal;"></span></span>
 
         </td>
         <td style="width:50%;">
-            <span style="font-size:1.5em;font-weight:bold;">VM Results  <span id="grid_VM_recordcount" style="float:right;font-size:0.8em;font-weight:normal;"></span></span>
+            <span style="font-size:1.5em;font-weight:bold;">VM Results  <span id="grid4567_VM_recordcount" style="float:right;font-size:0.8em;font-weight:normal;"></span></span>
 
         </td>
     </tr>
 
     <tr>
         <td style="width:50%;">
-            <div id="grid_VIP" style="width:100%;"></div>
+            <div id="grid4567_VIP" style="width:100%;"></div>
         </td>
         <td style="width:50%;">
-            <div id="grid_VM" style="width:100%;"></div>
+            <div id="grid4567_VM" style="width:100%;"></div>
         </td>
     </tr>
 
@@ -72,7 +66,7 @@
     $(document).ready(function () {
 
 
-        $("#grid_Port").kendoGrid({
+        $("#grid4567_Port").kendoGrid({
             autoBind: false,
             dataSource: {
                 type: "json",
@@ -114,12 +108,12 @@
                 { field: "Comments", title: "Comments" }
             ],
             dataBound: function (e) {
-                $('#grid_Port_recordcount').html(this.dataSource.total() + " records");
+                $('#grid4567_Port_recordcount').html(this.dataSource.total() + " records");
             }
         });
 
 
-        $("#grid_DNS").kendoGrid({
+        $("#grid4567_DNS").kendoGrid({
             autoBind: false,
             dataSource: {
                 type: "json",
@@ -157,12 +151,12 @@
             ],
             dataBound: function (e) {
 
-                $('#grid_DNS_recordcount').html(this.dataSource.total() + " records");
+                $('#grid4567_DNS_recordcount').html(this.dataSource.total() + " records");
 
             }
         });
 
-        $("#grid_VIP").kendoGrid({
+        $("#grid4567_VIP").kendoGrid({
             autoBind: false,
             dataSource: {
                 type: "json",
@@ -204,13 +198,13 @@
             ],
             dataBound: function (e) {
 
-                $('#grid_VIP_recordcount').html(this.dataSource.total() + " records");
+                $('#grid4567_VIP_recordcount').html(this.dataSource.total() + " records");
 
             }
         });
 
 
-        $("#grid_VM").kendoGrid({
+        $("#grid4567_VM").kendoGrid({
             autoBind: false,
             dataSource: {
                 type: "json",
@@ -254,12 +248,10 @@
             ],
             dataBound: function (e) {
 
-                $('#grid_VM_recordcount').html(this.dataSource.total() + " records");
+                $('#grid4567_VM_recordcount').html(this.dataSource.total() + " records");
 
             }
         });
-
-
     });
 
 
@@ -271,23 +263,23 @@
             return;
         }
 
-        var grid_Port = $("#grid_Port").data("kendoGrid");
-        grid_Port.dataSource.transport.options.read.url = "/EndDevice/GetPortResults?searchString=" + searchString;
-        grid_Port.dataSource.read();
+        var grid4567_Port = $("#grid4567_Port").data("kendoGrid");
+        grid4567_Port.dataSource.transport.options.read.url = "/EndDevice/GetPortResults?searchString=" + searchString + "&searchBy=name";
+        grid4567_Port.dataSource.read();
 
 
-        var grid_DNS = $("#grid_DNS").data("kendoGrid");
-        grid_DNS.dataSource.transport.options.read.url = "/EndDevice/GetDNSResults?searchString=" + searchString;
-        grid_DNS.dataSource.read();
+        var grid4567_DNS = $("#grid4567_DNS").data("kendoGrid");
+        grid4567_DNS.dataSource.transport.options.read.url = "/EndDevice/GetDNSResults?searchString=" + searchString + "&searchBy=name";
+        grid4567_DNS.dataSource.read();
 
 
-        var grid_VIP = $("#grid_VIP").data("kendoGrid");
-        grid_VIP.dataSource.transport.options.read.url = "/EndDevice/GetVIPResults?searchString=" + searchString;
-        grid_VIP.dataSource.read();
+        var grid4567_VIP = $("#grid4567_VIP").data("kendoGrid");
+        grid4567_VIP.dataSource.transport.options.read.url = "/EndDevice/GetVIPResults?searchString=" + searchString + "&searchBy=name";
+        grid4567_VIP.dataSource.read();
 
-        var grid_VM = $("#grid_VM").data("kendoGrid");
-        grid_VM.dataSource.transport.options.read.url = "/EndDevice/GetVMResults?searchString=" + searchString;
-        grid_VM.dataSource.read();
+        var grid4567_VM = $("#grid4567_VM").data("kendoGrid");
+        grid4567_VM.dataSource.transport.options.read.url = "/EndDevice/GetVMResults?searchString=" + searchString + "&searchBy=name";
+        grid4567_VM.dataSource.read();
     }
 
 
@@ -298,7 +290,7 @@
             MessageBox("Information", "Search string is required.", false);
             return;
         }
-        location.href = "/EndDevice/DownloadHostSearch?searchString=" + searchString;
+        location.href = "/EndDevice/DownloadHostSearch?searchString=" + searchString + "&searchBy=name";
     }
 
 
@@ -310,11 +302,10 @@
             return;
         }
 
-
         $.ajax({
             url: "/EndDevice/EmailHostSearch",
             type: "POST",
-            data: { searchString: searchString },
+            data: { searchString: searchString, searchBy: "name" },
             dataType: "text",
             success: function (data) {
                 if (data == "T") {
@@ -328,8 +319,5 @@
             }
         });
     }
-
-
-
 
 </script>

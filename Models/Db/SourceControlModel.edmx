@@ -55,6 +55,7 @@
           <Property Name="ShowInGrid" Type="bit" Nullable="false" />
           <Property Name="GridWidth" Type="varchar" MaxLength="50" Nullable="false" />
           <Property Name="IsMultiSelect" Type="bit" Nullable="false" />
+          <Property Name="IsEncrypted" Type="bit" Nullable="false" />
         </EntityType>
         <EntityType Name="DbEntity">
           <Key>
@@ -73,6 +74,16 @@
           <Property Name="Source" Type="nvarchar" MaxLength="1000" />
           <Property Name="LogContent" Type="varchar(max)" />
           <Property Name="LogDate" Type="datetime" Nullable="false" />
+        </EntityType>
+        <EntityType Name="GridColumn">
+          <Key>
+            <PropertyRef Name="GridColumnId" />
+          </Key>
+          <Property Name="GridColumnId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="PageTemplateId" Type="int" Nullable="false" />
+          <Property Name="ColumnDefId" Type="int" Nullable="false" />
+          <Property Name="SortOrder" Type="int" Nullable="false" />
+          <Property Name="ColumnName" Type="varchar" MaxLength="250" StoreGeneratedPattern="Computed" />
         </EntityType>
         <EntityType Name="Help">
           <Key>
@@ -122,7 +133,6 @@
           <Property Name="DbEntityId" Type="int" Nullable="false" />
           <Property Name="TemplateName" Type="varchar" MaxLength="250" Nullable="false" />
           <Property Name="TableName" Type="varchar" MaxLength="250" Nullable="false" />
-          <Property Name="PrimaryKey" Type="varchar" MaxLength="250" Nullable="false" />
           <Property Name="GridColumns" Type="varchar" MaxLength="500" Nullable="false" />
           <Property Name="SortColumns" Type="varchar" MaxLength="500" Nullable="false" />
           <Property Name="AddTabLabel" Type="varchar" MaxLength="250" Nullable="false" />
@@ -149,7 +159,6 @@
           <Property Name="GridAutoBind" Type="bit" Nullable="false" />
           <Property Name="RefKey2Name" Type="varchar" MaxLength="250" StoreGeneratedPattern="Computed" />
           <Property Name="PrimaryKey2Name" Type="varchar" MaxLength="250" StoreGeneratedPattern="Computed" />
-          <Property Name="PrimaryKeyType" Type="varchar" MaxLength="250" Nullable="false" />
           <Property Name="SearchLayout" Type="varchar(max)" />
           <Property Name="ViewFormStyle" Type="varchar(max)" />
           <Property Name="ViewFormCommand" Type="varchar(max)" />
@@ -163,6 +172,9 @@
           <Property Name="SearchFormCommand" Type="varchar(max)" />
           <Property Name="SearchFormBody" Type="varchar(max)" />
           <Property Name="SearchFormScript" Type="varchar(max)" />
+          <Property Name="ReportGridColumns" Type="varchar" MaxLength="250" />
+          <Property Name="FormCommand" Type="varchar" MaxLength="250" />
+          <Property Name="FormScript" Type="varchar" MaxLength="250" />
         </EntityType>
         <EntityType Name="Role">
           <Key>
@@ -184,6 +196,17 @@
           <Property Name="CanDownload" Type="bit" Nullable="false" />
           <Property Name="MenuTitle" Type="varchar" MaxLength="500" StoreGeneratedPattern="Computed" />
           <Property Name="RoleName" Type="varchar" MaxLength="300" StoreGeneratedPattern="Computed" />
+        </EntityType>
+        <EntityType Name="SortColumn">
+          <Key>
+            <PropertyRef Name="SortColumnId" />
+          </Key>
+          <Property Name="SortColumnId" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
+          <Property Name="PageTemplateId" Type="int" Nullable="false" />
+          <Property Name="ColumnDefId" Type="int" Nullable="false" />
+          <Property Name="SortDir" Type="varchar" MaxLength="50" />
+          <Property Name="SortOrder" Type="int" Nullable="false" />
+          <Property Name="ColumnName" Type="varchar" MaxLength="250" StoreGeneratedPattern="Computed" />
         </EntityType>
         <EntityType Name="UserMenuAccess">
           <Key>
@@ -230,12 +253,14 @@
           <EntitySet Name="ColumnDef" EntityType="Self.ColumnDef" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="DbEntity" EntityType="Self.DbEntity" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="DebugLog" EntityType="Self.DebugLog" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="GridColumn" EntityType="Self.GridColumn" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Help" EntityType="Self.Help" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="HelpDocLog" EntityType="Self.HelpDocLog" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Menu" EntityType="Self.Menu" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="PageTemplate" EntityType="Self.PageTemplate" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="Role" EntityType="Self.Role" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="RoleMenuAccess" EntityType="Self.RoleMenuAccess" Schema="dbo" store:Type="Tables" />
+          <EntitySet Name="SortColumn" EntityType="Self.SortColumn" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserMenuAccess" EntityType="Self.UserMenuAccess" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserQuery" EntityType="Self.UserQuery" Schema="dbo" store:Type="Tables" />
           <EntitySet Name="UserRole" EntityType="Self.UserRole" Schema="dbo" store:Type="Tables" />
@@ -259,6 +284,8 @@
           <EntitySet Name="DebugLogs" EntityType="SourceControlModel.DebugLog" />
           <EntitySet Name="DbEntities" EntityType="SourceControlModel.DbEntity" />
           <EntitySet Name="ColumnDefs" EntityType="SourceControlModel.ColumnDef" />
+          <EntitySet Name="GridColumns" EntityType="SourceControlModel.GridColumn" />
+          <EntitySet Name="SortColumns" EntityType="SourceControlModel.SortColumn" />
           <EntitySet Name="PageTemplates" EntityType="SourceControlModel.PageTemplate" />
         </EntityContainer>
         <EntityType Name="AppUser">
@@ -430,6 +457,28 @@
           <Property Name="ShowInGrid" Type="Boolean" Nullable="false" />
           <Property Name="GridWidth" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Name="IsMultiSelect" Type="Boolean" Nullable="false" />
+          <Property Name="IsEncrypted" Type="Boolean" Nullable="false" />
+        </EntityType>
+        <EntityType Name="GridColumn">
+          <Key>
+            <PropertyRef Name="GridColumnId" />
+          </Key>
+          <Property Name="GridColumnId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PageTemplateId" Type="Int32" Nullable="false" />
+          <Property Name="ColumnDefId" Type="Int32" Nullable="false" />
+          <Property Name="SortOrder" Type="Int32" Nullable="false" />
+          <Property Name="ColumnName" Type="String" MaxLength="250" FixedLength="false" Unicode="false" annotation:StoreGeneratedPattern="Computed" />
+        </EntityType>
+        <EntityType Name="SortColumn">
+          <Key>
+            <PropertyRef Name="SortColumnId" />
+          </Key>
+          <Property Name="SortColumnId" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="PageTemplateId" Type="Int32" Nullable="false" />
+          <Property Name="ColumnDefId" Type="Int32" Nullable="false" />
+          <Property Name="SortDir" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="SortOrder" Type="Int32" Nullable="false" />
+          <Property Name="ColumnName" Type="String" MaxLength="250" FixedLength="false" Unicode="false" annotation:StoreGeneratedPattern="Computed" />
         </EntityType>
         <EntityType Name="PageTemplate">
           <Key>
@@ -439,7 +488,6 @@
           <Property Name="DbEntityId" Type="Int32" Nullable="false" />
           <Property Name="TemplateName" Type="String" Nullable="false" MaxLength="250" FixedLength="false" Unicode="false" />
           <Property Name="TableName" Type="String" Nullable="false" MaxLength="250" FixedLength="false" Unicode="false" />
-          <Property Name="PrimaryKey" Type="String" Nullable="false" MaxLength="250" FixedLength="false" Unicode="false" />
           <Property Name="GridColumns" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="false" />
           <Property Name="SortColumns" Type="String" Nullable="false" MaxLength="500" FixedLength="false" Unicode="false" />
           <Property Name="AddTabLabel" Type="String" Nullable="false" MaxLength="250" FixedLength="false" Unicode="false" />
@@ -466,7 +514,6 @@
           <Property Name="GridAutoBind" Type="Boolean" Nullable="false" />
           <Property Name="RefKey2Name" Type="String" MaxLength="250" FixedLength="false" Unicode="false" annotation:StoreGeneratedPattern="Computed" />
           <Property Name="PrimaryKey2Name" Type="String" MaxLength="250" FixedLength="false" Unicode="false" annotation:StoreGeneratedPattern="Computed" />
-          <Property Name="PrimaryKeyType" Type="String" Nullable="false" MaxLength="250" FixedLength="false" Unicode="false" />
           <Property Name="SearchLayout" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="ViewFormStyle" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="ViewFormCommand" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
@@ -480,6 +527,9 @@
           <Property Name="SearchFormCommand" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="SearchFormBody" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
           <Property Name="SearchFormScript" Type="String" MaxLength="Max" FixedLength="false" Unicode="false" />
+          <Property Name="ReportGridColumns" Type="String" MaxLength="250" FixedLength="false" Unicode="false" />
+          <Property Name="FormCommand" Type="String" MaxLength="250" FixedLength="false" Unicode="false" />
+          <Property Name="FormScript" Type="String" MaxLength="250" FixedLength="false" Unicode="false" />
         </EntityType>
         </Schema>
     </edmx:ConceptualModels>
@@ -641,6 +691,7 @@
           <EntitySetMapping Name="ColumnDefs">
             <EntityTypeMapping TypeName="SourceControlModel.ColumnDef">
               <MappingFragment StoreEntitySet="ColumnDef">
+                <ScalarProperty Name="IsEncrypted" ColumnName="IsEncrypted" />
                 <ScalarProperty Name="IsMultiSelect" ColumnName="IsMultiSelect" />
                 <ScalarProperty Name="GridWidth" ColumnName="GridWidth" />
                 <ScalarProperty Name="ShowInGrid" ColumnName="ShowInGrid" />
@@ -670,9 +721,35 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
+          <EntitySetMapping Name="GridColumns">
+            <EntityTypeMapping TypeName="SourceControlModel.GridColumn">
+              <MappingFragment StoreEntitySet="GridColumn">
+                <ScalarProperty Name="ColumnName" ColumnName="ColumnName" />
+                <ScalarProperty Name="SortOrder" ColumnName="SortOrder" />
+                <ScalarProperty Name="ColumnDefId" ColumnName="ColumnDefId" />
+                <ScalarProperty Name="PageTemplateId" ColumnName="PageTemplateId" />
+                <ScalarProperty Name="GridColumnId" ColumnName="GridColumnId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="SortColumns">
+            <EntityTypeMapping TypeName="SourceControlModel.SortColumn">
+              <MappingFragment StoreEntitySet="SortColumn">
+                <ScalarProperty Name="ColumnName" ColumnName="ColumnName" />
+                <ScalarProperty Name="SortOrder" ColumnName="SortOrder" />
+                <ScalarProperty Name="SortDir" ColumnName="SortDir" />
+                <ScalarProperty Name="ColumnDefId" ColumnName="ColumnDefId" />
+                <ScalarProperty Name="PageTemplateId" ColumnName="PageTemplateId" />
+                <ScalarProperty Name="SortColumnId" ColumnName="SortColumnId" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
           <EntitySetMapping Name="PageTemplates">
             <EntityTypeMapping TypeName="SourceControlModel.PageTemplate">
               <MappingFragment StoreEntitySet="PageTemplate">
+                <ScalarProperty Name="FormScript" ColumnName="FormScript" />
+                <ScalarProperty Name="FormCommand" ColumnName="FormCommand" />
+                <ScalarProperty Name="ReportGridColumns" ColumnName="ReportGridColumns" />
                 <ScalarProperty Name="SearchFormScript" ColumnName="SearchFormScript" />
                 <ScalarProperty Name="SearchFormBody" ColumnName="SearchFormBody" />
                 <ScalarProperty Name="SearchFormCommand" ColumnName="SearchFormCommand" />
@@ -686,7 +763,6 @@
                 <ScalarProperty Name="ViewFormCommand" ColumnName="ViewFormCommand" />
                 <ScalarProperty Name="ViewFormStyle" ColumnName="ViewFormStyle" />
                 <ScalarProperty Name="SearchLayout" ColumnName="SearchLayout" />
-                <ScalarProperty Name="PrimaryKeyType" ColumnName="PrimaryKeyType" />
                 <ScalarProperty Name="PrimaryKey2Name" ColumnName="PrimaryKey2Name" />
                 <ScalarProperty Name="RefKey2Name" ColumnName="RefKey2Name" />
                 <ScalarProperty Name="GridAutoBind" ColumnName="GridAutoBind" />
@@ -713,7 +789,6 @@
                 <ScalarProperty Name="AddTabLabel" ColumnName="AddTabLabel" />
                 <ScalarProperty Name="SortColumns" ColumnName="SortColumns" />
                 <ScalarProperty Name="GridColumns" ColumnName="GridColumns" />
-                <ScalarProperty Name="PrimaryKey" ColumnName="PrimaryKey" />
                 <ScalarProperty Name="TableName" ColumnName="TableName" />
                 <ScalarProperty Name="TemplateName" ColumnName="TemplateName" />
                 <ScalarProperty Name="DbEntityId" ColumnName="DbEntityId" />

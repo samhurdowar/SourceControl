@@ -18,6 +18,8 @@
         <EntityTypeShape EntityType="SourceControlModel.DebugLog" Width="1.5" PointX="13.25" PointY="1.25" />
         <EntityTypeShape EntityType="SourceControlModel.DbEntity" Width="1.5" PointX="0.75" PointY="9.75" />
         <EntityTypeShape EntityType="SourceControlModel.ColumnDef" Width="1.5" PointX="7.375" PointY="4.75" />
+        <EntityTypeShape EntityType="SourceControlModel.GridColumn" Width="1.5" PointX="9.375" PointY="5.75" />
+        <EntityTypeShape EntityType="SourceControlModel.SortColumn" Width="1.5" PointX="9.375" PointY="8.75" />
         <EntityTypeShape EntityType="SourceControlModel.PageTemplate" Width="1.5" PointX="3.375" PointY="9.75" />
         </Diagram>
     </edmx:Diagrams>

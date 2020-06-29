@@ -11,7 +11,11 @@
     {
         completeProfile = "AddTab(\"Complete Profile\", 2091, \"\");";
     }
+    //var encryptedValue = SourceControl.Services.Crypto.Encrypt("test123");
+    //var decryptedValue = SourceControl.Services.Crypto.Decrypt("EAAAAPZjcqfc0wPwVASCVm2xr/N6nlLF+PYzuIYM84unucMh");
 }
+
+
 
 <div id="tabstrip"></div>
 
@@ -414,11 +418,14 @@ function GetBooleanTrueFalse(bigB) {
 }
 
 function GetComment(comment) {
-    if (comment.length > 30) {
-        return "<span onclick=\"ShowComment('" + comment.replace("'", "''") + "')\" style='text-decoration:underline;'>" + comment.substring(0, 30) + "...</span>";
-    } else {
-        return comment;
+    if (comment != null) {
+        if (comment.length > 30) {
+            return "<span onclick=\"ShowComment('" + comment.replace("'", "''") + "')\" style='text-decoration:underline;'>" + comment.substring(0, 30) + "...</span>";
+        } else {
+            return comment.replace("null", "");
+        }
     }
+    return "";
 }
 
 function ShowComment(comment) {
@@ -564,6 +571,13 @@ function BindForm(formName, data) {
             }
         });
 
+
+        //var x = document.getElementById(formName);
+        //for (var i = 0; i < x.length; i++) {
+        //    console.log("id=" + x.elements[i].id + "   value=" +  x.elements[i].value);
+        //}
+
+        //return;
         // loop thru form elements
         $("#" + formName + " :input").each(function() {
 
@@ -571,7 +585,7 @@ function BindForm(formName, data) {
             try {
                 var id = $(this).attr("id");
                 if (id == null || id == undefined) id = $(this).attr("name");
-                console.log("BindData id=" + id);
+                //console.log("BindData id=" + id);
 
                 if ($(this).attr("type") == "checkbox" && data[id] == null) {
                     $(this).prop('checked', false);
@@ -579,7 +593,7 @@ function BindForm(formName, data) {
                 if (data[id] != undefined || data[id] == null) {
                     var val = (data[id] != null) ? data[id] : "";
 
-                    console.log("BindData id=" + id + "   val=" + val);
+                    //console.log("BindData id=" + id + "   val=" + val);
 
                     var kendoDropDown = $(this).data("kendoDropDownList");
                     var kendoMultiSelect = $(this).data("kendoMultiSelect");
@@ -757,7 +771,7 @@ function BindForm(formName, data) {
                             $(kendoEditor.body).on("keyup", function(e) {
                                 EnableButton(buttonName);
                             });
-                        } 
+                        }
                     }
                 } catch (e) {
 
@@ -770,7 +784,7 @@ function BindForm(formName, data) {
     }
 
     function EnableButton(id) {
-        console.log("EnableButton id=" + id);
+        //console.log("EnableButton id=" + id);
         try {
             $("#" + id).unbind("click");
         } catch (e) {}
@@ -840,10 +854,11 @@ function ToJsonString(formName) {
             } else if (kendoDateTimePicker != null) {
                 val = $(this).data("kendoDateTimePicker").value().toString();
             } else if ($(this).attr("type") == "checkbox") {
+
                 if ($(this).attr("value") != "False" && $(this).attr("value") != "True" && $(this).attr("value").length > 0) {
                     if (doneCheckboxNames.indexOf(":" + id + ":") == -1) {
                         doneCheckboxNames += id + ":";
-
+                        val = null;
                         $("#" + formName + " input[name='" + id + "']").each(function() {
 
                             if ($(this).is(":checked")) {
@@ -852,6 +867,8 @@ function ToJsonString(formName) {
                                 } else {
                                     val = val + "," + $(this).val().toString();
                                 }
+                            } else {
+                                val = "false";
                             }
 
                         });

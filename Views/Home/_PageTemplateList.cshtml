@@ -86,39 +86,40 @@ function change_gridPageTemplate(e) {
 
         // ajax to get data
         $.ajax({
-            url: "/PageTemplate/GetPageTemplate",
+            url: "/PageTemplate/GetPageTemplateData",
             data: { pageTemplateId: PageTemplateId },
             dataType: "json",
             type: "POST",
             success: function (data) {
+                var pageTemplate = data.PageTemplate;
+
 
                 DisableButtonClass("pagetemplate-button");
 
-                if (data.PageTemplateId2 > 0) {
+                if (pageTemplate.PageTemplateId2 > 0) {
                     var refKey2 = $("#RefKey2").data("kendoDropDownList");
-                    refKey2.dataSource.transport.options.read.url = "/PageTemplate/GetColumnOptions?pageTemplateId=" + data.PageTemplateId2;
+                    refKey2.dataSource.transport.options.read.url = "/PageTemplate/GetColumnOptions?pageTemplateId=" + pageTemplate.PageTemplateId2;
                     refKey2.dataSource.read();
 
                     var primaryKey2 = $("#PrimaryKey2").data("kendoDropDownList");
-                    primaryKey2.dataSource.transport.options.read.url = "/PageTemplate/GetColumnOptions?pageTemplateId=" + data.PageTemplateId;
+                    primaryKey2.dataSource.transport.options.read.url = "/PageTemplate/GetColumnOptions?pageTemplateId=" + pageTemplate.PageTemplateId;
                     primaryKey2.dataSource.read();
                 }
 
 
                 // Set PageTemplate Form
-                BindForm("FormPageTemplate", data);
-
+                BindForm("FormPageTemplate", pageTemplate);
 
                 // Set Fields  xxx
-                SetkendoListView("ColumnDefs", "/PageTemplate/GetColumnDefs?pageTemplateId=" + data.PageTemplateId);
+                SetkendoListView("ColumnDefs", "/PageTemplate/GetColumnDefs?pageTemplateId=" + pageTemplate.PageTemplateId);
 
                 
-                if (data.TableName.length < 2) {  // Free form
+                if (pageTemplate.TableName.length < 2) {  // Free form
                     $("#displayTableName_").html("<< Not mapped >>");
                     $(".table-driven-property").hide();
                 } else {
                     
-                    $("#displayTableName_").html(data.TableName);
+                    $("#displayTableName_").html(pageTemplate.TableName);
                     $(".table-driven-property").show();
 
                     // set Lookup tables for specific database
@@ -127,18 +128,20 @@ function change_gridPageTemplate(e) {
 
 
                 // set layout
-                var editLayout= (data.EditLayout != null) ? data.EditLayout : "";
-                var viewLayout = (data.ViewLayout != null) ? data.ViewLayout : "";
-                var searchLayout = (data.SearchLayout != null) ? data.SearchLayout : "";
+                var editLayout = (pageTemplate.EditLayout != null) ? pageTemplate.EditLayout : "";
+                var viewLayout = (pageTemplate.ViewLayout != null) ? pageTemplate.ViewLayout : "";
+                var searchLayout = (pageTemplate.SearchLayout != null) ? pageTemplate.SearchLayout : "";
                 $("#EditLayout").data("kendoEditor").value(editLayout);
                 $("#ViewLayout").data("kendoEditor").value(viewLayout);
                 $("#SearchLayout").data("kendoEditor").value(searchLayout);
 
                 // bind other forms
-                BindForm("FormGridLayoutOption", data);
-                BindForm("FormViewLayoutOption", data);
-                BindForm("FormEditLayoutOption", data);
-                BindForm("FormSearchLayoutOption", data);
+                BindForm("FormGridLayoutOption", pageTemplate);
+                BindForm("FormViewLayoutOption", pageTemplate);
+                BindForm("FormEditLayoutOption", pageTemplate);
+                BindForm("FormSearchLayoutOption", pageTemplate);
+
+                LoadGridColumn();
             }
         });
     } catch (e) {

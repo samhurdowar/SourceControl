@@ -19,23 +19,23 @@ namespace SourceControl.Controllers
             return "T";
         }
 
-        public string GetChildData(int childPageTemplateId, int parentColumnDefId, int recordId)
-        {
-            PageTemplate childPageTemplate = SessionService.PageTemplate(childPageTemplateId);
+        //public string GetChildDataxxx(int childPageTemplateId, int parentColumnDefId, int recordId)
+        //{
+        //    PageTemplate childPageTemplate = SessionService.PageTemplate(childPageTemplateId);
             
-            ColumnDef parentColumnDef = SessionService.ColumnDef(parentColumnDefId);
-            PageTemplate parentPageTemplate = SessionService.PageTemplate(parentColumnDef.PageTemplateId);
+        //    ColumnDef parentColumnDef = SessionService.ColumnDef(parentColumnDefId);
+        //    PageTemplate parentPageTemplate = SessionService.PageTemplate(parentColumnDef.PageTemplateId);
 
-            var childKey = SessionService.PrimaryKey(childPageTemplate.DbEntityId, childPageTemplate.TableName) + ",";
-            if (parentColumnDef.TextField.Contains(childKey))
-            {
-                childKey = "";
-            }
+        //    var childKey = SessionService.PrimaryKey(childPageTemplate.DbEntityId, childPageTemplate.TableName) + ",";
+        //    if (parentColumnDef.TextField.Contains(childKey))
+        //    {
+        //        childKey = "";
+        //    }
 
-            string fromClause = "FROM " + childPageTemplate.TableName + " WHERE " + SessionService.PrimaryKey(parentPageTemplate.DbEntityId, parentPageTemplate.TableName) + " = " + recordId + " ORDER BY " + parentColumnDef.OrderField;
-            var json = DataService.GetJsonFromSQL(childKey + parentColumnDef.TextField, childKey + parentColumnDef.TextField, fromClause, "", false);
-            return json;
-        }
+        //    string fromClause = "FROM " + childPageTemplate.TableName + " WHERE " + SessionService.PrimaryKey(parentPageTemplate.DbEntityId, parentPageTemplate.TableName) + " = " + recordId + " ORDER BY " + parentColumnDef.OrderField;
+        //    var json = DataService.GetJsonFromSQL(childKey + parentColumnDef.TextField, childKey + parentColumnDef.TextField, fromClause, "", false);
+        //    return json;
+        //}
 
         [HttpPost]
         public string GetDetailGrid(int pageTemplateId, string refKeyValue)
@@ -50,27 +50,28 @@ namespace SourceControl.Controllers
             PageTemplate pageTemplate2 = SessionService.PageTemplate(pageTemplate.PageTemplateId2);
             List<GridSort> gridSorts = new List<GridSort>();
 
-            if (pageTemplate2.SortColumns.Length > 2)
-            {
-                var sortColumns = pageTemplate2.SortColumns;
-                if (sortColumns.Contains(","))
-                {
-                    var items = sortColumns.Split(new char[',']);
-                    foreach (var item in items)
-                    {
-                        var columnId = item.Replace(" ", "").Replace("ASC", "").Replace("DESC", "");
-                        var columnName = SessionService.ColumnName(Convert.ToInt32(columnId));
-                        GridSort gridSort = new GridSort { Field = columnName, Dir = (item.Contains("ASC")) ? "ASC" : "DESC" };
-                        gridSorts.Add(gridSort);
-                    }
-                } else
-                {
-                    var columnId = sortColumns.Replace(" ", "").Replace("ASC", "").Replace("DESC", "");
-                    var columnName = SessionService.ColumnName(Convert.ToInt32(columnId));
-                    GridSort gridSort = new GridSort { Field = columnName, Dir = (sortColumns.Contains("ASC")) ? "ASC" : "DESC" };
-                    gridSorts.Add(gridSort);
-                }
-            }
+            //xxx fix
+            //if (pageTemplate2.SortColumns.Length > 2)
+            //{
+            //    var sortColumns = pageTemplate2.SortColumns;
+            //    if (sortColumns.Contains(","))
+            //    {
+            //        var items = sortColumns.Split(new char[',']);
+            //        foreach (var item in items)
+            //        {
+            //            var columnId = item.Replace(" ", "").Replace("ASC", "").Replace("DESC", "");
+            //            var columnName = SessionService.ColumnName(Convert.ToInt32(columnId));
+            //            GridSort gridSort = new GridSort { Field = columnName, Dir = (item.Contains("ASC")) ? "ASC" : "DESC" };
+            //            gridSorts.Add(gridSort);
+            //        }
+            //    } else
+            //    {
+            //        var columnId = sortColumns.Replace(" ", "").Replace("ASC", "").Replace("DESC", "");
+            //        var columnName = SessionService.ColumnName(Convert.ToInt32(columnId));
+            //        GridSort gridSort = new GridSort { Field = columnName, Dir = (sortColumns.Contains("ASC")) ? "ASC" : "DESC" };
+            //        gridSorts.Add(gridSort);
+            //    }
+            //}
              
             var json = PageService.GetServerSideRecords(0, 500000, 0, 0, gridSorts, gridFilters, pageTemplate.PageTemplateId2);
             return json;
@@ -93,11 +94,11 @@ namespace SourceControl.Controllers
 
 
         [HttpPost]
-        public string GetServerSideRecords(int skip = 0, int take = 0, int page = 0, int pageSize = 0, List<GridSort> sort = null, GridFilters filter = null, int pageTemplateId = 0, string tableNameOveride = "", string selectColumns = "", string sortOveride = "")
+        public string GetServerSideRecords(int skip = 0, int take = 0, int page = 0, int pageSize = 0, List<GridSort> sort = null, GridFilters filter = null, int pageTemplateId = 0)
         {
             try
             {
-                var json = PageService.GetServerSideRecords(skip, take, page, pageSize, sort, filter, pageTemplateId, tableNameOveride, selectColumns, sortOveride);
+                var json = PageService.GetServerSideRecords(skip, take, page, pageSize, sort, filter, pageTemplateId);
                 return json;
             }
             catch (Exception ex)
@@ -145,7 +146,15 @@ namespace SourceControl.Controllers
                         {
                             if (layoutType == "View" && columnDef.LookupTable.Length > 0 && columnDef.ValueField.Length > 0 && columnDef.TextField.Length > 0)
                             {
-                                if (columnDef.ElementType == "MultiSelect")
+                                if (columnDef.IsEncrypted)  // decrypt the value
+                                {
+                                    var encryptedValue = targetDb.Database.SqlQuery<string>("SELECT " + columnDef.ColumnName + " FROM " + tableName + " WHERE " + tableName + "." + primaryKey + " = " + recordId).FirstOrDefault();
+
+                                    var decryptedValue = Crypto.Decrypt(encryptedValue);
+
+                                    sbSelect.Append(", '" + decryptedValue.Replace("'", "''") + "' AS " + tableName + "_" + columnDef.ColumnName);
+                                }
+                                else if (columnDef.ElementType == "MultiSelect")
                                 {
                                     // get items and inject into select statement
                                     var lookupValue = targetDb.Database.SqlQuery<string>("SELECT " + columnDef.ColumnName + " FROM " + tableName + " WHERE " + primaryKey + " = " + recordId).FirstOrDefault();
@@ -177,7 +186,18 @@ namespace SourceControl.Controllers
                             } 
                             else
                             {
-                                sbSelect.Append(", " + tableName + "." + columnDef.ColumnName + " AS " + tableName + "_" + columnDef.ColumnName);
+                                if (columnDef.IsEncrypted)  // decrypt the value
+                                {
+                                    var encryptedValue = targetDb.Database.SqlQuery<string>("SELECT " + columnDef.ColumnName + " FROM " + tableName + " WHERE " + tableName + "." + primaryKey + " = " + recordId).FirstOrDefault();
+
+                                    var decryptedValue = Crypto.Decrypt(encryptedValue);
+
+                                    sbSelect.Append(", '" + decryptedValue.Replace("'", "''") + "' AS " + tableName + "_" + columnDef.ColumnName);
+                                } else
+                                {
+                                    sbSelect.Append(", " + tableName + "." + columnDef.ColumnName + " AS " + tableName + "_" + columnDef.ColumnName);
+                                }
+                                
                             }
                         }
 

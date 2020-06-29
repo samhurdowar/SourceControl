@@ -40,5 +40,6 @@ namespace SourceControl.Models.Db
         public bool ShowInGrid { get; set; }
         public string GridWidth { get; set; }
         public bool IsMultiSelect { get; set; }
+        public bool IsEncrypted { get; set; }
     }
 }

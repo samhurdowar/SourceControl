@@ -38,6 +38,8 @@ namespace SourceControl.Models.Db
         public virtual DbSet<DebugLog> DebugLogs { get; set; }
         public virtual DbSet<DbEntity> DbEntities { get; set; }
         public virtual DbSet<ColumnDef> ColumnDefs { get; set; }
+        public virtual DbSet<GridColumn> GridColumns { get; set; }
+        public virtual DbSet<SortColumn> SortColumns { get; set; }
         public virtual DbSet<PageTemplate> PageTemplates { get; set; }
     }
 }

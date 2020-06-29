@@ -30,13 +30,218 @@ namespace SourceControl.Controllers
             }
 		}
 
+		public string LoadGridColumn(int pageTemplateId)
+		{
+			using (SourceControlEntities Db = new SourceControlEntities())
+			{
+				SortGridColumn("", 0, 0, 0, pageTemplateId);
+				SortSortColumn("", 0, 0, 0, pageTemplateId);
+
+				var gridColumns = Db.GridColumns.Where(w => w.PageTemplateId == pageTemplateId).OrderBy(o => o.SortOrder);
+				int[] ids = gridColumns.Select(s => s.ColumnDefId).ToArray();
+				var gridColumns_ = Db.ColumnDefs.Where(w => w.PageTemplateId == pageTemplateId && !ids.Contains(w.ColumnDefId)).OrderBy(o => o.ColumnName);
+
+				var sortColumns = Db.SortColumns.Where(w => w.PageTemplateId == pageTemplateId).OrderBy(o => o.SortOrder);
+				int[] ids2 = sortColumns.Select(s => s.ColumnDefId).ToArray();
+				var sortColumns_ = Db.ColumnDefs.Where(w => w.PageTemplateId == pageTemplateId && !ids2.Contains(w.ColumnDefId)).OrderBy(o => o.ColumnName);
+
+				var json = "{ \"GridColumns\": " + JsonConvert.SerializeObject(gridColumns) + ", \"GridColumns_\": " + JsonConvert.SerializeObject(gridColumns_) + ", \"SortColumns\": " + JsonConvert.SerializeObject(sortColumns) + ", \"SortColumns_\": " + JsonConvert.SerializeObject(sortColumns_) + "}";
+				return json;
+			}
+		}
+		
+		public string SortGridColumn(string id, int fromColumnIndex, int toColumnIndex, int newOrder, int pageTemplateId = 0)
+		{
+            try
+            {
+				var gridColumnId = 0;
+				var oldOrder = 0;
+				using (SourceControlEntities Db = new SourceControlEntities())
+				{
+
+					// set to available.  Contains GridColumnId
+					if (fromColumnIndex == 2 && toColumnIndex == 1 && id.Contains("GridColumnId"))
+					{
+						gridColumnId = Convert.ToInt32(id.Replace("GridColumnId", ""));
+						var gridColumn = Db.GridColumns.Find(gridColumnId);
+						pageTemplateId = gridColumn.PageTemplateId;
+
+						newOrder = 10000;  // force reorder of everything
+						Db.Database.ExecuteSqlCommand("DELETE FROM GridColumn WHERE GridColumnId = " + gridColumnId);
+					}
+
+					// set to be in grid.  Contains ColumnDefId
+					if (fromColumnIndex == 1 && toColumnIndex == 2 && id.Contains("ColumnDefId"))
+					{
+						var columnDefId = Convert.ToInt32(id.Replace("ColumnDefId", ""));
+						var columnDef = Db.ColumnDefs.Find(columnDefId);
+						pageTemplateId = columnDef.PageTemplateId;
+						oldOrder = 10000;  // reorder records >= newOrder
+
+						// add GridColumn
+						var gridColumn = new GridColumn { ColumnDefId = columnDefId, PageTemplateId = pageTemplateId, SortOrder = newOrder };
+						Db.GridColumns.Add(gridColumn);
+						Db.SaveChanges();
+						gridColumnId = gridColumn.GridColumnId;
+					}
+
+
+					// Reorder within grid.  Contains GridColumnId
+					if (fromColumnIndex == 2 && toColumnIndex == 2 && id.Contains("GridColumnId"))
+					{
+						gridColumnId = Convert.ToInt32(id.Replace("GridColumnId", ""));
+						var gridColumn = Db.GridColumns.Find(gridColumnId);
+						pageTemplateId = gridColumn.PageTemplateId;
+						oldOrder = gridColumn.SortOrder;
+
+						// update GridColumn.SortOrder
+						gridColumn.SortOrder = newOrder;
+						Db.Entry(gridColumn).State = EntityState.Modified;
+						Db.SaveChanges();
+					}
+
+					// Reorder GridColumn
+					if (pageTemplateId > 0)
+					{
+						Db.Database.ExecuteSqlCommand("dbo.SortGridColumn @pageTemplateId, @gridColumnId, @oldOrder, @newOrder", new[] { new SqlParameter("@pageTemplateId", pageTemplateId), new SqlParameter("@gridColumnId", gridColumnId), new SqlParameter("@oldOrder", oldOrder), new SqlParameter("@newOrder", newOrder) });
+					}
+				}
+				return "";
+			}
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+		}
+
+		public string SortSortColumn(string id, int fromColumnIndex, int toColumnIndex, int newOrder, int pageTemplateId = 0)
+		{
+			try
+			{
+				var sortColumnId = 0;
+				var oldOrder = 0;
+				using (SourceControlEntities Db = new SourceControlEntities())
+				{
+
+					// set to available.  Contains SortColumnId
+					if (fromColumnIndex == 2 && toColumnIndex == 1 && id.Contains("SortColumnId"))
+					{
+						sortColumnId = Convert.ToInt32(id.Replace("SortColumnId", ""));
+						var sortColumn = Db.SortColumns.Find(sortColumnId);
+						pageTemplateId = sortColumn.PageTemplateId;
+
+						newOrder = 10000;  // force reorder of everything
+						Db.Database.ExecuteSqlCommand("DELETE FROM SortColumn WHERE SortColumnId = " + sortColumnId);
+					}
+
+					// set to be in grid.  Contains ColumnDefId
+					if (fromColumnIndex == 1 && toColumnIndex == 2 && id.Contains("ColumnDefId"))
+					{
+						var columnDefId = Convert.ToInt32(id.Replace("ColumnDefId", ""));
+						var columnDef = Db.ColumnDefs.Find(columnDefId);
+						pageTemplateId = columnDef.PageTemplateId;
+						oldOrder = 10000;  // reorder records >= newOrder
+
+						// add SortColumn
+						var sortColumn = new SortColumn { ColumnDefId = columnDefId, PageTemplateId = pageTemplateId, SortOrder = newOrder };
+						Db.SortColumns.Add(sortColumn);
+						Db.SaveChanges();
+						sortColumnId = sortColumn.SortColumnId;
+					}
+
+
+					// Reorder within grid.  Contains SortColumnId
+					if (fromColumnIndex == 2 && toColumnIndex == 2 && id.Contains("SortColumnId"))
+					{
+						sortColumnId = Convert.ToInt32(id.Replace("SortColumnId", ""));
+						var sortColumn = Db.SortColumns.Find(sortColumnId);
+						pageTemplateId = sortColumn.PageTemplateId;
+						oldOrder = sortColumn.SortOrder;
+
+						// update SortColumn.SortOrder
+						sortColumn.SortOrder = newOrder;
+						Db.Entry(sortColumn).State = EntityState.Modified;
+						Db.SaveChanges();
+					}
+
+					// Reorder SortColumn
+					if (pageTemplateId > 0)
+					{
+						// Reorder exclude the record
+						Db.Database.ExecuteSqlCommand("dbo.SortSortColumn @pageTemplateId, @sortColumnId, @oldOrder, @newOrder", new[] { new SqlParameter("@pageTemplateId", pageTemplateId), new SqlParameter("@sortColumnId", sortColumnId), new SqlParameter("@oldOrder", oldOrder), new SqlParameter("@newOrder", newOrder) });
+					}
+				}
+				return "";
+			}
+			catch (Exception ex)
+			{
+				return ex.Message;
+			}
+		}
+
+
 		public string GetTableOptions(int dbEntityId)
 		{
-			string json = DataService.GetJsonFromSQL("ValueField,TextField", "name,name", "FROM sys.objects o WHERE o.type = 'U' ORDER BY name", "", false, 0, dbEntityId);
+			var sysTables = DataService.SysTables(dbEntityId).Select(s => new { ValueField = s.TableName, TextField = s.TableName });
+			var json = JsonConvert.SerializeObject(sysTables);
 			return json;
 		}
 
-        public string GetImportData(int dbEntityId, string tableName)
+		[HttpPost]
+		public string EncryptRecords(int columnDefId)
+		{
+			var numOfRecord = 0;
+			var columnName = "";
+			try
+            {
+				StringBuilder sb = new StringBuilder();
+				var i = 0;
+				var columnDef = SessionService.ColumnDef(columnDefId);
+				var pageTemplate = SessionService.PageTemplate(columnDef.PageTemplateId);
+				var dbEntity = SessionService.DbEntity(pageTemplate.DbEntityId);
+
+
+				using (TargetEntities targetDb = new TargetEntities())
+				{
+					targetDb.Database.Connection.ConnectionString = dbEntity.ConnectionString;
+
+					var encryptedValue = "";
+					columnName = columnDef.ColumnName;
+					var tableName = pageTemplate.TableName;
+					var primaryKey = pageTemplate.PrimaryKey;
+					var primaryKeyType = pageTemplate.PrimaryKeyType;
+					var sql = "SELECT CAST(" + primaryKey + " AS nvarchar(36)) AS RecordId, CAST(ISNULL(" + columnName + ", '') AS varchar(max)) AS RecordValue FROM " + tableName;
+					var exe = "UPDATE " + tableName + " SET " + columnName + " = '[RecordValue]' WHERE " + primaryKey + " = '[RecordId]';";
+					var items = targetDb.Database.SqlQuery<EncrypedRecord>(sql).ToList();
+                    foreach (var item in items.Where(w => w.RecordValue.Length > 0))
+                    {
+						encryptedValue = Crypto.Encrypt(item.RecordValue).Replace("'","''");
+						sb.Append(exe.Replace("[RecordId]", item.RecordId).Replace("[RecordValue]", encryptedValue));
+						numOfRecord++;
+						i++;
+						if (i > 50)
+                        {
+							i = 0;
+							targetDb.Database.ExecuteSqlCommand(sb.ToString());
+							sb.Clear();
+                        }
+					}
+					if (i > 0 && sb.Length > 0)
+					{
+						targetDb.Database.ExecuteSqlCommand(sb.ToString());
+					}
+				}
+				return "Successful.  " + numOfRecord + " records were encrypted for column " + columnName + ".";
+			}
+            catch (Exception ex)
+            {
+                return ex.Message;
+            }
+
+		}
+
+
+		public string GetImportData(int dbEntityId, string tableName)
         {
             var sql = "";
             var insertStatement = "";
@@ -66,7 +271,7 @@ namespace SourceControl.Controllers
                     CASE 
                     WHEN (is_identity = 1) THEN ' + CAST(' + c.Name + ' AS varchar) + '''  
                     WHEN (system_type_id = 35)  THEN ''''''' + REPLACE(CAST(ISNULL(' + c.Name + ','''') AS varchar(max)), '''''''','''''''''''') + '''''''  
-                    WHEN (system_type_id = 36)  THEN ''''''' + ISNULL(' + c.Name + ','''') + '''''''
+                    WHEN (system_type_id = 36)  THEN ''''''' + CAST(ISNULL(' + c.Name + ','''') AS nvarchar(36))  + '''''''
                     WHEN (system_type_id = 40)  THEN ''''''' + CAST(ISNULL(' + c.Name + ','''') AS varchar) + '''''''  
                     WHEN (system_type_id = 42)  THEN 'datetime2'
                     WHEN (system_type_id = 48)  THEN ''' + ISNULL(' + c.Name + ',0) + '''
@@ -100,7 +305,9 @@ namespace SourceControl.Controllers
                 sql = sql.Replace("PageTemplate", tableName);
                 insertSqlStatement = targetDb.Database.SqlQuery<string>(sql).FirstOrDefault();
 
-                var recs = targetDb.Database.SqlQuery<string>(insertSqlStatement);
+				insertSqlStatement = insertSqlStatement.Replace("SELECT '(' ''' + CAST(ISNULL(guid", "SELECT '(''' + CAST(ISNULL(guid");
+
+				var recs = targetDb.Database.SqlQuery<string>(insertSqlStatement);
                 foreach (var rec in recs)
                 {
                     sb.AppendLine(rec);
@@ -122,14 +329,60 @@ namespace SourceControl.Controllers
         }
 
 
-        
-        
-
         public string GetPageTemplates(int dbEntityId)
 		{
-            DataService.SyncDatabases(dbEntityId);
             using (SourceControlEntities Db = new SourceControlEntities())
 			{
+				// initialize GridColumn table from PageTemplate.GridColumns
+				var gridColumns_ = Db.GridColumns.ToList();
+				if (gridColumns_.Count == 0)
+                {
+					var sortOrder = 0;
+					List<GridColumn> gridColumns = new List<GridColumn>();
+					var pageTemplates = Db.PageTemplates;
+					foreach (var pageTemplate in pageTemplates.Where(w => w.GridColumns.Length > 1))
+					{
+						sortOrder = 0;
+						int[] ids = Array.ConvertAll(pageTemplate.GridColumns.Split(new char[] { ',' }), s => int.Parse(s));
+						for (int i = 0; i < ids.Length; i++)
+						{
+							sortOrder++;
+							GridColumn gridColumn = new GridColumn { ColumnDefId = ids[i], PageTemplateId = pageTemplate.PageTemplateId, SortOrder = sortOrder };
+
+							gridColumns.Add(gridColumn);
+						}
+					}
+
+					Db.GridColumns.AddRange(gridColumns);
+					Db.SaveChanges();
+				}
+
+				// initialize SortColumn table from PageTemplate.SortColumns
+				var sortColumns_ = Db.SortColumns.ToList();
+				if (sortColumns_.Count == 0)
+				{
+					var sortOrder = 0;
+					List<SortColumn> sortColumns = new List<SortColumn>();
+					var pageTemplates = Db.PageTemplates;
+					foreach (var pageTemplate in pageTemplates.Where(w => w.SortColumns.Length > 1))
+					{
+						sortOrder = 0;
+						string[] ids = pageTemplate.SortColumns.Split(new char[] { ',' });
+						for (int i = 0; i < ids.Length; i++)
+						{
+							sortOrder++;
+
+							var id_ = ids[i].Replace("ASC","").Replace("DESC", "").Replace(" ", "");
+							SortColumn sortColumn = new SortColumn { ColumnDefId = Convert.ToInt32(id_), PageTemplateId = pageTemplate.PageTemplateId, SortOrder = sortOrder, SortDir = "ASC" };
+
+							sortColumns.Add(sortColumn);
+						}
+					}
+
+					Db.SortColumns.AddRange(sortColumns);
+					Db.SaveChanges();
+				}
+
 				var recs = Db.PageTemplates.Where(w => w.DbEntityId == dbEntityId).OrderBy(o => o.TemplateName).Select(s => new { s.PageTemplateId, s.TemplateName });
 				var json = JsonConvert.SerializeObject(recs);
                 return json;
@@ -175,11 +428,12 @@ namespace SourceControl.Controllers
             }
 		}
 
-		public string GetColumnOptionsByName(string tableName, int dbEntityId)
+		public string GetColumnOptionsByName(int dbEntityId, string tableName)
 		{
+			var sysColumns = SessionService.SysColumns(dbEntityId, tableName).Select(s => new { ValueField = s.ColumnName, TextField = s.ColumnName });
 
-			string json = DataService.GetJsonFromSQL("ValueField,TextField", "c.name,c.name", "FROM sys.columns c JOIN sys.objects o ON o.object_id = c.object_id WHERE o.type = 'U' AND o.name = '" + tableName + "' ORDER BY c.name", "", false, 0, dbEntityId);
-			if (json.Length < 3) json = "[{ \"ValueField\":\"\", \"TextField\":\"\"}]";
+			string json = JsonConvert.SerializeObject(sysColumns);
+			if (json.Length < 5) json = "[{ \"ValueField\":\"\", \"TextField\":\"\"}]";
 
 			return json;
 		}
@@ -246,14 +500,16 @@ namespace SourceControl.Controllers
 		}
 
 		[HttpPost]
-		public string GetPageTemplate(int pageTemplateId)
+		public string GetPageTemplateData(int pageTemplateId)
 		{
-            Session["sec.PageTemplate" + pageTemplateId] = null;  // force reload
+			SessionService.ClearPageTemplateSessions(pageTemplateId);  // force reload
 
-            var pageTemplate = SessionService.PageTemplate(pageTemplateId);
-            var json = JsonConvert.SerializeObject(pageTemplate, new JsonSerializerSettings() { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
+			var pageTemplate = SessionService.PageTemplate(pageTemplateId);
+            var pageTemplate_ = JsonConvert.SerializeObject(pageTemplate, new JsonSerializerSettings() { ReferenceLoopHandling = ReferenceLoopHandling.Ignore });
 
-            return json;
+			var json = "{ \"GridColumns\": {} , \"PageTemplate\": " + pageTemplate_ + " }";
+
+			return json;
 		}
 
 
@@ -324,37 +580,18 @@ namespace SourceControl.Controllers
 		{
 			try
 			{
-				string primaryKey = "";
-
-                // get primary key for table
-                var dbEntity = SessionService.DbEntity(dbEntityId);
-                using (TargetEntities targetDb = new TargetEntities())
-                {
-                    targetDb.Database.Connection.ConnectionString = dbEntity.ConnectionString;
-                    primaryKey = targetDb.Database.SqlQuery<string>("SELECT TOP 1 a.COLUMN_NAME AS PrimaryKey FROM INFORMATION_SCHEMA.CONSTRAINT_COLUMN_USAGE a JOIN INFORMATION_SCHEMA.TABLE_CONSTRAINTS b ON a.CONSTRAINT_NAME = b.CONSTRAINT_NAME AND b.CONSTRAINT_TYPE = 'PRIMARY KEY' AND b.TABLE_NAME = '"  + newTableName + "'").FirstOrDefault();
-				}
-
 				using (SourceControlEntities Db = new SourceControlEntities())
 				{
-					var sql = "INSERT INTO PageTemplate(DbEntityId,TemplateName,TableName,PrimaryKey,PageType) VALUES(" + dbEntityId + ",'" + newTemplateName + "','" + newTableName + "','" + primaryKey + "','" + newPageType + "'); SELECT CAST(@@IDENTITY AS varchar(250));";
+					var sql = "INSERT INTO PageTemplate(DbEntityId,TemplateName,TableName,PageType) VALUES(" + dbEntityId + ",'" + newTemplateName + "','" + newTableName + "','" + newPageType + "'); SELECT CAST(@@IDENTITY AS varchar(250));";
 					var pageTemplateId = Convert.ToInt32(Db.Database.SqlQuery<string>(sql).FirstOrDefault());
-
-
-                    // sync database
-                    Session["sec.SyncDatabases" + dbEntityId] = null;
-                    DataService.SyncDatabases(dbEntityId);
 
                     return pageTemplateId.ToString();
 				}
-
 			}
 			catch (Exception ex)
 			{
-
 				return "Unable to process - " + ex.Message;
 			} 
-
-
 		}
 
 		public string GetColumnDefById(int columnDefId)
@@ -376,41 +613,14 @@ namespace SourceControl.Controllers
 			else
 			{
 				var columnDef = SessionService.ColumnDef(columnDefId);
+				Session["sec.ColumnDefId" + columnDefId] = null;
+				Session["sec.ColumnDefs" + columnDef.PageTemplateId] = null;
+				columnDef = SessionService.ColumnDef(columnDefId);
 				string obj = JsonConvert.SerializeObject(columnDef);
                 return obj;
 			}
 
 		}
-
-		public string GetDefaultSortColumn(int pageTemplateId)
-		{
-			using (SourceControlEntities Db = new SourceControlEntities())
-			{
-
-				var recs = Db.Database.SqlQuery<ValueText>("SELECT ColumnName AS ValueField, DisplayName AS TextField FROM ColumnDef WHERE PageTemplateId = " + pageTemplateId);
-				var json = Newtonsoft.Json.JsonConvert.SerializeObject(recs);
-
-				return json;
-			}
-		}
-
-
-		//[AcceptVerbs(HttpVerbs.Post)]
-		//public string Destroy(string json)
-		//{
-
-		//	int pageTemplateId = DataService.GetJsonIntValue(json, "PageTemplateId");
-		//	StringBuilder sb = new StringBuilder();
-		//	sb.Append("DELETE FROM ColumnDef WHERE PageTemplateId = " + pageTemplateId + ";");
-		//	sb.Append("DELETE FROM PageGroupTemplate WHERE PageTemplateId = " + pageTemplateId + ";");
-		//	sb.Append("UPDATE MenuTree SET PageTemplateId = 0 WHERE PageTemplateId = " + pageTemplateId + ";");
-		//	sb.Append("UPDATE MenuSubMenu SET PageTemplateId = 0 WHERE PageTemplateId = " + pageTemplateId + ";");
-		//	sb.Append("DELETE FROM PageTemplate WHERE PageTemplateId = " + pageTemplateId + ";");
-
-		//	DataService.Execute(sb.ToString());
-		//	return "T";
-		//}
-
 
 		[HttpPost]
 		public string GetLayoutFromColumnDef(int pageTemplateId, int numOfCol)
@@ -544,21 +754,6 @@ namespace SourceControl.Controllers
 			}
 		}
 
-
-		//[HttpPost]
-		//public string DeleteCustomOption(int customOptionId)
-		//{
-		//	try
-		//	{
-		//		DataService.Execute("DELETE FROM CustomOption WHERE CustomOptionId = " + customOptionId);
-		//		return "";
-		//	}
-		//	catch (Exception ex)
-		//	{
-		//		return "Unable to process DeleteCustomOption() - " + ex.Message;
-		//	}
-		//}
-
 		public string RenameColumnName(int pageTemplateId, int columnDefId, string oldColumnName, string newColumnName)
 		{
 			try
@@ -577,7 +772,6 @@ namespace SourceControl.Controllers
 			}
 		}
 
-
 		public string ChangeDataLength(int pageTemplateId, int columnDefId, string currentColumnName, string currentDataType, int currentDataLength, int formDataLength)
 		{
 			try
@@ -595,189 +789,6 @@ namespace SourceControl.Controllers
 				return ex.Message;
 			}
 		}
-
-		//[HttpPost]
-		//public string DeleteColumnDef(int columnDefId)
-		//{
-		//	try
-		//	{
-		//		using (SourceControlEntities Db = new SourceControlEntities())
-		//		{
-		//			var columnDef = Db.ColumnDefs.Find(columnDefId);
-		//			var columnName = columnDef.ColumnName;
-
-  //                  var pageTemplate = SessionService.PageTemplate(columnDef.PageTemplateId);
-		//			var tableName = pageTemplate.TableName;
-
-		//			Db.Database.ExecuteSqlCommand("EXEC DropConstraint '" + tableName + "', '" + columnName + "'");
-
-		//			Db.Database.ExecuteSqlCommand("ALTER TABLE " + tableName + " DROP COLUMN " + columnName);
-		//		}
-
-		//	}
-		//	catch (Exception)
-		//	{
-		//		//return "Unable to process deleting column.()<br>" + ex.Message;
-		//	}
-
-		//	try
-		//	{
-		//		DataService.Execute("DELETE FROM ColumnDef WHERE ColumnDefId = " + columnDefId);
-		//	}
-		//	catch (Exception)
-		//	{
-
-		//	}
-
-		//	return "";
-
-		//}
-
-		//[HttpPost]
-		//public string AddColumnDef(int pageTemplateId, string json)
-		//{
-		//	try
-		//	{
-		//		string msg = DataService.UpdateRecordByTable(1, "ColumnDef", json);
-		//		SessionService.ResetPageSession(pageTemplateId);
-
-		//		// set PageTemplateId
-		//		int columnDefId = 0;
-		//		if (int.TryParse(msg, out columnDefId))
-		//		{
-		//			DataService.Execute("UPDATE ColumnDef SET PageTemplateId = " + pageTemplateId + " WHERE ColumnDefId = " + columnDefId);
-
-		//			// create field in database table
-		//			using (SourceControlEntities Db = new SourceControlEntities())
-		//			{
-		//				var pageTemplate = Db.PageTemplates.Find(pageTemplateId);
-		//				var columnDef = Db.ColumnDefs.Find(columnDefId);
-
-		//				int dataLength = DataService.GetJsonIntValue(json, "DataLength");
-		//				string dataType = DataService.GetJsonStringValue(json, "DataType");
-		//				bool isRequired = DataService.GetJsonBooleanValue(json, "IsRequired");
-		//				var defaultValue = columnDef.DefaultValue;
-
-		//				StringBuilder sb = new StringBuilder();
-		//				sb.Append("ALTER TABLE " + pageTemplate.TableName + " ");
-		//				sb.Append("ADD " + columnDef.ColumnName + " ");
-
-		//				// set datatype & length  TEXT  MAXTEXT  NUMBER  DECIMAL  CURRENCY  BOOLEAN  DATE  DATETIME
-		//				switch (dataType)
-		//				{
-		//					case "TEXT":
-		//						if (dataLength == 0) dataLength = 50;
-		//						sb.Append("varchar(" + dataLength + ") ");
-		//						break;
-		//					case "MAXTEXT":
-		//						sb.Append("varchar(max) ");
-		//						break;
-		//					case "NUMBER":
-		//						sb.Append("int ");
-		//						break;
-		//					case "DECIMAL":
-		//						sb.Append("decimal ");
-		//						break;
-		//					case "CURRENCY":
-		//						sb.Append("money ");
-		//						break;
-		//					case "BOOLEAN":
-		//						sb.Append("bit ");
-		//						break;
-		//					case "DATE":
-		//						sb.Append("date ");
-		//						break;
-		//					case "DATETIME":
-		//						sb.Append("datetime ");
-		//						break;
-		//					default:
-		//						break;
-		//				}
-
-
-		//				// set null
-		//				if (isRequired)
-		//				{
-		//					sb.Append("not null ");
-		//				}
-
-		//				// set default  TEXT  MAXTEXT  NUMBER  DECIMAL  CURRENCY  BOOLEAN  DATE  DATETIME
-		//				switch (dataType)
-		//				{
-
-		//					case "TEXT":
-		//						sb.Append("default '" + defaultValue + "' ");
-		//						break;
-		//					case "MAXTEXT":
-		//						sb.Append("default '" + defaultValue + "' ");
-		//						break;
-		//					case "NUMBER":
-		//						if (defaultValue.Length > 0)
-		//						{
-		//							sb.Append("default " + Helper.ToInt32(defaultValue));
-		//						}
-		//						break;
-		//					case "DECIMAL":
-		//						if (defaultValue.Length > 0)
-		//						{
-		//							sb.Append("default " + Helper.ToDecimal(defaultValue));
-		//						}
-		//						break;
-		//					case "CURRENCY":
-		//						if (defaultValue.Length > 0)
-		//						{
-		//							sb.Append("default " + Helper.ToDecimal(defaultValue));
-		//						}
-		//						break;
-		//					case "BOOLEAN":
-		//						if (defaultValue.Length > 0)
-		//						{
-		//							if (defaultValue.ToUpper() == "TRUE")
-		//							{
-		//								sb.Append("default 1");
-		//							}
-		//							else
-		//							{
-		//								sb.Append("default " + Helper.ToInt32(defaultValue));
-		//							}
-
-		//						}
-		//						else
-		//						{
-		//							sb.Append("default 0");
-		//						}
-		//						break;
-		//					case "DATE":
-		//						if (isRequired)
-		//						{
-		//							sb.Append("default getdate() ");
-		//						}
-		//						break;
-		//					case "DATETIME":
-		//						if (isRequired)
-		//						{
-		//							sb.Append("default getdate() ");
-		//						}
-		//						break;
-		//					default:
-		//						break;
-
-		//				}
-
-		//				Db.Database.ExecuteSqlCommand(sb.ToString());
-
-		//			}
-		//		}
-
-		//		return msg;
-		//	}
-		//	catch (Exception ex)
-		//	{
-		//		return "Unable to process adding column.()<br>" + ex.Message;
-		//	}
-
-
-		//}
 
 		public string GetReportClass()
 		{
@@ -811,15 +822,3 @@ namespace SourceControl.Controllers
 
 
 }
-
-
-/*  DataType  TEXT  MAXTEXT  NUMBER  DECIMAL  CURRENCY  BOOLEAN  DATE  DATETIME
-			{ text: "Text", value: "TEXT" },
-			{ text: "Big Text (cannot search)", value: "MAXTEXT" },
-			{ text: "Number", value: "NUMBER" },
-			{ text: "Decimal", value: "DECIMAL" },
-			{ text: "Currency", value: "CURRENCY" },
-			{ text: "Boolean", value: "BOOLEAN" },
-			{ text: "Date", value: "DATE" },
-			{ text: "DateTime", value: "DATETIME" }
- * */

@@ -1,0 +1,195 @@
+﻿
+<div class="app-command-bar">
+    <table>
+        <tr>
+            <td nowrap>
+                IP Address:
+            </td>
+            <td><input type="text" class="form-control" id="searchString6789" name="searchString6789" style="width:250px;" /></td>
+            <td><input type="button" class="btn btn-primary" id="submit" value="Search" onclick="SearchEndDevice6789()" /></td>
+            <td>
+                <a href="javascript:DownloadHostSearch6789()" class="app-command-item"><img src="Images/ToolBar/download.png" /><span> Download to Excel</span></a>
+                Homes use alternative energy.  They are used as alternative energy  <a href="javascript:EmailHostSearch6789" class="app-command-item"><img src="Images/ToolBar/Email.png" /><span> Email Me Results</span></a>
+            </td>
+        </tr>
+
+    </table>
+</div>
+
+<table style="width:100%;">
+
+    <tr>
+        <td style="width:50%;">
+            <span style="font-size:1.5em;font-weight:bold;">DNS Results  <span id="grid6789_DNS_recordcount" style="float:right;font-size:0.8em;font-weight:normal;"></span></span>
+        </td>
+        <td style="width:50%;">
+            <span style="font-size:1.5em;font-weight:bold;">VM Results  <span id="grid6789_VM_recordcount" style="float:right;font-size:0.8em;font-weight:normal;"></span></span>
+        </td>
+    </tr>
+
+    <tr>
+        <td style="width:50%;">
+            <div id="grid6789_DNS" style="width:100%;"></div>
+        </td>
+        <td style="width:50%;">
+            <div id="grid6789_VM" style="width:100%;"></div>
+        </td>
+    </tr>
+
+</table>
+
+<script>
+    $(document).ready(function () {
+
+        $("#grid6789_DNS").kendoGrid({
+            autoBind: false,
+            dataSource: {
+                type: "json",
+                pageable: false,
+                transport: {
+                    read: {
+                        url: "/EndDevice/GetDNSResults?searchString=xxx",
+                        dataType: "json",
+                        type: "POST"
+                    }
+                }
+            },
+            scrollable: true,
+            sortable: true,
+            groupable: false,
+            filterable: {
+                extra: false,
+                operators: {
+                    string: {
+                        startswith: "Starts with",
+                        endswith: "Ends with",
+                        eq: "Is equal to",
+                        neq: "Is not equal to",
+                        contains: "Contains",
+                        doesnotcontain: "Does not contain"
+                    }
+                }
+            },
+            height: 400,
+            resizable: true,
+            columns: [
+                { field: "host", title: "DNS Name" },
+                { field: "ipAddress", title: "IP Address" },
+                { field: "ipType", title: "Type" }
+            ],
+            dataBound: function (e) {
+
+                $('#grid6789_DNS_recordcount').html(this.dataSource.total() + " records");
+
+            }
+        });
+
+
+        $("#grid6789_VM").kendoGrid({
+            autoBind: false,
+            dataSource: {
+                type: "json",
+                pageable: false,
+                transport: {
+                    read: {
+                        url: "/EndDevice/GetVMResults?searchString=xxx",
+                        dataType: "json",
+                        type: "POST"
+                    }
+                }
+            },
+            scrollable: true,
+            sortable: true,
+            groupable: false,
+            filterable: {
+                extra: false,
+                operators: {
+                    string: {
+                        startswith: "Starts with",
+                        endswith: "Ends with",
+                        eq: "Is equal to",
+                        neq: "Is not equal to",
+                        contains: "Contains",
+                        doesnotcontain: "Does not contain"
+                    }
+                }
+            },
+            height: 400,
+            resizable: true,
+            columns: [
+                { field: "Environment", title: "Environment" },
+                { field: "ServerName", title: "Server" },
+                { field: "ESXi_Host", title: "Physical ESX Host" },
+                { field: "Mgt_IP", title: "Mgt IP" },
+                { field: "Prod_IP", title: "Prod IP" },
+                { field: "BUR_IP", title: "Bur IP" },
+                { field: "SEC_IP", title: "Sec IP" },
+                { field: "Comment", title: "Comment" }
+
+            ],
+            dataBound: function (e) {
+
+                $('#grid6789_VM_recordcount').html(this.dataSource.total() + " records");
+
+            }
+        });
+    });
+
+
+    function SearchEndDevice6789() {
+        var searchString = $("#searchString6789").val();
+
+        if (searchString.length == 0) {
+            MessageBox("Information", "Search string is required.", false);
+            return;
+        }
+
+        var grid6789_DNS = $("#grid6789_DNS").data("kendoGrid");
+        grid6789_DNS.dataSource.transport.options.read.url = "/EndDevice/GetDNSResults?searchString=" + searchString + "&searchBy=ipv4addr";
+        grid6789_DNS.dataSource.read();
+
+
+        var grid6789_VM = $("#grid6789_VM").data("kendoGrid");
+        grid6789_VM.dataSource.transport.options.read.url = "/EndDevice/GetVMResults?searchString=" + searchString + "&searchBy=ipv4addr";
+        grid6789_VM.dataSource.read();
+    }
+
+
+    function DownloadHostSearch6789() {
+        var searchString = $("#searchString6789").val();
+
+        if (searchString.length == 0) {
+            MessageBox("Information", "Search string is required.", false);
+            return;
+        }
+        location.href = "/EndDevice/DownloadHostSearch?searchString=" + searchString + "&searchBy=ipv4addr";
+    }
+
+
+    function EmailHostSearch6789() {
+        var searchString = $("#searchString6789").val();
+
+        if (searchString.length == 0) {
+            MessageBox("Information", "Search string is required.", false);
+            return;
+        }
+
+        $.ajax({
+            url: "/EndDevice/EmailHostSearch",
+            type: "POST",
+            data: { searchString: searchString, searchBy: "ipv4addr" },
+            dataType: "text",
+            success: function (data) {
+                if (data == "T") {
+                    MessageBox("Information", "Email sent successfully.", false);
+                } else {
+                    MessageBox("Information", "Error sending email. <br>" + data, false);
+                }
+            },
+            error: function (request, status, error) {
+                alert(request.responseText);
+            }
+        });
+    }
+
+</script>

@@ -16,7 +16,7 @@ namespace SourceControl.App.NetworkCafe
 {
 	public class RestConnector
 	{
-		public List<HostData> GetHostDNS(string hostname)
+		public List<HostData> GetHostDNS(string hostname, string searchBy)
 		{
             try
             {
@@ -27,8 +27,6 @@ namespace SourceControl.App.NetworkCafe
                     NullValueHandling = NullValueHandling.Ignore
                 };
 
-                Helper.LogError("GetHostDNS()    SessionService.IsLocal=" + SessionService.IsLocal);
-
                 if (SessionService.IsLocal)
                 {
                     string testFilePath = @"D:\Perspecta\SourceControl\App_Data\DNSResults.txt";
@@ -36,17 +34,22 @@ namespace SourceControl.App.NetworkCafe
                 }
                 else
                 {
+                    //Https://10.10.248.40/wapi/v1.2/record:host?ipv4addr~=8.43.34.217
                     InfoBloxDNSHostSearch.url url = new InfoBloxDNSHostSearch.url();
                     string serverAddress = url.server;
-                    string resource = url.resource + hostname; //  Https://10.10.248.40//wapi/v1.2/record:host?name~=ustlvcmsp2167     toolboxapi/1qazXSW@3edcVFR$5tgb  ustlvcmsp2349   GetHostDNS()    resource=Https://10.10.248.40//wapi/v1.2/record:host?name~=ustlvcmsp2167
+                    string resource = url.resource + hostname; //  Https://10.10.248.40/wapi/v1.2/record:host?name~=ustlvcmsp2167     toolboxapi/1qazXSW@3edcVFR$5tgb  ustlvcmsp2349   GetHostDNS()    resource=Https://10.10.248.40/wapi/v1.2/record:host?name~=ustlvcmsp2167
 
-                    Helper.LogError("GetHostDNS()    resource=" + serverAddress + url.resource + hostname);
+                    if (searchBy == "ipv4addr")
+                    {
+                        resource = resource.Replace("host?name", "host?ipv4addr");
+                    }
+                    //Helper.LogError("GetHostDNS()    resource=" + serverAddress + url.resource + hostname);
 
                     IRestResponse response = EstablishInfoBloxConnection(resource, serverAddress);
                     json = response.Content;
                 }
 
-                Helper.LogError("GetHostDNS()    json=" + json);
+                //Helper.LogError("GetHostDNS()    json=" + json);
 
                 List<HostData> results = new List<HostData>();
                 var dnsResults = JsonConvert.DeserializeObject<List<InfoBloxDNSHostSearch.DnsResult>>(json, settings);

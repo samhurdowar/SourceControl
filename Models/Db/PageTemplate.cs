@@ -18,7 +18,6 @@ namespace SourceControl.Models.Db
         public int DbEntityId { get; set; }
         public string TemplateName { get; set; }
         public string TableName { get; set; }
-        public string PrimaryKey { get; set; }
         public string GridColumns { get; set; }
         public string SortColumns { get; set; }
         public string AddTabLabel { get; set; }
@@ -45,7 +44,6 @@ namespace SourceControl.Models.Db
         public bool GridAutoBind { get; set; }
         public string RefKey2Name { get; set; }
         public string PrimaryKey2Name { get; set; }
-        public string PrimaryKeyType { get; set; }
         public string SearchLayout { get; set; }
         public string ViewFormStyle { get; set; }
         public string ViewFormCommand { get; set; }
@@ -59,5 +57,8 @@ namespace SourceControl.Models.Db
         public string SearchFormCommand { get; set; }
         public string SearchFormBody { get; set; }
         public string SearchFormScript { get; set; }
+        public string ReportGridColumns { get; set; }
+        public string FormCommand { get; set; }
+        public string FormScript { get; set; }
     }
 }

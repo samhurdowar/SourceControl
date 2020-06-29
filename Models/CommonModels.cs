@@ -9,6 +9,11 @@ namespace SourceControl.Models
 	{
 	}
 
+	public class EncrypedRecord
+	{
+		public string RecordId { get; set; }
+		public string RecordValue { get; set; }
+	}
 
 	public class MenuModel
 	{

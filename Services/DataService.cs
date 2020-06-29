@@ -16,98 +16,26 @@ namespace SourceControl.Services
     public static class DataService
     {
 
-
-        public static void SyncColumns(PageTemplate pageTemplate)
+        public static string GetJsonFromSQL(int dbEntityId, string sql, bool firstOrDefault = false)
         {
-            SyncDatabases(pageTemplate.DbEntityId, pageTemplate.PageTemplateId);
-        }
-
-        public static string SyncDatabases(int dbEntityId, int pageTemplateId = 0)
-        {
-            try
+            var dbEntity = DataService.DbEntity(dbEntityId);
+            using (TargetEntities targetDb = new TargetEntities())
             {
-                using (SourceControlEntities Db = new SourceControlEntities())
+                targetDb.Database.Connection.ConnectionString = dbEntity.ConnectionString;
+
+                sql += " FOR JSON PATH, INCLUDE_NULL_VALUES";
+                var items = targetDb.Database.SqlQuery<string>(sql).ToList();
+                var json = "";
+                foreach (var item in items)
                 {
-                    var dbEntities = Db.DbEntities.Where(w => w.DbEntityId == dbEntityId).ToList();
-                    // load/sync tables and main grid for each database
-                    foreach (var dbEntity in dbEntities)
-                    {
-                        using (TargetEntities targetDb = new TargetEntities())
-                        {
-                            targetDb.Database.Connection.ConnectionString = dbEntity.ConnectionString;
-
-                            var sysTables = DataService.SysTables(dbEntityId);
-                            foreach (var sysTable in sysTables)
-                            {
-                                Db.Database.ExecuteSqlCommand("UPDATE PageTemplate SET PrimaryKey = '" + sysTable.PrimaryKey + "', PrimaryKeyType = '" + sysTable.PrimaryKeyType + "' WHERE TableName = '" + sysTable.TableName +  "' AND DbEntityId = " + sysTable.DbEntityId);
-                            }
-                        }
-                    }
-
-                    // loop dbEntities
-                    foreach (var dbEntity in dbEntities)
-                    {
-                        using (TargetEntities targetDb = new TargetEntities())
-                        {
-                            targetDb.Database.Connection.ConnectionString = dbEntity.ConnectionString;
-
-                            // loop PageTemplates
-                            var pageTemplates = Db.PageTemplates.Where(w => w.DbEntityId == dbEntity.DbEntityId && w.TableName.Length > 2).ToList();
-                            if (pageTemplateId > 0) pageTemplates = pageTemplates.Where(w => w.PageTemplateId == pageTemplateId).ToList();
-                            foreach (var pageTemplate in pageTemplates)
-                            {
-                                // loop syscolumns
-                                var columnDefs = Db.ColumnDefs.Where(w => w.PageTemplateId == pageTemplate.PageTemplateId);
-                                var sysColumns = DataService.SysColumns(dbEntityId, pageTemplate.TableName);
-                                foreach (var sysColumn in sysColumns)
-                                {
-                                    var columnDef = columnDefs.Where(w => w.ColumnName == sysColumn.ColumnName && w.PageTemplateId == pageTemplate.PageTemplateId).FirstOrDefault();
-                                    if (columnDef == null)
-                                    {
-                                        var newColumnDef = new ColumnDef
-                                        {
-                                            PageTemplateId = pageTemplate.PageTemplateId,
-                                            ColumnName = sysColumn.ColumnName,
-                                            DisplayName = sysColumn.ColumnName,
-                                            ElementType = "Textbox",
-                                            ElementWidth = 300,
-                                            ElementHeight = 0,
-                                            OverideValue = "",
-                                            ChildTemplateId = 0,
-                                            LookupTable = "",
-                                            LookupFilter = "",
-                                            ValueField = "",
-                                            TextField = "",
-                                            OrderField = "",
-                                            ElementObject = "",
-                                            ElementDocReady = "",
-                                            ElementFunction = "",
-                                            ElementLabelLink = "",
-                                            AddBlankOption = false,
-                                            DatePickerOption = "",
-                                            NumberMax = 0,
-                                            NumberMin = 0,
-                                            NumberOfDecimal = 0,
-                                            ShowInGrid = true,
-                                            GridWidth = "",
-                                            IsMultiSelect = false
-                                        };
-                                        Db.ColumnDefs.Add(newColumnDef);
-                                        Db.SaveChanges();
-
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    json += item;
+                }
+                if (json.Length > 2 && firstOrDefault && json.Substring(0,1) == "[")
+                {
+                    json = json.Substring(1, json.Length - 2);
                 }
 
-                return "Database tables synced successfully.";
-            }
-            catch (System.Exception ex)
-            {
-                return ex.Message;
-                throw;
+                return json;
             }
         }
 
@@ -161,7 +89,6 @@ namespace SourceControl.Services
                 return sysTables;
             }
         }
-
 
         public static List<SysColumn> SysColumns(int dbEntityId, string tableName)
         {
@@ -225,7 +152,6 @@ namespace SourceControl.Services
             }
         }
 
-
         public static DbEntity DbEntity(int dbEntityId)
         {
             using (SourceControlEntities Db = new SourceControlEntities())
@@ -234,7 +160,6 @@ namespace SourceControl.Services
                 return dbEntity;
             }
         }
-
 
         public static string GetPasswordModifiedDate()
         {
@@ -334,180 +259,6 @@ namespace SourceControl.Services
             {
                 Helper.LogError(ex);
                 return 0;
-            }
-        }
-
-        public static string GetJsonFromSQL(string jsonFld, string dbFld, string fromClause, string tableName, bool getFirstOrDefault, int pageTemplateId = 0, int dbEntityId = 0)
-        {
-
-            StringBuilder sb = new StringBuilder();
-            string select = "";
-            var finalExe = "";
-            var finalString = "";
-
-            try
-            {
-                if (dbEntityId == 0)
-                {
-                    PageTemplate pageTemplate = SessionService.PageTemplate(pageTemplateId);
-                    dbEntityId = pageTemplate.DbEntityId;
-                }
-                var dbEntity = SessionService.DbEntity(dbEntityId);
-
-                using (TargetEntities Db = new TargetEntities())
-                {
-                    Db.Database.Connection.ConnectionString = dbEntity.ConnectionString;
-
-                    if (tableName == "PAGEDATA")
-                    {
-
-                        string[] jsonFlds = jsonFld.Split(new char[] { ',' });
-                        string[] dbFlds = dbFld.Split(new char[] { ',' });
-                        sb.Append(" '{ ");
-                        for (int i = 0; i < jsonFlds.Length; i++)
-                        {
-                            var tName = "";
-                            var fld = jsonFlds[i];
-                            if (fld.Contains("[BYPASS_SELECT_FIELD]"))
-                            {
-                                string[] words = fld.Split(new char[] { '|' });
-
-                                sb.Append("\"" + words[0] + "\": \"' + " + words[1].Replace("[BYPASS_SELECT_FIELD]", "") + " + '\", ");
-                                continue;
-                            }
-
-                            if (fld.Contains("."))
-                            {
-                                string[] words = fld.Split(new char[] { '.' });
-                                tName = words[0];
-                                fld = words[1];
-                            }
-
-
-                            if (dbFlds[i].Contains("[DATE]"))
-                            {
-                                sb.Append("\"" + fld.Replace("[DATE]", "") + "\": \"' + ISNULL(CAST(FORMAT(" + dbFlds[i].Replace("[DATE]", "") + ",'MM/dd/yyyy') AS varchar(50)), '') + '\", ");
-                            }
-                            else if (dbFlds[i].Contains("[DATETIME]"))
-                            {
-                                sb.Append("\"" + fld.Replace("[DATETIME]", "") + "\": \"' + ISNULL(CAST(FORMAT(" + dbFlds[i].Replace("[DATETIME]", "") + ",'MM/dd/yyyy hh:mm tt') AS varchar(50)), '') + '\", ");
-                            }
-                            else
-                            {
-                                if (tName.Length > 0)
-                                {
-                                    if (SessionService.DataType(pageTemplateId, fld) == "TEXT")
-                                    {
-                                        var dLength = SessionService.DataLength(tName, fld);
-                                        if (dLength > 0)
-                                        {
-                                            sb.Append("\"" + fld + "\": \"' + REPLACE(CAST(ISNULL(" + dbFlds[i] + ",'') AS varchar(" + dLength + ")), '\"', '') + '\", ");
-
-                                        }
-                                        else
-                                        {
-                                            sb.Append("\"" + fld + "\": \"' + REPLACE(CAST(ISNULL(" + dbFlds[i] + ",'') AS varchar(500)), '\"', '')   + '\", ");
-                                        }
-
-                                    }
-                                    else
-                                    {
-                                        sb.Append("\"" + fld + "\": \"' + CAST(ISNULL(" + dbFlds[i] + ",'') AS varchar(50)) + '\", ");
-                                    }
-                                }
-                                else
-                                {
-                                    sb.Append("\"" + fld + "\": \"' + CAST(ISNULL(" + dbFlds[i] + ",'') AS varchar(500)) + '\", ");
-                                }
-                            }
-                        }
-
-                        select = sb.ToString();
-                        select = select.Substring(0, select.Length - 2) + " }, ' ";
-                        finalExe = fromClause.Replace("[PAGEDATA]", select);
-
-
-                    }
-                    else if (tableName.Length > 0)
-                    {
-                        //sb.Append("SELECT '{ ");
-                        //// get all columns for table   select '{ "ColumnName": "' + ColumnName + '", "DisplayName": "' + DisplayName + '" }, ' AS jsonRec from ColumnDef
-
-                        //var columns = SessionService.ColumnDefs(tableName);
-                        //foreach (var column in columns)
-                        //{
-                        //	if (column.DataType == "TEXT")
-                        //	{
-                        //		var dLength = SessionService.DataLength(tableName, column.ColumnName);
-                        //		if (dLength > 0)
-                        //		{
-                        //			sb.Append("\"" + column.ColumnName + "\": \"' + CAST(ISNULL(" + column.ColumnName + ",'') AS varchar(" + dLength + ")) + '\", ");
-                        //		}
-                        //		else
-                        //		{
-                        //			sb.Append("\"" + column.ColumnName + "\": \"' + CAST(ISNULL(" + column.ColumnName + ",'') AS varchar(max)) + '\", ");
-                        //		}
-                        //	}
-                        //	else
-                        //	{
-                        //		sb.Append("\"" + column.ColumnName + "\": \"' + CAST(ISNULL(" + column.ColumnName + ",'') AS varchar(50)) + '\", ");
-                        //	}
-                        //}
-
-                        //select = sb.ToString();
-                        //select = select.Substring(0, select.Length - 2) + " }, ' ";
-                        //finalExe = select + " " + fromClause;
-                    }
-                    else  // from dynamic table 
-                    {
-                        string[] jsonFlds = jsonFld.Split(new char[] { ',' });
-                        string[] dbFlds = dbFld.Split(new char[] { ',' });
-                        sb.Append("SELECT '{ ");
-                        for (int i = 0; i < jsonFlds.Length; i++)
-                        {
-                            sb.Append("\"" + jsonFlds[i] + "\": \"' + CAST(ISNULL(" + dbFlds[i] + ",'') AS varchar(500)) + '\", ");
-                        }
-
-                        select = sb.ToString();
-                        select = select.Substring(0, select.Length - 2) + " }, ' ";
-                        finalExe = select + " " + fromClause;
-
-                    }
-
-                    sb.Clear();
-
-                    if (!getFirstOrDefault)
-                    {
-                        sb.Append("[ ");
-                    }
-
-                    List<string> recs = Db.Database.SqlQuery<string>(finalExe).ToList();
-
-                    foreach (var rec in recs)
-                    {
-                        sb.AppendLine(rec.Replace("\\", "\\\\").Replace("\t", "   "));
-                        if (getFirstOrDefault)
-                        {
-                            break;
-                        }
-                    }
-                    finalString = sb.ToString();
-
-                    finalString = finalString.Substring(0, finalString.Length - 4);
-
-                    if (!getFirstOrDefault)
-                    {
-                        finalString += " ]";
-                    }
-
-                    return finalString;
-
-                }
-            }
-            catch (Exception ex)
-            {
-                Helper.LogError("Error - " + ex.Message + "\r\nDataService.GetJsonObject  finalString=" + finalString);
-                return "";
             }
         }
 
@@ -838,6 +589,13 @@ namespace SourceControl.Services
 
                             continue;
                         }
+                        else if (columnDef.IsEncrypted)
+                        {
+                            sbInsert.Append(columnDef.ColumnName + ",");
+                            sbUpdate.Append(columnDef.ColumnName + " = ");
+                            sbValue.Append("'" + Helper.ToEncrypted(obj[formColumnName]).Replace("'", "''") + "',");
+                            sbUpdate.Append("'" + Helper.ToEncrypted(obj[formColumnName]).Replace("'", "''") + "',");
+                        }
                         else if (columnDef.ColumnName == "ChangeDate" || columnDef.ElementType == "DateChanged")
                         {
                             sbInsert.Append(columnDef.ColumnName + ",");
@@ -952,10 +710,7 @@ namespace SourceControl.Services
                 Helper.LogError(ex);
                 return "Unable to process UpdateRecord() - " + ex.Message;
             }
-
         }
-
-
     }
 
 }

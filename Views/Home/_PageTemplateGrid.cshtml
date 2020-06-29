@@ -5,8 +5,39 @@
         <li>Custom Options</li>
     </ul>
     <div>
-        
-        Under Construction
+
+        <table>
+
+            <tr>
+                <td colspan="3" align="center" style="border-top:1px solid #808080;border-left:1px solid #808080;border-right:1px solid #808080;">Displayed in Grid</td>
+                <td style="background-color:white;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                <td colspan="3" align="center" style="border-top:1px solid #808080;border-left:1px solid #808080;border-right:1px solid #808080;">Sort By</td>
+            </tr>
+
+            <tr class="table-header">
+                <td>Available Columns</td>
+                <td style="background-color:white;"> </td>
+                <td>Column(s) in Grid</td>
+
+                <td style="background-color:white;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+
+                <td>Available Columns</td>
+                <td style="background-color:white;"> </td>
+                <td>Column(s) to Sort</td>
+            </tr>
+
+            <tr valign="top">
+                <td><div id="divGridColumns_"></div></td>
+                <td style="background-color:white;"> </td>
+                <td><div id="divGridColumns"></div></td>
+
+                <td style="background-color:white;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</td>
+
+                <td><div id="divSortColumns_"></div></td>
+                <td style="background-color:white;"> </td>
+                <td><div id="divSortColumns"></div></td>
+            </tr>
+        </table>
 
     </div>
     <div>
@@ -82,5 +113,160 @@
     }
 
 
+    //GridColumns SortColumns
+    var ToGridColumnIndex = "";
+    var ToSortColumnIndex = "";
+    function LoadGridColumn() {
+        $.ajax({
+            url: "/PageTemplate/LoadGridColumn",
+            type: "POST",
+            data: { pageTemplateId: $("#PageTemplateId").val() },
+            dataType: "json",
+            success: function (data) {
+                var gridColumns_ = data.GridColumns_;  // Available GridColumns
+                var gridColumns = data.GridColumns;
+                var sortColumns_ = data.SortColumns_;  // Available SortColumns
+                var sortColumns = data.SortColumns;
+                var obj = [];
 
+                // Available GridColumns
+                obj = [];
+                obj.push("<ul id='gridColumns_' columnIndex='1' class='connectedSortable drag-drop'>");
+                for (var i in gridColumns_) {
+                    obj.push("<li id='ColumnDefId" + gridColumns_[i].ColumnDefId + "' columnIndex='1'>");
+                    obj.push(gridColumns_[i].ColumnName);
+                    obj.push("</li>");
+                }
+                obj.push("</ul>");
+                $("#divGridColumns_").html(obj.join(""));
+
+                // Assigned GridColumns
+                obj = [];
+                obj.push("<ul id='gridColumns' columnIndex='2' class='connectedSortable drag-drop'>");
+                for (var i in gridColumns) {
+                    obj.push("<li id='GridColumnId" + gridColumns[i].GridColumnId + "' columnIndex='2'>");
+                    obj.push(gridColumns[i].ColumnName);
+                    obj.push("</li>");
+                }
+                obj.push("</ul>");
+                $("#divGridColumns").html(obj.join(""));
+
+
+                // sortable - GridColumns
+                $("#gridColumns_, #gridColumns").sortable({
+                    connectWith: ".connectedSortable",
+                    start: function (event, ui) {
+                        ui.item.startPos = ui.item.index();
+                        ui.placeholder.height(ui.item.height());
+                    },
+                    stop: function (event, ui) {
+                        var id = $(ui.item).attr("id");
+                        var fromColumnIndex = $(ui.item).attr("columnIndex");
+                        var newOrder = ui.item.index() + 1;
+
+                        if (ToGridColumnIndex == "") ToGridColumnIndex = fromColumnIndex;
+                        console.log("id=" + id + "    fromColumnIndex=" + fromColumnIndex + "    ToGridColumnIndex=" + ToGridColumnIndex + "    newOrder=" + newOrder);
+
+                        SortGridColumn(id, fromColumnIndex, ToGridColumnIndex, newOrder);
+
+                    },
+                    receive: function (event, ui) {
+                        try {
+                            ToGridColumnIndex = $(event.target).attr("columnIndex");
+                        } catch (e) {
+                            ToGridColumnIndex = "";
+                        }
+                    }
+                });
+
+                // Available SortColumns
+                obj = [];
+                obj.push("<ul id='sortColumns_' sortColumnIndex='1' class='sortConnectedSortable drag-drop'>");
+                for (var i in sortColumns_) {
+                    obj.push("<li id='ColumnDefId" + sortColumns_[i].ColumnDefId + "' sortColumnIndex='1'>");
+                    obj.push(sortColumns_[i].ColumnName);
+                    obj.push("</li>");
+                }
+                obj.push("</ul>");
+                $("#divSortColumns_").html(obj.join(""));
+
+                // Assigned SortColumns
+                obj = [];
+                obj.push("<ul id='sortColumns' sortColumnIndex='2' class='sortConnectedSortable drag-drop'>");
+
+                if (sortColumns.length == 0) {
+                    obj.push("<li id='SortColumnId0' sortColumnIndex='2'>");
+                    obj.push("Drag here");
+                    obj.push("</li>");
+                }
+                for (var i in sortColumns) {
+                    obj.push("<li id='SortColumnId" + sortColumns[i].SortColumnId + "' sortColumnIndex='2'>");
+                    obj.push(sortColumns[i].ColumnName);
+                    obj.push("</li>");
+                }
+                obj.push("</ul>");
+                $("#divSortColumns").html(obj.join(""));
+
+
+                // sortable - SortColumns
+                $("#sortColumns_, #sortColumns").sortable({
+                    connectWith: ".sortConnectedSortable",
+                    start: function (event, ui) {
+                        ui.item.startPos = ui.item.index();
+                        ui.placeholder.height(ui.item.height());
+                    },
+                    stop: function (event, ui) {
+                        var id = $(ui.item).attr("id");
+                        var fromColumnIndex = $(ui.item).attr("sortColumnIndex");
+                        var newOrder = ui.item.index() + 1;
+
+                        if (ToSortColumnIndex == "") ToSortColumnIndex = fromColumnIndex;
+                        console.log("id=" + id + "    fromColumnIndex=" + fromColumnIndex + "    ToSortColumnIndex=" + ToSortColumnIndex + "    newOrder=" + newOrder);
+
+                        SortSortColumn(id, fromColumnIndex, ToSortColumnIndex, newOrder);
+
+                    },
+                    receive: function (event, ui) {
+                        try {
+                            ToSortColumnIndex = $(event.target).attr("sortColumnIndex");
+                        } catch (e) {
+                            ToSortColumnIndex = "";
+                        }
+                    }
+                });
+
+            }
+        });
+    }
+
+
+    function SortGridColumn(id, fromColumnIndex, toColumnIndex, newOrder) {
+        $.ajax({
+            url: "/PageTemplate/SortGridColumn",
+            data: { id: id, fromColumnIndex: fromColumnIndex, toColumnIndex: toColumnIndex, newOrder: newOrder, pageTemplateId: 0 },
+            dataType: "text",
+            success: function (response) {
+                if (response.length > 0) {
+                    MessageBox("Error", response, false);
+                } else {
+                    LoadGridColumn();
+                }
+            }
+        });
+    }
+
+    function SortSortColumn(id, fromColumnIndex, toColumnIndex, newOrder) {
+        $.ajax({
+            url: "/PageTemplate/SortSortColumn",
+            data: { id: id, fromColumnIndex: fromColumnIndex, toColumnIndex: toColumnIndex, newOrder: newOrder, pageTemplateId: 0 },
+            dataType: "text",
+            success: function (response) {
+                if (response.length > 0) {
+                    MessageBox("Error", response, false);
+                } else {
+                    LoadGridColumn();
+                }
+            }
+        });
+    }
 </script>
